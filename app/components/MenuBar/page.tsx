@@ -6,11 +6,11 @@ import { ShoppingCart, Menu, Search, X, User } from "lucide-react";
 import { MenuItem } from "./MenuItem"
 
 const mockProducts = [
-  "Camiseta Nike",
-  "Tênis Air Max",
-  "Jaqueta Adidas",
-  "Boné New Era",
-  "Calça Moletom",
+  "Terço de São Miguel",
+  "Imegem de Nossa Senhora Aparecida",
+  "Camiseta Sagrado Coração de Jesus",
+  "Boné Nossa Senhora Aparecida",
+  "Chavero de São Bento",
 ];
 
 export default function Header() {
@@ -130,9 +130,9 @@ export default function Header() {
       <nav className="hidden w-full border-t border-gray-300 bg-amber-50 md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 py-3 text-sm font-light text-gray-500">
 
-          <MenuItem title="Masculino" />
-          <MenuItem title="Feminino" />
-          <MenuItem title="Tênis" />
+          <MenuItem title="Terço" />
+          <MenuItem title="Chaveiro" />
+          <MenuItem title="Imagem" />
           <MenuItem title="Acessórios" />
 
          
@@ -151,9 +151,9 @@ export default function Header() {
             </div>
 
             <nav className="flex flex-col gap-4 border-none text-sm text-gray-600">
-              <MenuItem title="Masculino" />
-              <MenuItem title="Feminino" />
-              <MenuItem title="Tênis" />
+              <MenuItem title="Terço" />
+              <MenuItem title="Chaveiro" />
+              <MenuItem title="Imagem" />
               <MenuItem title="Acessórios" />
             </nav>
           </div>
