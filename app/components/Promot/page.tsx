@@ -10,27 +10,23 @@ const frases = [
   [
     { texto: "FRETE", cor: "text-senary" },
     { texto: " GRÁTIS ", cor: "text-senary" },
-    { texto: " a", cor: "text-secundary" },
-    { texto: " partir", cor: "text-secundary" },
-    { texto: " de", cor: "text-secundary" },
-    { texto: " R$", cor: "text-senary" },
-    { texto: " 279,99", cor: "text-senary" },
-    { texto: " em compras.", cor: "text-secundary" },
+    { texto: " NA", cor: "text-secundary" },
+    { texto: " SUA", cor: "text-secundary" },
+    { texto: " COMPRA!", cor: "text-secundary" },
+    
   ],
   [
-    { texto: "Aproveite", cor: "text-secundary" },
-    { texto: " as ", cor: "text-secundary" },
-    { texto: " melhores ", cor: "text-secundary" },
-    { texto: " ofertas", cor: "text-secundary" },
+    { texto: "Aproveite:", cor: "text-secundary" },
+    { texto: " comprando ", cor: "text-secundary" },
+    { texto: " a ", cor: "text-secundary" },
+    { texto: " partir", cor: "text-secundary" },
     { texto: " de", cor: "text-secundary" },
-    { texto: " hoje!", cor: "text-senary" }
+    { texto: " R$ 199,00!", cor: "text-senary" }
   ],
    [
-    { texto: "Descontos", cor: "text-secundary" },
-    { texto: " imperdíveis", cor: "text-senary" },
-    { texto: " em", cor: "text-secundary" },
-    { texto: "  todo", cor: "text-secundary" },
-    { texto: " site.", cor: "text-secundary" },
+    { texto: "você", cor: "text-secundary" },
+    { texto: " ganha", cor: "text-senary" },
+    
   ]
 ];
 
@@ -81,7 +77,7 @@ export default function PromoCarousels() {
       {frases.map((frase, idx) => (
         <div
           key={idx}
-          className="absolute w-full font-author top-1 left-0 flex items-center justify-center font-bold text-base uppercase tracking-wider px-3 opacity-0 transition-opacity duration-1000"
+          className="absolute w-full font-author top-1 left-0 flex text-center items-center justify-center font-bold text-base uppercase tracking-wider px-3 opacity-0 transition-opacity duration-1000"
         >
           <span>
             {frase.map((item, itemIdx) => (
