@@ -10,18 +10,17 @@ const frases = [
   [
     { texto: "FRETE", cor: "text-senary" },
     { texto: " GRÁTIS ", cor: "text-senary" },
-    { texto: " NA", cor: "text-secundary" },
-    { texto: " SUA", cor: "text-secundary" },
-    { texto: " COMPRA!", cor: "text-secundary" },
+    { texto: " na", cor: "text-secundary" },
+    { texto: " sua", cor: "text-secundary" },
+    { texto: " compra!", cor: "text-secundary" },
     
   ],
   [
     { texto: "Aproveite:", cor: "text-secundary" },
-    { texto: " comprando ", cor: "text-secundary" },
-    { texto: " a ", cor: "text-secundary" },
+    { texto: " comprando a ", cor: "text-secundary" },
     { texto: " partir", cor: "text-secundary" },
     { texto: " de", cor: "text-secundary" },
-    { texto: " R$ 199,00!", cor: "text-senary" }
+    { texto: " R$199,00!", cor: "text-senary" }
   ],
    [
     { texto: "você", cor: "text-secundary" },
@@ -71,13 +70,13 @@ export default function PromoCarousels() {
   return (
     <section className="w-full flex flex-col gap-0">
       {/* Frases faixa preta */}
-      <div className="w-full bg-lime-500 text-white py-1 select-none">
+      <div className="w-full bg-lime-500 text-white py-0.5 select-none">
   <div ref={emblaTextRef} className="relative overflow-hidden h-8">
         <div className="flex">
       {frases.map((frase, idx) => (
         <div
           key={idx}
-          className="absolute w-full font-author top-1 left-0 flex text-center items-center justify-center font-bold text-base uppercase tracking-wider px-3 opacity-0 transition-opacity duration-1000"
+          className="absolute w-full font-author top-2.5 left-0 flex  items-center justify-center font-bold text-xs  uppercase tracking-wider px-3 opacity-0 transition-opacity duration-1000"
         >
           <span>
             {frase.map((item, itemIdx) => (
