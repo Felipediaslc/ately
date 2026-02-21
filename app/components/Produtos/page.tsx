@@ -22,14 +22,14 @@ export default function FeaturedProducts() {
   const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
 
   const products = [
-    { image: "/client01.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client02.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client03.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client04.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client05.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client06.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client07.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/client08.jpg", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto04.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto05.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto06.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto07.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto04.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto05.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto06.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto07.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
   ];
 
   // 🔹 Atualiza índice e snaps
@@ -63,7 +63,7 @@ export default function FeaturedProducts() {
   );
 
   return (
-    <section className="w-full bg-transparent py-12 px-6 lg:px-20">
+    <section className="w-full bg-amber-50 py-12 px-6 lg:px-20">
       {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold font-author text-secondary">
@@ -91,13 +91,13 @@ export default function FeaturedProducts() {
               key={index}
               className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-2"
             >
-              <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+              <div className="bg-white rounded-xl shadow-lg shadow-gray-300 overflow-hidden flex flex-col">
                 <div className="relative w-full h-52 sm:h-60">
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-cover"
+                    className=""
                   />
                 </div>
                 <div className="p-4 font-author flex flex-col flex-1">
