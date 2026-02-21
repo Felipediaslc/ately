@@ -21,7 +21,7 @@ export default function TickerBar() {
           {[...messages, ...messages].map((msg, i) => (
             <span
               key={i}
-              className="mx-6 py-2 text-xs font-medium tracking-wide sm:text-xs md:text-xs"
+              className="mx-6 py-2 text-xs  tracking-wide sm:text-xs md:text-xs font-Instrument-Sans"
             >
               {msg}
             </span>

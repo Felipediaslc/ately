@@ -18,7 +18,7 @@ const imagens = [
   },
   {
     desktop: "/image/banner2Desktop.png",
-    mobile: "/image/banner02Mobile.png",
+    mobile: "/image/banner02Mobile.jpeg",
   },
   {
    desktop: "/image/bannerDesktop.png",
@@ -65,7 +65,8 @@ export default function PromoCarousels() {
         flex items-center justify-center
         text-white
         text-sm md:text-base
-        font-medium
+       font-Instrument-Sans
+       
         tracking-wide
       ">
         <div className="overflow-hidden w-full" ref={emblaTextRef}>

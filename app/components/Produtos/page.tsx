@@ -22,13 +22,13 @@ export default function FeaturedProducts() {
   const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
 
   const products = [
-    { image: "/image/produto04.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto05.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto06.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto07.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto01.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto02.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto03.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto04.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
+    { image: "/image/produto05.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
+    { image: "/image/produto06.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
+    { image: "/image/produto07.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
+    { image: "/image/produto01.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
+    { image: "/image/produto02.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
+    { image: "/image/produto03.png", title: "Painting of tiger", author: "Socorro Dias", price: "Por R$90.00" },
   ];
 
   // 🔹 Atualiza índice e snaps
@@ -65,11 +65,11 @@ export default function FeaturedProducts() {
     <section className="w-full bg-amber-50 py-12 px-6 lg:px-20">
       {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-10">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold font-author text-secondary">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold font-Instrument-Sans text-primary">
           <br /> Destaque
         </h2>
        { /*<div className="mt-4 lg:mt-0 max-w-lg text-secondary">
-          <p className="mb-4 text-sm sm:text-base font-author">
+          <p className="mb-4 text-sm sm:text-base font-Instrument-Sans">
             Agende visitas online, negocie sem intermediários e assine o contrato
             digitalmente. Sem fiador. Sem depósito caução. Sem filas.
           </p>
@@ -90,7 +90,7 @@ export default function FeaturedProducts() {
               key={index}
               className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-2"
             >
-              <div className="bg-white rounded-xl shadow-lg shadow-gray-300 overflow-hidden flex flex-col">
+              <div className="bg-white rounded-xl shadow-lg font-Instrument-Sans  shadow-gray-300 overflow-hidden flex flex-col">
                 <div className="relative w-full h-52  sm:h-60">
                   <Image
                     src={product.image}
@@ -99,14 +99,14 @@ export default function FeaturedProducts() {
                     className=" pl-5 "
                   />
                 </div>
-                <div className="p-4 font-author flex flex-col flex-1">
+                <div className="p-4 font-Instrument-Sans flex flex-col flex-1">
                   <h3 className="text-base sm:text-lg font-semibold text-quinary">
                     {product.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-primary">
                     By {product.author}
                   </p>
-                  <span className="mt-2 text-quinary font-author font-semibold text-sm sm:text-base">
+                  <span className="mt-2 text-quinary font-Instrument-Sans font-semibold text-sm sm:text-base">
                     {product.price}
                   </span>
                 </div>

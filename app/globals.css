@@ -3,11 +3,19 @@
 
 
 @theme  {
-  
+  --color-primary:  #4B5563;
 }
 
 
-
+@layer base {
+  @font-face {
+    font-family: "Instrument Sans";
+    src: url("/fonts/InstrumentSans-VariableFont_wdth.ttf") format("woff2");
+  
+    font-style: normal;
+    font-display: swap;
+  }
+}
 body {
   
   font-family: Arial, Helvetica, sans-serif;
@@ -33,4 +41,11 @@ body {
 
 .animate-frete {
   animation: frete-move 1.5s ease-in-out infinite;
+}
+@layer utilities {
+
+
+  .font-Instrument-Sans {
+    font-family: var(--font-Instrument-Sans);
+  }
 }

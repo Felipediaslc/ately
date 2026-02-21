@@ -48,7 +48,7 @@ export default function PromoBar() {
         <div className="flex flex-wrap items-center justify-center gap-4 text-center">
           
           {/* Texto Promo */}
-          <span className="text-xs font-bold tracking-wide sm:text-base md:text-sm">
+          <span className="text-xs font-bold tracking-wide sm:text-base md:text-sm font-Instrument-Sans">
             LEVE 4 PAGUE 3
           </span>
 
@@ -73,10 +73,10 @@ export default function PromoBar() {
 function TimeBox({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center leading-none">
-      <span className="font-bold tabular-nums text-xs sm:text-base md:text-sm">
+      <span className="font-bold tabular-nums  font-Instrument-Sans text-xs sm:text-base md:text-sm">
         {value}
       </span>
-      <span className="text-[10px] opacity-80 sm:text-xs">
+      <span className="text-[10px] opacity-80 sm:text-xs font-Instrument-Sans">
         {label}
       </span>
     </div>
