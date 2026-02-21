@@ -25,3 +25,12 @@ body {
 .ticker-track {
   animation: ticker 25s linear infinite;
 }
+@keyframes frete-move {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(6px); }
+  100% { transform: translateX(0px); }
+}
+
+.animate-frete {
+  animation: frete-move 1.5s ease-in-out infinite;
+}

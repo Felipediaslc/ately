@@ -26,10 +26,9 @@ export default function FeaturedProducts() {
     { image: "/image/produto05.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
     { image: "/image/produto06.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
     { image: "/image/produto07.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto04.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto05.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto06.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
-    { image: "/image/produto07.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto01.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto02.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
+    { image: "/image/produto03.png", title: "Painting of tiger", author: "Jhone smith", price: "From $90.00" },
   ];
 
   // 🔹 Atualiza índice e snaps
@@ -92,12 +91,12 @@ export default function FeaturedProducts() {
               className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-2"
             >
               <div className="bg-white rounded-xl shadow-lg shadow-gray-300 overflow-hidden flex flex-col">
-                <div className="relative w-full h-52 sm:h-60">
+                <div className="relative w-full h-52  sm:h-60">
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    className=""
+                    className=" pl-5 "
                   />
                 </div>
                 <div className="p-4 font-author flex flex-col flex-1">
