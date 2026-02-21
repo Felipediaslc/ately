@@ -51,7 +51,7 @@ export function MenuItem({ title }: MenuItemProps) {
         <div className="
   static w-full mt-2
   lg:absolute lg:w-56 lg:top-full lg:left-0 lg:mt-4
-  rounded-2xl bg-amber-50 shadow-xl border-none p-4 z-50
+  rounded-2xl bg-[#ffffff] shadow-xl border-none p-4 z-50
 ">
           <ul className=" space-y-2 text-sm">
             <li className="hover:text-fuchsia-600"><Link href="#">Novidades</Link></li>

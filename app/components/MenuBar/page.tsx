@@ -24,7 +24,7 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky py-0  z-50 w-full bg-amber-50 shadow-md">
+    <header className="sticky py-0  z-50 w-full bg-[#ffffff] shadow-md">
       {/* MAIN HEADER */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         {/* MOBILE MENU BTN */}
@@ -47,7 +47,7 @@ export default function Header() {
 
         {/* SEARCH */}
         <div className="relative hidden w-full max-w-xl md:block">
-          <div className="flex items-center rounded-lg border border-gray-300 bg-amber-50 text-gray-700 px-3">
+          <div className="flex items-center rounded-lg border border-gray-300 bg-[#ffffff] text-gray-700 px-3">
             <Search size={18} />
             <input
               value={search}
@@ -59,7 +59,7 @@ export default function Header() {
 
           {/* AUTOCOMPLETE */}
           {search && (
-            <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-lg border bg-amber-50 text-gray-700 shadow-lg">
+            <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-lg border bg-[#ffffff] text-gray-700 shadow-lg">
               {filtered.length > 0 ? (
                 filtered.map((item, i) => (
                   <div
@@ -127,7 +127,7 @@ export default function Header() {
       </div>
 
       {/* MENU DESKTOP */}
-      <nav className="hidden w-full border-t border-gray-300 bg-amber-50 md:block font-Instrument-Sans">
+      <nav className="hidden w-full border-t border-gray-300 bg-[#ffffff] md:block font-Instrument-Sans">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 py-3 text-sm font-light text-primary"> {/* Cor alterada */}
           <MenuItem title="Terço" />
           <MenuItem title="Chaveiro" />
@@ -139,7 +139,7 @@ export default function Header() {
       {/* MOBILE MENU */}
       {openMenu && (
         <div className="fixed inset-0 z-50 bg-transparent">
-          <div className="h-full w-72 bg-amber-50 p-5 shadow-xl">
+          <div className="h-full w-72 bg-[#ffffff] p-5 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
               <span className="tracking-widest  font-Instrument-Sans  text-primary">Menu</span> {/* Cor alterada */}
               <button className="text-primary" onClick={() => setOpenMenu(false)}> {/* Cor alterada */}
