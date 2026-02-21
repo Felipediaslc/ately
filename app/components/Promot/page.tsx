@@ -18,7 +18,7 @@ const imagens = [
   },
   {
     desktop: "/image/banner2Desktop.png",
-    mobile: "/image/bannerMobile.png",
+    mobile: "/image/banner02Mobile.png",
   },
   {
    desktop: "/image/bannerDesktop.png",
