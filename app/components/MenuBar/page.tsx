@@ -88,7 +88,7 @@ export default function Header() {
 
             {/* LOGIN DROPDOWN */}
             {openLogin && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border-none font-Instrument-Sans text-gray-500 bg-amber-50 p-3 shadow-xl">
+              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border-none font-Instrument-Sans text-primary bg-[#ffffff] p-3 shadow-xl">
                 <div className="flex flex-col text-sm">
                   <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">
                     Entrar
@@ -112,7 +112,7 @@ export default function Header() {
 
             {/* CART DROPDOWN */}
             {openCart && (
-              <div className="font-Instrument-Sans absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border-none bg-amber-50 text-gray-500 font-medium p-4 shadow-xl">
+              <div className="font-Instrument-Sans absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border-none text-primary bg-[#ffffff] font-medium p-4 shadow-xl">
                 <h4 className="mb-3 font-semibold">Carrinho</h4>
                 <div className="text-sm text-gray-400">
                   Seu carrinho está vazio
