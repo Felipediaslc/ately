@@ -18,16 +18,22 @@ export function PriceFilter() {
   const selectedPrice = searchParams.get("price")
 
   function handleFilter(value: string) {
-    const params = new URLSearchParams(searchParams.toString())
+  const params = new URLSearchParams(searchParams.toString())
 
-    if (selectedPrice === value) {
-      params.delete("price")
-    } else {
-      params.set("price", value)
-    }
-
-    router.replace(`${pathname}?${params.toString()}`)
+  if (selectedPrice === value) {
+    params.delete("price")
+  } else {
+    params.set("price", value)
   }
+
+  router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+}
+
+function handleClearFilter() {
+  const params = new URLSearchParams(searchParams.toString())
+  params.delete("price")
+  router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+}
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
@@ -56,6 +62,29 @@ export function PriceFilter() {
           )
         })}
       </div>
+
+      {/* 🔥 Botão Ver Todos */}
+      {selectedPrice && (
+        <button
+          onClick={handleClearFilter}
+          className="
+            w-full
+            mt-6
+            py-2
+            rounded-xl
+            text-sm
+            font-medium
+            border
+            border-fuchsia-900
+            text-fuchsia-900
+            hover:bg-fuchsia-900
+            hover:text-white
+            transition
+          "
+        >
+          Ver todos os produtos
+        </button>
+      )}
     </div>
   )
 }
