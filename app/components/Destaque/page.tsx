@@ -165,7 +165,7 @@ export default function FeaturedProducts() {
                         size={20}
                         className={`transition-colors ${
                           isFavorite
-                            ? "fill-red-500 text-red-500"
+                            ? "fill-fuchsia-900 text-fuchsia-900"
                             : "text-primary"
                         }`}
                       />

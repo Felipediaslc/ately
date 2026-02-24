@@ -1,12 +1,22 @@
-import Product from "./components/Produtos/page";
+import Destaque from "./components/Destaque/page";
 import Promot from "./components/Promot/page";
+import { ProdutosSection } from "./components/product/ProdutosSection";
 
-export default function Home() {
+interface PageProps {
+  searchParams: Promise<{
+    price?: string;
+  }>;
+}
+
+export default async function Home({ searchParams }: PageProps) {
+  const params = await searchParams; // 👈 DESENROLA A PROMISE AQUI
+
   return (
-    <div >
-      
-     <Promot />
-     <Product />
+    <div>
+      <Promot />
+      <Destaque />
+      <ProdutosSection price={params?.price} />
     </div>
   );
 }
+

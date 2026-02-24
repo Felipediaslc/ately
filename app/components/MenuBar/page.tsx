@@ -40,7 +40,7 @@ export default function Header() {
           <Image
             src="/image/logo.jpeg"
             alt="Dias Atelier Logo"
-            layout="fill"
+            fill
             objectFit=""
           />
         </div>
