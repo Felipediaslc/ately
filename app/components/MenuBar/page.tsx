@@ -46,7 +46,7 @@ export default function Header() {
         </div>
 
         {/* SEARCH */}
-        <div className="relative hidden w-full max-w-xl md:block">
+        <div className="items-center relative hidden w-full max-w-xl md:block">
           <div className="flex items-center rounded-lg border border-gray-300 bg-[#ffffff] text-gray-700 px-3">
             <Search size={18} />
             <input

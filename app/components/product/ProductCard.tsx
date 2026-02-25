@@ -60,7 +60,7 @@ export function ProductCard({ product }: Props) {
               text-sm 
               py-2 
               rounded-lg 
-              transition
+              transition-all duration-200 hover:scale-105
             "
             >
               Comprar

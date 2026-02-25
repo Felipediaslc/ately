@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import "./globals.css";
 import StickyTopBars from "@/app/components/StickyTopBars/page";
 import Footer from "./components/foolter/page";
+import WhatsappFloat from "./components/Whatsapp/page";
 
 
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <StickyTopBars />
         <main>{children}</main>
         <Footer />
+        <WhatsappFloat />
       </body>
     </html>
   );

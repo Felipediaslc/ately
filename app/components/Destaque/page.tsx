@@ -203,7 +203,7 @@ export default function FeaturedProducts() {
                                 font-medium    
                                      
                                  rounded-md
-                                transition">
+                                transition-all duration-200 hover:scale-105">
                                  Comprar
                                 </button>
                   </div>

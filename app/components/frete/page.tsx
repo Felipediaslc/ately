@@ -25,7 +25,7 @@ export default function FreightBar({
   }, [frases.length]);
 
   return (
-    <div className=" w-full bg-[#7ed321] py-2 md:py-2 flex items-center justify-center text-white text-sm md:text-base font-Instrument-Sans tracking-wide">
+    <div className=" w-full bg-emerald-600 py-2 md:py-2 flex items-center justify-center text-white text-sm md:text-base font-Instrument-Sans tracking-wide">
       <div className="overflow-hidden w-full" ref={emblaTextRef}>
         <div
           className="flex transition-transform duration-500"
@@ -33,7 +33,7 @@ export default function FreightBar({
         >
           {frases.map((frase, index) => (
             <div key={index} className="min-w-full flex items-center justify-center">
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 text-white text-[13px] md:text-sm font-semibold tracking-[0.5px] leading-none">
                 {frase}
                 {index === 0 && (
                   <svg
