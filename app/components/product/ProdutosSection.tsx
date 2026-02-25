@@ -13,10 +13,12 @@ export async function ProdutosSection({ price }: Props) {
   return (
     <div className="container mx-auto px-4 py-8">
       
-      
-      <h2 className="text-center text-sm bg-yellow-100 text-yellow-800 py-2 px-4 rounded-lg mb-6">
-         🚧 PageUser provisória — layout ainda em desenvolvimento
-      </h2>
+      {/* Título centralizado, igual à seção destaque */}
+      <div className="flex flex-col items-center mb-10">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-primary text-center">
+          Explore nossos produtos
+        </h2>
+      </div>
 
       {/* Mobile Controls */}
       <MobileFilterWrapper />

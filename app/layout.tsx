@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import PromoBar from "./components/promoBar/page";
 import TickerBar from "./components/TickerBar/page";
-import Header from "../app/components/MenuBar/page"
+import Header from "../app/components/MenuBar/page";
+import Footer from "./components/foolter/page";
 
 
 
@@ -25,6 +26,7 @@ export default function RootLayout({
         <TickerBar />
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
