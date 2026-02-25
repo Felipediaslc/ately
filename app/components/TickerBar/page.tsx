@@ -9,7 +9,7 @@ export default function TickerBar() {
   ];
 
   return (
-    <div className="w-full overflow-hidden bg-fuchsia-400 text-gray-950">
+    <div className=" w-full overflow-hidden bg-fuchsia-400 text-gray-950">
       
       {/* Container do slide */}
       <div className="relative flex">

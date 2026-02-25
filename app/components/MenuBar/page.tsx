@@ -24,7 +24,7 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky py-0  z-50 w-full bg-[#ffffff] shadow-md">
+    <header className=" py-0   w-full bg-[#ffffff] shadow-md">
       {/* MAIN HEADER */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         {/* MOBILE MENU BTN */}

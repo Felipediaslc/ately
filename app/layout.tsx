@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
+import { ReactNode } from "react";
 import "./globals.css";
-import PromoBar from "./components/promoBar/page";
-import TickerBar from "./components/TickerBar/page";
-import Header from "../app/components/MenuBar/page";
+import StickyTopBars from "@/app/components/StickyTopBars/page";
 import Footer from "./components/foolter/page";
 
 
@@ -12,20 +11,12 @@ export const metadata: Metadata = {
   description: "Site de produtos religiosos",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body
-        className={` antialiased`}
-      >
-       <PromoBar />
-        <TickerBar />
-        <Header />
-        {children}
+    <html lang="pt-BR">
+      <body>
+        <StickyTopBars />
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

@@ -2,45 +2,39 @@
 
 import { useEffect, useState } from "react";
 
-type TimeLeft = {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-};
+function calculateTimeLeft() {
+  const difference =
+    +new Date("2026-05-01T00:00:00") - +new Date();
+
+  if (difference <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+
+  return {
+    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((difference / 1000 / 60) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+  };
+}
 
 export default function PromoBar() {
-  const targetDate = new Date("2026-04-23T23:59:59").getTime();
-
-  const calculateTimeLeft = (): TimeLeft => {
-    const now = new Date().getTime();
-    const difference = targetDate - now;
-
-    if (difference <= 0) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / (1000 * 60)) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-    };
-  };
-
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+});
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+    const interval = setInterval(() => {
+     setTimeLeft(calculateTimeLeft());
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, []);
-
-  const format = (value: number) => String(value).padStart(2, "0");
-
-  return (
+const format = (value: number) => String(value).padStart(2, "0");
+return (
     <div className="sticky top-0 z-50 w-full bg-gray-900 text-white shadow-md">
       <div className="flex w-full items-center justify-center px-4 py-2">
         

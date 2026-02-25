@@ -1,15 +1,11 @@
-/* eslint-disable @next/next/no-img-element */
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
-const frases = [
-  "FRETE GRÁTIS na sua compra!",
-  "Aproveite comprando a partir de R$199,00!",
-  "Você ganha benefícios exclusivos!",
-];
+
 
 const imagens = [
   {
@@ -27,11 +23,6 @@ const imagens = [
 ];
 
 export default function PromoCarousels() {
-  const [emblaTextRef] = useEmblaCarousel(
-    { loop: true },
-    [Autoplay({ delay: 3500, stopOnInteraction: false })]
-  );
-
   const [emblaImgRef, emblaImgApi] = useEmblaCarousel(
     { loop: true },
     [Autoplay({ delay: 4000, stopOnInteraction: false })]
@@ -55,52 +46,10 @@ export default function PromoCarousels() {
   const scrollTo = (index: number) => emblaImgApi?.scrollTo(index);
 
   return (
-    <section className="w-full flex flex-col">
+    <section className="
+         w-full flex flex-col">
 
-      {/*  FAIXA  */}
-      <div className="
-        w-full
-        bg-[#7ed321]
-        py-2 md:py-2
-        flex items-center justify-center
-        text-white
-        text-sm md:text-base
-       font-Instrument-Sans
-       
-        tracking-wide
-      ">
-        <div className="overflow-hidden w-full" ref={emblaTextRef}>
-          <div className="flex">
-            {frases.map((frase, index) => (
-              <div
-                key={index}
-                className="min-w-full flex items-center justify-center"
-              >
-                <span className="flex items-center">
-                  {frase}
-                  {index === 0 && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6 ml-3 text-white"
-                      viewBox="0 0 64 64"
-                      fill="currentColor"
-                    >
-                      {/* Caminhão igual ao modelo enviado */}
-                      <path d="M2 36h34v-16c0-2-1-3-3-3H18c-2 0-3 1-4 2l-8 10H2v7z"/>
-                      <path d="M36 36h16c3 0 6-3 6-6v-4c0-2-1-3-2-4l-6-5c-1-1-2-1-3-1H36v20z"/>
-                      <circle cx="18" cy="44" r="6"/>
-                      <circle cx="48" cy="44" r="6"/>
-                      <rect x="4" y="24" width="18" height="3" rx="1.5"/>
-                      <rect x="4" y="18" width="22" height="3" rx="1.5"/>
-                      <rect x="4" y="12" width="26" height="3" rx="1.5"/>
-                    </svg>
-                  )}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+     
 
       {/* 🎯 CARROSSEL */}
       <div className="relative w-full h-[70vh] overflow-hidden">
