@@ -1,4 +1,4 @@
-import { Product } from "../types/product"
+import type { Product } from "../types/product"
 
 export async function getProducts(price?: string): Promise<Product[]> {
   // Simulação de banco
@@ -11,18 +11,12 @@ export async function getProducts(price?: string): Promise<Product[]> {
     { id: "6", title: "Candelabro de Prata", price: 200, image: "/image/produto06.png" },
   ]
 
-  if (!price) return allProducts
+  if (!price) return allProducts;
 
-  const [min, max] = price.split("-")
+  const [min, max] = price.split("-");
 
-  return allProducts.filter(product => {
-    if (max === "*") {
-      return product.price >= Number(min)
-    }
-
-    return (
-      product.price >= Number(min) &&
-      product.price <= Number(max)
-    )
-  })
+  return allProducts.filter((product) => {
+    if (max === "*") return product.price >= Number(min);
+    return product.price >= Number(min) && product.price <= Number(max);
+  });
 }

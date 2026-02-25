@@ -1,6 +1,6 @@
 import Destaque from "./components/Destaque/page";
 import Promot from "./components/Promot/page";
-import { ProdutosSection } from "./components/product/ProdutosSection";
+import ProdutosSection from "./components/product/ProdutosSection";
 
 interface PageProps {
   searchParams: Promise<{
@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 export default async function Home({ searchParams }: PageProps) {
-  const params = await searchParams; // 👈 DESENROLA A PROMISE AQUI
+  const params = await searchParams;
 
   return (
     <div>
@@ -19,4 +19,3 @@ export default async function Home({ searchParams }: PageProps) {
     </div>
   );
 }
-

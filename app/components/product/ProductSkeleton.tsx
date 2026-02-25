@@ -1,0 +1,22 @@
+export function ProductSkeleton({ count = 8 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {Array.from({ length: count }).map((_, idx) => (
+        <div
+          key={idx}
+          className="bg-white rounded-2xl shadow-sm animate-pulse overflow-hidden flex flex-col"
+        >
+          <div className="relative aspect-square bg-gray-100"></div>
+          <div className="p-4 flex flex-col gap-2 flex-1">
+            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+            <div className="mt-auto flex items-center gap-2">
+              <div className="h-8 bg-gray-300 rounded flex-1"></div>
+              <div className="h-8 bg-gray-300 rounded w-16"></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

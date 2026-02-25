@@ -5,7 +5,10 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-gray-900 mt-12">
+    <footer className="bg-white text-primary mt-12 relative">
+      {/* Linha premium no topo */}
+      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-gray-200 via-gray-300 to-gray-200" />
+
       <div className="max-w-7xl mx-auto px-4 py-10 text-center md:text-left">
         {/* Logo */}
         <div className="mb-8 flex justify-center md:justify-start">
@@ -56,7 +59,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="text-gray-500 text-sm border-t border-gray-200 pt-4 tracking-wide">
+        <div className="text-gray-500 text-sm border-t border-gray-300 pt-4 tracking-wide">
           © 2026 DIASCODE. Todos os direitos reservados.
         </div>
       </div>
