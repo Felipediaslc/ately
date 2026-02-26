@@ -1,5 +1,5 @@
-import { ProductCard } from "./ProductCard";
-import { ProductSkeleton } from "./ProductSkeleton";
+import { ProductCard } from "@/components/product/ProductCard";
+import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 
 interface Product {
   id: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { PriceFilter } from "../filters/PriceFilter";
+import { PriceFilter } from "@/components/filters/PriceFilter";
 
 interface Props {
   open: boolean;

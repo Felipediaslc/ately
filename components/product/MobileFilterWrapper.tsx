@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { MobileFilterDrawer } from "..//product/MobileFilterDrawer";
-import { MobileFilterButton } from "../ui/MobileFilterButton";
+import { MobileFilterDrawer } from "@/components/product/MobileFilterDrawer";
+import { MobileFilterButton } from "@/components/ui/MobileFilterButton";
 
 export function MobileFilterWrapper() {
   const [open, setOpen] = useState(false);

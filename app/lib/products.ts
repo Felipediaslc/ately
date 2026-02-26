@@ -1,4 +1,4 @@
-import type { Product } from "../types/product"
+import type { Product } from "@/app/types/product"
 
 export async function getProducts(price?: string): Promise<Product[]> {
   // Simulação de banco

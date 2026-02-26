@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { QuantitySelector } from "../filters/SortSelect";
-import { FavoriteButton } from "./FavoriteButton";
+import { QuantitySelector } from "@/components/filters/SortSelect";
+import { FavoriteButton } from "@/components/product/FavoriteButton";
 
 interface Props {
   product: {

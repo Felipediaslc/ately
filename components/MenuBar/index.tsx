@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image"; // Importe o componente Image
 import { ShoppingCart, Menu, Search, X, User } from "lucide-react";
-import { MenuItem } from "./MenuItem";
+import { MenuItem } from "@/components/MenuBar/MenuItem";
 
 const mockProducts = [
   "Terço de São Miguel",

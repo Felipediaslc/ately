@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
-import "./globals.css";
-import StickyTopBars from "@/app/components/StickyTopBars/page";
-import Footer from "./components/foolter/page";
-import WhatsappFloat from "./components/Whatsapp/page";
-
-
+import "@/styles/globals.css";
+import StickyTopBars from "@/components/StickyTopBars";
+import Footer from "@/components/foolter";
+import WhatsappFloat from "@/components/Whatsapp";
 
 export const metadata: Metadata = {
   title: "Atelier Religioso",
