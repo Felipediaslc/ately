@@ -18,12 +18,9 @@ export default function WhatsappFloat() {
           transition-all duration-300
           group-hover:opacity-100
           group-hover:translate-x-0
-          whitespace-nowrap
-        "
-      >
-        Fale conosco
+          whitespace-nowrap  "  >
+        Fale conosco!
       </span>
-
       {/* Botão */}
       <a
         href="https://wa.me/5583999999999?text=Olá,%20quero%20saber%20mais%20sobre%20os%20produtos"
