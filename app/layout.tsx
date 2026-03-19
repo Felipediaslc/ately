@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 import "@/styles/globals.css";
-import StickyTopBars from "@/components/StickyTopBars";
+import StickyTopBars from "@/components/StickyTopBars/page";
 import Footer from "@/components/foolter";
 import WhatsappFloat from "@/components/Whatsapp";
 

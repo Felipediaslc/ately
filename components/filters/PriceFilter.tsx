@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation";
 
 const priceRanges = [
   { label: "R$ 0,00 a R$ 40,00", value: "0-40" },
@@ -8,83 +8,66 @@ const priceRanges = [
   { label: "R$ 81,00 a R$ 120,00", value: "81-120" },
   { label: "R$ 121,00 a R$ 160,00", value: "121-160" },
   { label: "Acima de R$ 161,00", value: "161-*" },
-]
+];
 
 export function PriceFilter() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const selectedPrice = searchParams.get("price")
+  const selectedPrice = searchParams.get("price") || "";
 
-  function handleFilter(value: string) {
-  const params = new URLSearchParams(searchParams.toString())
+  function updateQuery(value?: string) {
+    const params = new URLSearchParams(searchParams.toString());
 
-  if (selectedPrice === value) {
-    params.delete("price")
-  } else {
-    params.set("price", value)
+    if (!value || selectedPrice === value) {
+      params.delete("price"); // limpar ou toggle off
+    } else {
+      params.set("price", value); // novo filtro
+    }
+
+    // Mantém pathname atual, preservando qualquer outra query
+    const queryString = params.toString();
+    router.replace(queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname, {
+      scroll: false,
+    });
   }
-
-  router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-}
-
-function handleClearFilter() {
-  const params = new URLSearchParams(searchParams.toString())
-  params.delete("price")
-  router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-}
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
       <h2 className="text-lg font-semibold mb-4">Preço</h2>
 
       <div className="space-y-3">
-        {priceRanges.map(range => {
-          const isActive = selectedPrice === range.value
+        {priceRanges.map((range) => {
+          const isActive = selectedPrice === range.value;
 
           return (
-            <label
-              key={range.value}
-              className="flex items-center gap-3 cursor-pointer group"
-            >
+            <label key={range.value} className="flex items-center gap-3 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={isActive}
-                onChange={() => handleFilter(range.value)}
+                onChange={() => updateQuery(range.value)}
                 className="w-4 h-4 accent-fuchsia-950"
               />
-
-              <span className="text-sm text-gray-700 group-hover:text-fuchsia-900 transition">
+              <span
+                className={`text-sm transition ${
+                  isActive ? "text-fuchsia-900 font-medium" : "text-gray-700 group-hover:text-fuchsia-900"
+                }`}
+              >
                 {range.label}
               </span>
             </label>
-          )
+          );
         })}
       </div>
 
-      {/* 🔥 Botão Ver Todos */}
       {selectedPrice && (
         <button
-          onClick={handleClearFilter}
-          className="
-            w-full
-            mt-6
-            py-2
-            rounded-xl
-            text-sm
-            font-medium
-            border
-            border-fuchsia-900
-            text-fuchsia-900
-            hover:bg-fuchsia-900
-            hover:text-white
-            transition
-          "
+          onClick={() => updateQuery()}
+          className="w-full mt-6 py-2 rounded-xl text-sm font-medium border border-fuchsia-900 text-fuchsia-900 hover:bg-fuchsia-900 hover:text-white transition"
         >
-          Ver todos os produtos
+          Limpar filtro
         </button>
       )}
     </div>
-  )
+  );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image"; // Importe o componente Image
 import { ShoppingCart, Menu, Search, X, User } from "lucide-react";
 import { MenuItem } from "@/components/MenuBar/MenuItem";
+import Link from "next/link";
 
 const mockProducts = [
   "Terço de São Miguel",
@@ -36,6 +37,8 @@ export default function Header() {
         </button>
 
         {/* LOGO */}
+        <Link  href="/">
+ 
         <div className="relative h-6  lg:h-10 w-24 lg:w-32    "> {/* Ajuste a altura (h) e largura (w) se necessário */}
           <Image
             src="/image/logo.jpeg"
@@ -44,7 +47,8 @@ export default function Header() {
             objectFit=""
           />
         </div>
-
+ 
+</Link>
         {/* SEARCH */}
         <div className="items-center relative hidden w-full max-w-xl md:block">
           <div className="flex items-center rounded-lg border border-gray-300 bg-[#ffffff] text-gray-700 px-3">

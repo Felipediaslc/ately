@@ -1,42 +1,64 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton";
+import type { Product } from "@/app/types/product";
+import { CategoryFilter } from "@/components/filters/CategoryFilter";
 import { PriceFilter } from "@/components/filters/PriceFilter";
 import { MobileFilterWrapper } from "@/components/product/MobileFilterWrapper";
-import type { Product } from "@/app/types/product";
 
 interface Props {
-  price?: string;
   products: Product[];
 }
 
-export default function ProdutosSection({ price, products }: Props) {
+export default function ProdutosSection({ products }: Props) {
+  const pathname = usePathname();
+  const showSeeAllButton = pathname !== "/products"; // só mostra se não estivermos em /products
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Título centralizado */}
+      {/* Título */}
       <div className="flex flex-col items-center mb-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-primary text-center">
           Explore nossos produtos
         </h2>
       </div>
 
-      {/* Mobile Controls */}
+      {/* Mobile Filters */}
       <MobileFilterWrapper />
 
-      {/* Grid principal: sidebar desktop + produtos */}
+      {/* Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block">
+        {/* Sidebar Desktop */}
+        <aside className="hidden lg:block space-y-6">
           <PriceFilter />
+          <CategoryFilter />
         </aside>
 
-        {/* Grid de produtos ou Skeleton */}
-        {products && products.length > 0 ? (
-          <ProductGrid products={products} />
-        ) : (
-          <ProductSkeleton count={8} />
-        )}
+        {/* Produtos */}
+        <div className="flex flex-col">
+          {products && products.length > 0 ? (
+            <>
+              <ProductGrid products={products} />
+
+              {/* Botão "Ver todos os produtos" só se não estiver em /products */}
+              {showSeeAllButton && (
+                <div className="text-center mt-6 lg:mt-10">
+                  <Link
+                    href="/products"
+                    className="text-fuchsia-900 bg-transparent border border-fuchsia-900 px-6 py-2 rounded-lg transition"
+                  >
+                    Ver todos os produtos
+                  </Link>
+                </div>
+              )}
+            </>
+          ) : (
+            <ProductSkeleton count={8} />
+          )}
+        </div>
       </div>
     </div>
   );

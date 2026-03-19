@@ -1,18 +1,21 @@
-import Destaque from "@/components/Destaque";
-import Promot from "@/components/Promot";
-import ProdutosSection from "@/components/product/ProdutosSection";
-import { getProducts } from "@/app/lib/products";
+import { Suspense } from "react";
+import PromoCarousels from "@/components/Promot/PromoCarousels";
+import Destaque from "@/components/Destaque/page";
+import HomeProducts from "@/components/product/HomeProducts";
 
-export default async function Home({ searchParams }: { searchParams: Promise<{ price?: string }> }) {
-  const params = await searchParams; // ✅ await para "desempacotar" a Promise
-  const price = params?.price;
-  const products = await getProducts(price); // fetch no server
-
+export default function Home() {
   return (
-    <div>
-      <Promot />
+    <main className="container mx-auto px-4 py-10 lg:px-20">
+   
+      <PromoCarousels />
+
+    
       <Destaque />
-      <ProdutosSection price={price} products={products} />
-    </div>
+
+      
+      <Suspense fallback={<div>Carregando produtos...</div>}>
+        <HomeProducts />
+      </Suspense>
+    </main>
   );
 }

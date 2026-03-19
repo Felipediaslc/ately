@@ -1,8 +1,8 @@
 "use client";
 
-import PromoBar from "@/components/promoBar";
-import TickerBar from "@/components/TickerBar";
-import Header from "@/components/MenuBar";
+import PromoBar from "@/components/promoBar/page";
+import TickerBar from "@/components/TickerBar/page";
+import Header from "@/components/MenuBar/page";
 import FreightBar from "@/components/frete";
 
 export default function StickyTopBars() {

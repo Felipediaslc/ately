@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { PriceFilter } from "@/components/filters/PriceFilter";
+import { CategoryFilter } from "@/components/filters/CategoryFilter";
 
 interface Props {
   open: boolean;
@@ -42,7 +43,8 @@ export function MobileFilterDrawer({ open, onClose }: Props) {
           ${open ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <div className="p-6 h-full flex flex-col">
+        <div className="p-6 h-full flex flex-col overflow-y-auto">
+          {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-semibold text-lg">Filtros</h3>
             <button onClick={onClose} className="text-xl">
@@ -50,11 +52,16 @@ export function MobileFilterDrawer({ open, onClose }: Props) {
             </button>
           </div>
 
-          <PriceFilter />
+          {/* Filtros */}
+          <div className="flex flex-col gap-6">
+            <PriceFilter />
+            <CategoryFilter />
+          </div>
 
+          {/* Botão */}
           <button
             onClick={onClose}
-            className="mt-auto bg-black text-white py-3 rounded-lg"
+            className="mt-8 bg-black text-white py-3 rounded-lg"
           >
             Aplicar filtros
           </button>
