@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 import type { Product } from "@/app/types/product";
@@ -11,12 +10,10 @@ import { MobileFilterWrapper } from "@/components/product/MobileFilterWrapper";
 
 interface Props {
   products: Product[];
+  showSeeAllButton?: boolean;
 }
 
-export default function ProdutosSection({ products }: Props) {
-  const pathname = usePathname();
-  const showSeeAllButton = pathname !== "/products"; // só mostra se não estivermos em /products
-
+export default function ProdutosSection({ products, showSeeAllButton }: Props) {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Título */}
@@ -41,7 +38,14 @@ export default function ProdutosSection({ products }: Props) {
         <div className="flex flex-col">
           {products && products.length > 0 ? (
             <>
-              <ProductGrid products={products} />
+              <ProductGrid
+                products={products.map((p) => ({
+                  id: p.id,
+                  title: p.title,
+                  price: p.price,
+                  image: p.images[0] || "/image/produto01.png", // primeira imagem ou fallback
+                }))}
+              />
 
               {/* Botão "Ver todos os produtos" só se não estiver em /products */}
               {showSeeAllButton && (
