@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import StickyTopBars from "@/components/StickyTopBars/page";
 import Footer from "@/components/foolter";
 import WhatsappFloat from "@/components/Whatsapp";
+import { Providers } from "./providers"; // 👈 IMPORTANTE
 
 export const metadata: Metadata = {
   title: "Atelier Religioso",
@@ -14,10 +15,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
       <body>
-        <StickyTopBars />
-        <main>{children}</main>
-        <Footer />
-        <WhatsappFloat />
+        <Providers> {/* 👈 AQUI */}
+          <StickyTopBars />
+          <main>{children}</main>
+          <Footer />
+          <WhatsappFloat />
+        </Providers>
       </body>
     </html>
   );

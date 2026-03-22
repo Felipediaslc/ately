@@ -5,6 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { Heart } from "lucide-react";
+import { useCart } from "@/app/context/cart/CartContext"; // 👈 IMPORTANTE
 
 type Product = {
   id: number;
@@ -16,7 +17,8 @@ type Product = {
 };
 
 export default function FeaturedProducts() {
-  // 🔹 Autoplay estabilizado
+  const { addToCart } = useCart(); // 👈 HOOK DO CARRINHO
+
   const autoplay = React.useMemo(() => {
     return Autoplay({
       delay: 3000,
@@ -25,12 +27,12 @@ export default function FeaturedProducts() {
   }, []);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [autoplay]);
-
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
-
-  // 🔥 Estado centralizado de favoritos (padrão real)
   const [favorites, setFavorites] = React.useState<number[]>([]);
+
+  // 
+  const [addedId, setAddedId] = React.useState<number | null>(null);
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>
@@ -38,7 +40,7 @@ export default function FeaturedProducts() {
     );
   };
 
-  const products: Product[] = [
+   const products: Product[] = [
     {
       id: 1,
       image: "/image/produto01.png",
@@ -97,7 +99,25 @@ export default function FeaturedProducts() {
     },
   ];
 
-  // 🔹 Atualiza índice e snaps
+
+  // 🔥 Função de compra
+  const handleAddToCart = (product: Product) => {
+    const priceNumber = Number(
+      product.price.replace("R$", "").replace(",", ".")
+    );
+
+    addToCart({
+      id: String(product.id),
+      title: product.title,
+      price: priceNumber,
+      image: product.image,
+    });
+
+    // feedback visual
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1200);
+  };
+
   React.useEffect(() => {
     if (!emblaApi) return;
 
@@ -128,42 +148,41 @@ export default function FeaturedProducts() {
 
   return (
     <section className="w-full bg-[#ffffff] py-12 px-6 lg:px-20">
-      {/* Cabeçalho */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-10">
+      <div className="mb-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-primary">
           Destaque
         </h2>
       </div>
 
-      {/* Carrossel */}
       <div className="overflow-hidden py-4" ref={emblaRef}>
         <div className="flex">
           {products.map((product) => {
             const isFavorite = favorites.includes(product.id);
+            const isAdded = addedId === product.id;
 
             return (
               <div
                 key={product.id}
                 className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-3"
               >
-                <div className="bg-[#ffffff]  rounded-lg flex flex-col">
-                  {/* Imagem */}
-                  <div className="relative w-full h-64 bg-[#ffffff] rounded-lg overflow-hidden flex items-center justify-center group">
+                <div className="bg-[#ffffff] rounded-lg flex flex-col transition hover:shadow-lg">
+                  {/* IMAGEM */}
+                  <div className="relative w-full h-64 rounded-lg overflow-hidden group">
                     <Image
                       src={product.image}
                       alt={product.title}
                       fill
-                      className="object-contain p-6 group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 25vw" // 👈 resolve warning
+                      className="object-contain p-6 group-hover:scale-105 transition"
                     />
 
-                    {/* ❤️ Ícone profissional */}
                     <button
                       onClick={() => toggleFavorite(product.id)}
-                      className="absolute bottom-4 right-4 bg-transparent p-2  hover:scale-110 transition"
+                      className="absolute bottom-4 right-4 p-2"
                     >
                       <Heart
                         size={20}
-                        className={`transition-colors ${
+                        className={`transition ${
                           isFavorite
                             ? "fill-fuchsia-900 text-fuchsia-900"
                             : "text-primary"
@@ -172,9 +191,9 @@ export default function FeaturedProducts() {
                     </button>
                   </div>
 
-                  {/* Conteúdo */}
+                  {/* CONTEÚDO */}
                   <div className="mt-4 space-y-1">
-                    <h3 className="text-sm font-medium text-primary leading-snug">
+                    <h3 className="text-sm font-medium text-primary">
                       {product.title}
                     </h3>
 
@@ -190,22 +209,18 @@ export default function FeaturedProducts() {
                       {product.pixPrice}
                     </p>
 
+                    {/* BOTÃO */}
                     <button
-                      className=" mt-3
-                                  w-32
-                                  sm:w-36
-                                  lg:w-[7vw]
-                                  py-1.5
-                                  text-sm
-                                bg-green-600
-                                hover:bg-green-700
-                                text-[#ffffff] 
-                                font-medium    
-                                     
-                                 rounded-md
-                                transition-all duration-200 hover:scale-105">
-                                 Comprar
-                                </button>
+                      onClick={() => handleAddToCart(product)}
+                      className={`mt-3 w-full py-2 text-sm rounded-md font-medium transition-all
+                        ${
+                          isAdded
+                            ? "bg-green-800 scale-95"
+                            : "bg-green-600 hover:bg-green-700 hover:scale-105"
+                        } text-white`}
+                    >
+                      {isAdded ? "Adicionado ✓" : "Comprar"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -214,16 +229,15 @@ export default function FeaturedProducts() {
         </div>
       </div>
 
-      {/* Dots */}
       <div className="flex justify-center mt-6 gap-2">
         {scrollSnaps.map((_, index) => (
           <button
             key={index}
             onClick={() => scrollTo(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
+            className={`w-3 h-3 rounded-full ${
               index === selectedIndex
                 ? "bg-gray-800 scale-110"
-                : "bg-gray-400/60 hover:bg-gray-500"
+                : "bg-gray-400/60"
             }`}
           />
         ))}
@@ -231,3 +245,5 @@ export default function FeaturedProducts() {
     </section>
   );
 }
+
+ 

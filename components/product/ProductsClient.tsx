@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import type { Product } from "@/app/types/product";
 import ProdutosSection from "@/components/product/ProdutosSection";
 import { getProducts } from "@/app/lib/products";
-import Breadcrumb from "@/components/ui/Breadcrumb"; 
+
 
 
 
