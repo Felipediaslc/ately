@@ -25,7 +25,6 @@ interface Props {
 export default function ProductDetails({ product }: Props) {
   const { addToCart } = useCart();
 
-  // Carousel Embla
   const autoplay: ReturnType<typeof Autoplay> = React.useMemo(
     () => Autoplay({ delay: 4000, stopOnInteraction: false }),
     []
@@ -34,37 +33,26 @@ export default function ProductDetails({ product }: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [autoplay]);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  // Estados do botão
   type BtnState = "idle" | "loading" | "done";
   const [cartState, setCartState] = React.useState<BtnState>("idle");
   const [relatedStates, setRelatedStates] = React.useState<Record<string, BtnState>>({});
   const [quantity, setQuantity] = React.useState(1);
 
-  // Garantir que sempre tenha pelo menos 1 imagem
   const mainImage = product.images?.[0] || "/image/produto01.png";
 
-  // Botão principal
   const handleAddToCart = () => {
     if (cartState !== "idle") return;
     setCartState("loading");
-
     addToCart(
-      {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: mainImage,
-      },
+      { id: product.id, title: product.title, price: product.price, image: mainImage },
       quantity
     );
-
     setTimeout(() => {
       setCartState("done");
       setTimeout(() => setCartState("idle"), 2000);
     }, 1200);
   };
 
-  // Produtos relacionados
   const formattedRelatedProducts: RelatedProduct[] =
     product.relatedProducts?.map((p) => ({
       id: p.id,
@@ -76,25 +64,19 @@ export default function ProductDetails({ product }: Props) {
   const handleBuyRelated = (p: RelatedProduct) => {
     if (relatedStates[p.id] && relatedStates[p.id] !== "idle") return;
     setRelatedStates((prev) => ({ ...prev, [p.id]: "loading" }));
-
     addToCart({ ...p }, 1);
-
     setTimeout(() => {
       setRelatedStates((prev) => ({ ...prev, [p.id]: "done" }));
       setTimeout(() => setRelatedStates((prev) => ({ ...prev, [p.id]: "idle" })), 2000);
     }, 1200);
   };
 
-  // Carousel Embla
   React.useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on("select", onSelect);
     onSelect();
-
-    return () => {
-      if (emblaApi) emblaApi.off("select", onSelect);
-    };
+    return () => { if (emblaApi) emblaApi.off("select", onSelect); };
   }, [emblaApi]);
 
   const scrollTo = (index: number) => emblaApi?.scrollTo(index);
@@ -137,7 +119,6 @@ export default function ProductDetails({ product }: Props) {
           >
             <ChevronLeft size={22} />
           </button>
-
           <div className="flex gap-2">
             {product.images?.map((src, idx) => (
               <button
@@ -147,7 +128,13 @@ export default function ProductDetails({ product }: Props) {
                   selectedIndex === idx ? "border-fuchsia-600" : "border-gray-200"
                 }`}
               >
-                <Image src={src} alt={`thumb-${idx}`} width={80} height={80} className="object-contain bg-white" />
+                <Image
+                  src={src}
+                  alt={`thumb-${idx}`}
+                  width={80}
+                  height={80}
+                  className="object-contain bg-white"
+                />
               </button>
             ))}
           </div>
@@ -156,12 +143,22 @@ export default function ProductDetails({ product }: Props) {
 
       {/* Info do Produto */}
       <div className="lg:w-1/2 flex flex-col">
-        <h1 className="text-[1.6rem] font-semibold text-gray-900 leading-snug mb-4">{product.title}</h1>
+        <h1 className="text-[1.6rem] font-semibold text-gray-900 leading-snug mb-4">
+          {product.title}
+        </h1>
 
         <div className="flex flex-col gap-1 pb-5 border-b border-gray-200 mb-5">
-          <p className="text-[2.4rem] font-bold text-[#1a2e4a] leading-none">R$ {formatPrice(product.price)}</p>
-          {product.installment && <p className="text-sm font-medium text-purple-600 mt-1">{product.installment}</p>}
-          {product.pixPrice && <p className="text-sm text-gray-500 mt-0.5">R$ {formatPrice(product.pixPrice)} com Pix</p>}
+          <p className="text-[2.4rem] font-bold text-[#1a2e4a] leading-none">
+            R$ {formatPrice(product.price)}
+          </p>
+          {product.installment && (
+            <p className="text-sm font-medium text-purple-600 mt-1">{product.installment}</p>
+          )}
+          {product.pixPrice && (
+            <p className="text-sm text-gray-500 mt-0.5">
+              R$ {formatPrice(product.pixPrice)} com Pix
+            </p>
+          )}
         </div>
 
         {product.description && (
@@ -193,34 +190,62 @@ export default function ProductDetails({ product }: Props) {
         {formattedRelatedProducts.length > 0 && (
           <div className="mt-7">
             <h2 className="text-base font-bold text-gray-900 mb-3">Produtos Relacionados</h2>
-            <div className="flex gap-3">
+
+            {/*
+              Grid responsivo:
+              - Mobile (< 640px):   2 colunas
+              - Tablet (640–1023px): 3 colunas
+              - Desktop (≥ 1024px): depende de quantos produtos há —
+                usa auto-fill com mínimo de 130px, então preenche
+                naturalmente sem transbordar.
+            */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
               {formattedRelatedProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="flex-1 bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                  className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200 cursor-pointer"
                 >
-                  <div className="w-full flex justify-center items-center p-5 min-h-[130px] bg-white">
-                    <Image src={p.image} alt={p.title} width={110} height={110} className="object-contain" />
-                  </div>
-                  <div className="px-3 pb-3 flex flex-col gap-1">
-                    <p className="text-xs text-gray-700 line-clamp-2 leading-snug">{p.title}</p>
-                    <div className="flex items-center justify-between gap-2 mt-1">
-                      <p className="text-sm font-bold text-green-600 whitespace-nowrap">R$ {formatPrice(p.price)}</p>
-                      <button
-                        onClick={() => handleBuyRelated(p)}
-                        disabled={relatedStates[p.id] && relatedStates[p.id] !== "idle"}
-                        className={
-                          "flex-shrink-0 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 flex items-center gap-1 " +
-                          (relatedStates[p.id] === "done" ? "bg-emerald-500" : "bg-green-600 hover:bg-green-700") +
-                          " disabled:opacity-90 disabled:cursor-not-allowed"
-                        }
-                      >
-                        {(!relatedStates[p.id] || relatedStates[p.id] === "idle") && "Comprar"}
-                        {relatedStates[p.id] === "loading" && <><Loader2 size={12} className="animate-spin" />Incluindo...</>}
-                        {relatedStates[p.id] === "done" && <><Check size={12} />Incluído!</>}
-                      </button>
-                      
+                  {/* Imagem */}
+                  <div className="w-full flex justify-center items-center p-4 bg-white">
+                    <div className="relative w-full aspect-square max-h-[120px]">
+                      <Image
+                        src={p.image}
+                        alt={p.title}
+                        fill
+                        className="object-contain"
+                      />
                     </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="px-3 pb-3 flex flex-col gap-1 flex-1">
+                    <p className="text-xs text-gray-700 line-clamp-2 leading-snug flex-1">
+                      {p.title}
+                    </p>
+
+                    <p className="text-sm font-bold text-green-600 mt-1">
+                      R$ {formatPrice(p.price)}
+                    </p>
+
+                    <button
+                      onClick={() => handleBuyRelated(p)}
+                      disabled={relatedStates[p.id] && relatedStates[p.id] !== "idle"}
+                      className={
+                        "w-full mt-1 text-white text-xs font-semibold px-2 py-1.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 " +
+                        (relatedStates[p.id] === "done"
+                          ? "bg-emerald-500"
+                          : "bg-green-600 hover:bg-green-700") +
+                        " disabled:opacity-90 disabled:cursor-not-allowed"
+                      }
+                    >
+                      {(!relatedStates[p.id] || relatedStates[p.id] === "idle") && "Comprar"}
+                      {relatedStates[p.id] === "loading" && (
+                        <><Loader2 size={12} className="animate-spin" />Incluindo...</>
+                      )}
+                      {relatedStates[p.id] === "done" && (
+                        <><Check size={12} />Incluído!</>
+                      )}
+                    </button>
                   </div>
                 </div>
               ))}
