@@ -6,6 +6,8 @@ interface Product {
   image: string;
   title: string;
   price: number;
+  installment?: string;
+  pixPrice?: number;
 }
 
 interface ProductGridProps {
@@ -19,8 +21,7 @@ export function ProductGrid({ products = [], isLoading = false }: ProductGridPro
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-  style={{ alignItems: "start" }}>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style={{ alignItems: "start" }}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

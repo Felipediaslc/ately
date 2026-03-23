@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ShoppingCart, Menu, Search, X, User } from "lucide-react";
-import { MenuItem } from "@/components/MenuBar/MenuItem";
 import Link from "next/link";
-import { useCart } from "@/app/context/cart/CartContext"; // ✅ IMPORTANTE
+import { ShoppingCart, Menu, Search, X, User, Heart } from "lucide-react";
+import { MenuItem } from "@/components/MenuBar/MenuItem";
+import { useCart } from "@/app/context/cart/CartContext";
+import { useFavorites } from "@/app/context/FavoritesContext";
 
 const mockProducts = [
   "Terço de São Miguel",
@@ -20,13 +21,11 @@ export default function Header() {
   const [openLogin, setOpenLogin] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { cartItems } = useCart(); // ✅ PEGANDO CARRINHO
+  const { cartItems } = useCart();
+  const { favoriteItems } = useFavorites(); // ✅ Pegando favoritos
 
-  // ✅ TOTAL DE ITENS (badge)
-  const totalItems = cartItems.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalFavorites = favoriteItems.length;
 
   const filtered = mockProducts.filter((p) =>
     p.toLowerCase().includes(search.toLowerCase())
@@ -36,12 +35,9 @@ export default function Header() {
     <header className="w-full bg-[#ffffff] shadow-md">
       {/* MAIN HEADER */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
-        
+
         {/* MOBILE MENU BTN */}
-        <button
-          className="md:hidden text-primary"
-          onClick={() => setOpenMenu(true)}
-        >
+        <button className="md:hidden text-primary" onClick={() => setOpenMenu(true)}>
           <Menu size={26} />
         </button>
 
@@ -52,7 +48,7 @@ export default function Header() {
               src="/image/logo.jpeg"
               alt="Dias Atelier Logo"
               fill
-              sizes="(max-width: 768px) 100px, 150px" // ✅ CORREÇÃO
+              sizes="(max-width: 768px) 100px, 150px"
               className="object-contain"
             />
           </div>
@@ -70,7 +66,6 @@ export default function Header() {
             />
           </div>
 
-          {/* AUTOCOMPLETE */}
           {search && (
             <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-lg border bg-[#ffffff] text-gray-700 shadow-lg">
               {filtered.length > 0 ? (
@@ -93,7 +88,7 @@ export default function Header() {
 
         {/* ACTIONS */}
         <div className="flex items-center gap-4">
-          
+
           {/* LOGIN */}
           <div className="relative text-primary flex md:block">
             <button onClick={() => setOpenLogin(!openLogin)}>
@@ -101,31 +96,38 @@ export default function Header() {
             </button>
 
             {openLogin && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl font-Instrument-Sans text-primary bg-[#ffffff] p-3 shadow-xl">
+              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl bg-[#ffffff] p-3 shadow-xl">
                 <div className="flex flex-col text-sm">
-                  <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">
-                    Entrar
-                  </span>
-                  <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">
-                    Criar conta
-                  </span>
-                  <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">
-                    Pedidos
-                  </span>
+                  <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">Entrar</span>
+                  <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">Criar conta</span>
+                  <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">Pedidos</span>
                 </div>
               </div>
             )}
           </div>
 
-          {/* 🛒 CART COM LINK + BADGE */}
+          {/* FAVORITOS */}
+          <div className="relative text-primary">
+            <Link href="/favorites">
+              <div className="relative cursor-pointer">
+                <Heart size={24} />
+                {totalFavorites > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
+                    {totalFavorites}
+                  </span>
+                )}
+              </div>
+            </Link>
+          </div>
+
+          {/* CARRINHO */}
           <div className="relative text-primary">
             <Link href="/cart">
               <div className="relative cursor-pointer">
                 <ShoppingCart size={24} />
-
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
-                    {totalItems}
+                {totalCartItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
+                    {totalCartItems}
                   </span>
                 )}
               </div>
@@ -135,7 +137,7 @@ export default function Header() {
       </div>
 
       {/* MENU DESKTOP */}
-      <nav className="hidden w-full border-t border-gray-300 bg-[#ffffff] md:block font-Instrument-Sans">
+      <nav className="hidden w-full border-t border-gray-300 bg-[#ffffff] md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 py-3 text-sm font-light text-primary">
           <MenuItem title="Terço" />
           <MenuItem title="Chaveiro" />
@@ -149,18 +151,12 @@ export default function Header() {
         <div className="fixed inset-0 z-50 bg-transparent">
           <div className="h-full w-72 bg-[#ffffff] p-5 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
-              <span className="tracking-widest font-Instrument-Sans text-primary">
-                Menu
-              </span>
-              <button
-                className="text-primary"
-                onClick={() => setOpenMenu(false)}
-              >
+              <span className="tracking-widest text-primary">Menu</span>
+              <button className="text-primary" onClick={() => setOpenMenu(false)}>
                 <X />
               </button>
             </div>
-
-            <nav className="flex flex-col gap-4 text-sm text-primary font-Instrument-Sans">
+            <nav className="flex flex-col gap-4 text-sm text-primary">
               <MenuItem title="Terço" />
               <MenuItem title="Chaveiro" />
               <MenuItem title="Imagem" />

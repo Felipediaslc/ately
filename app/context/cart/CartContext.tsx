@@ -9,17 +9,16 @@ import React, {
   useRef,
 } from "react";
 
+import type { CartItem } from "@/app/types/cart"; // ajuste para seu tipo real
+import {
+  saveCartToLocalStorage,
+  getCartFromLocalStorage,
+  clearCartFromLocalStorage,
+} from "@/app/utils/localStorageHelpers";
+
 // =============================
 // TYPES
 // =============================
-export interface CartItem {
-  id: string;
-  title: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
-
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
@@ -27,7 +26,8 @@ interface CartContextType {
   clearCart: () => void;
   updateQuantity: (id: string, quantity: number) => void;
   total: number;
-  isLoaded: boolean; // 👈 importante pra evitar flicker
+  isLoaded: boolean;
+  syncWithBackend?: (userId: string) => Promise<void>; // futura função
 }
 
 // =============================
@@ -45,24 +45,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // =============================
-  // LOAD (SSR SAFE)
+  // LOAD (SSR SAFE) COM CORREÇÃO DO ESLINT
   // =============================
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    try {
-      const stored = localStorage.getItem("cart");
-
-      if (stored) {
-        const parsed: CartItem[] = JSON.parse(stored);
-        setCartItems(parsed);
-      }
-    } catch (error) {
-      console.error("Erro ao carregar carrinho:", error);
-      setCartItems([]);
-    } finally {
+    const loadCart = () => {
+      const stored = getCartFromLocalStorage();
+      setCartItems(stored);
       setIsLoaded(true);
-    }
+    };
+
+    // chama de forma assíncrona para evitar renderização em cascata
+    setTimeout(loadCart, 0);
   }, []);
 
   // =============================
@@ -71,16 +66,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!isLoaded) return;
 
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
-      try {
-        localStorage.setItem("cart", JSON.stringify(cartItems));
-      } catch (error) {
-        console.error("Erro ao salvar carrinho:", error);
-      }
+      saveCartToLocalStorage(cartItems);
     }, 300);
 
     return () => {
@@ -91,18 +80,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // =============================
   // ACTIONS
   // =============================
-  const addToCart = (
-    item: Omit<CartItem, "quantity">,
-    quantity: number = 1
-  ) => {
+  const addToCart = (item: Omit<CartItem, "quantity">, quantity: number = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
 
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id
-            ? { ...i, quantity: i.quantity + quantity }
-            : i
+          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
         );
       }
 
@@ -116,6 +100,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    clearCartFromLocalStorage();
   };
 
   const updateQuantity = (id: string, quantity: number) => {
@@ -125,9 +110,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
@@ -138,6 +121,36 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  // =============================
+  // FUTURE BACKEND SYNC
+  // =============================
+  const syncWithBackend = async () => {
+    try {
+      // 🔹 MOCK: buscar carrinho do backend
+      const backendCart: CartItem[] = []; // aqui você faria fetch real
+
+      // 🔹 Merge local + backend
+      const mergedCart: CartItem[] = [...cartItems];
+
+      backendCart.forEach((bItem) => {
+        const exists = mergedCart.find((lItem) => lItem.id === bItem.id);
+        if (exists) {
+          exists.quantity += bItem.quantity;
+        } else {
+          mergedCart.push(bItem);
+        }
+      });
+
+      setCartItems(mergedCart);
+      saveCartToLocalStorage(mergedCart);
+
+      // 🔹 MOCK: enviar carrinho mesclado pro backend
+      console.log("Carrinho sincronizado com backend:", mergedCart);
+    } catch (error) {
+      console.error("Erro ao sincronizar carrinho com backend:", error);
+    }
+  };
 
   // =============================
   // PROVIDER
@@ -152,6 +165,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         updateQuantity,
         total,
         isLoaded,
+        syncWithBackend,
       }}
     >
       {children}

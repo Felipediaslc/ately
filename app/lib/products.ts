@@ -1,6 +1,5 @@
 import type { Product } from "@/app/types/product";
 
-// 🔹 Tipo base (dados crus)
 interface RawProduct {
   id: string;
   title: string;
@@ -8,11 +7,14 @@ interface RawProduct {
   images: string[];
   category: string;
   description?: string;
-  installment?: string; // Parcelamento
-  pixPrice?: number;    // Preço com Pix
+  installment?: string;
+  pixPrice?: number;
+  badge?: "Peça única" | "Edição limitada" | "Feito à mão";
+  stock?: "in_stock" | "low_stock" | "out_of_stock";
+  sku?: string;
+  deliveryDays?: number;
 }
 
-// 🔹 Base de produtos
 const allProducts: RawProduct[] = [
   {
     id: "1",
@@ -22,7 +24,11 @@ const allProducts: RawProduct[] = [
     category: "terco",
     description: "Terço artesanal de madeira de alta qualidade.",
     installment: "ou 2x de R$ 17,50",
-    pixPrice: 32
+    pixPrice: 32,
+    badge: "Feito à mão",
+    stock: "in_stock",
+    sku: "TRC-001",
+    deliveryDays: 5,
   },
   {
     id: "2",
@@ -32,7 +38,11 @@ const allProducts: RawProduct[] = [
     category: "imagem",
     description: "Imagem religiosa para decoração ou presente.",
     installment: "ou 3x de R$ 25,00",
-    pixPrice: 70
+    pixPrice: 70,
+    badge: "Peça única",
+    stock: "low_stock",
+    sku: "IMG-002",
+    deliveryDays: 5,
   },
   {
     id: "3",
@@ -42,7 +52,11 @@ const allProducts: RawProduct[] = [
     category: "biblia",
     description: "Bíblia em capa dura com comentários detalhados.",
     installment: "ou 5x de R$ 30,00",
-    pixPrice: 140
+    pixPrice: 140,
+    badge: "Edição limitada",
+    stock: "low_stock",
+    sku: "BIB-003",
+    deliveryDays: 7,
   },
   {
     id: "4",
@@ -52,7 +66,11 @@ const allProducts: RawProduct[] = [
     category: "cruz",
     description: "Cruz decorativa em madeira nobre.",
     installment: "ou 2x de R$ 25,00",
-    pixPrice: 45
+    pixPrice: 45,
+    badge: "Feito à mão",
+    stock: "in_stock",
+    sku: "CRZ-004",
+    deliveryDays: 5,
   },
   {
     id: "5",
@@ -62,7 +80,11 @@ const allProducts: RawProduct[] = [
     category: "vela",
     description: "Vela artesanal, longa duração.",
     installment: "ou 1x de R$ 15,00",
-    pixPrice: 13
+    pixPrice: 13,
+    badge: "Feito à mão",
+    stock: "in_stock",
+    sku: "VEL-005",
+    deliveryDays: 3,
   },
   {
     id: "6",
@@ -72,11 +94,14 @@ const allProducts: RawProduct[] = [
     category: "decoracao",
     description: "Candelabro elegante em prata.",
     installment: "ou 8x de R$ 25,00",
-    pixPrice: 185
+    pixPrice: 185,
+    badge: "Edição limitada",
+    stock: "out_of_stock",
+    sku: "CAN-006",
+    deliveryDays: 10,
   },
 ];
 
-// 🔹 Função de transformação (Raw → Product)
 function formatProduct(product: RawProduct): Product {
   return {
     ...product,
@@ -84,11 +109,7 @@ function formatProduct(product: RawProduct): Product {
   };
 }
 
-// 🔹 Todos os produtos (com filtros)
-export async function getProducts(
-  price?: string,
-  category?: string
-): Promise<Product[]> {
+export async function getProducts(price?: string, category?: string): Promise<Product[]> {
   return allProducts
     .filter((product) => {
       let matchPrice = true;
@@ -97,40 +118,28 @@ export async function getProducts(
         matchPrice =
           max === "*"
             ? product.price >= Number(min)
-            : product.price >= Number(min) &&
-              product.price <= Number(max);
+            : product.price >= Number(min) && product.price <= Number(max);
       }
-
       let matchCategory = true;
       if (category) {
         const queryCat = category.trim().toLowerCase().replace(/,+$/, "");
         matchCategory = product.category.toLowerCase() === queryCat;
       }
-
       return matchPrice && matchCategory;
     })
     .map(formatProduct);
 }
 
-// 🔹 Produtos em destaque (HOME)
 export async function getFeaturedProducts(): Promise<Product[]> {
   return allProducts.slice(0, 4).map(formatProduct);
 }
 
-// 🔹 Produto individual
-export async function getProductById(
-  id: string
-): Promise<Product | null> {
+export async function getProductById(id: string): Promise<Product | null> {
   const product = allProducts.find((p) => p.id === id);
   if (!product) return null;
-
   const relatedProducts = allProducts
     .filter((p) => p.id !== id)
     .slice(0, 3)
     .map(formatProduct);
-
-  return {
-    ...formatProduct(product),
-    relatedProducts,
-  };
+  return { ...formatProduct(product), relatedProducts };
 }

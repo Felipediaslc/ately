@@ -5,6 +5,7 @@ import StickyTopBars from "@/components/StickyTopBars/page";
 import Footer from "@/components/foolter";
 import WhatsappFloat from "@/components/Whatsapp";
 import { Providers } from "./providers"; // 👈 IMPORTANTE
+import { FavoritesProvider } from "@/app/context/FavoritesContext";
 
 export const metadata: Metadata = {
   title: "Atelier Religioso",
@@ -16,10 +17,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="pt-BR">
       <body>
         <Providers> {/* 👈 AQUI */}
+          <FavoritesProvider>
           <StickyTopBars />
-          <main>{children}</main>
+          <main className="block">{children}</main>
           <Footer />
           <WhatsappFloat />
+          </FavoritesProvider>
         </Providers>
       </body>
     </html>

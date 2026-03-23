@@ -23,7 +23,7 @@ const formatPrice = (value: number) =>
 // Valor mínimo para frete grátis — ajuste conforme sua regra de negócio
 const FREE_SHIPPING_THRESHOLD = 200;
 
-// ⚠️ Substitua pela sua API real de frete (ex: Melhor Envio, Correios)
+//  Substitua pela sua API real de frete (ex: Melhor Envio, Correios)
 async function fetchShippingOptions(
   cep: string
 ): Promise<{ label: string; price: number; days: string }[]> {

@@ -10,14 +10,16 @@ import { FavoriteButton } from "@/components/product/FavoriteButton";
 interface Props {
   product: {
     id: string;
-    image: string; // sempre string
+    image: string;
     title: string;
     price: number;
+    installment?: string;
+    pixPrice?: number;
   };
 }
 
 export function ProductCard({ product }: Props) {
-   const { addToCart } = useCart();
+  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
 
   type BtnState = "idle" | "loading" | "done";
@@ -25,12 +27,8 @@ export function ProductCard({ product }: Props) {
 
   const handleAddToCart = () => {
     if (btnState !== "idle") return;
-
-    // garante que quantity nunca seja menor que 1
     const safeQuantity = quantity < 1 ? 1 : quantity;
-
     setBtnState("loading");
-
     addToCart(
       {
         id: product.id,
@@ -40,7 +38,6 @@ export function ProductCard({ product }: Props) {
       },
       safeQuantity
     );
-
     setTimeout(() => {
       setBtnState("done");
       setTimeout(() => setBtnState("idle"), 1500);
@@ -53,15 +50,21 @@ export function ProductCard({ product }: Props) {
       style={{ height: "100%" }}
     >
       {/* Imagem + Favorito */}
-      <Link href={`/products/${product.id}`} className="relative w-full aspect-[3/4] bg-gray-100 block">
-        <Image
-          src={product.image}
-          alt={product.title}
-          fill
-          className="object-cover group-hover:scale-105 transition duration-500"
-        />
-        <FavoriteButton />
-      </Link>
+      <div className="relative w-full aspect-[3/4] bg-gray-100">
+        <Link href={`/products/${product.id}`} className="block w-full h-full">
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            className="object-cover group-hover:scale-105 transition duration-500"
+          />
+        </Link>
+
+        {/* Favorito fora do Link */}
+        <div className="absolute top-4 right-4 z-10">
+  <FavoriteButton product={product} />
+</div>
+      </div>
 
       {/* Informações */}
       <div className="p-4 flex flex-col gap-2">
@@ -73,10 +76,23 @@ export function ProductCard({ product }: Props) {
         </Link>
 
         <div className="mt-auto">
-          <p className="text-xl font-semibold text-gray-900">R$ {product.price}</p>
-          <p className="text-xs text-gray-500">ou 1x sem juros</p>
+          <p className="text-xl font-semibold text-gray-900">
+            R$ {product.price.toFixed(2)}
+          </p>
 
-          {/* Área de ações: quantidade + comprar */}
+          {/* Parcelamento */}
+          {product.installment && (
+            <p className="text-xs text-gray-500">{product.installment}</p>
+          )}
+
+          {/* Preço Pix */}
+          {product.pixPrice && (
+            <p className="text-xs text-green-600 font-medium">
+              R$ {product.pixPrice.toFixed(2)} no Pix
+            </p>
+          )}
+
+          {/* Área de ações */}
           <div className="flex items-center gap-2 mt-4">
             <QuantitySelector value={quantity} onChange={setQuantity} />
 
@@ -116,7 +132,6 @@ export function ProductCard({ product }: Props) {
               )}
               {btnState === "done" && "Adicionado!"}
             </button>
- 
           </div>
         </div>
       </div>

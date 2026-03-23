@@ -40,11 +40,13 @@ export default function ProdutosSection({ products, showSeeAllButton }: Props) {
             <>
               <ProductGrid
                 products={products.map((p) => ({
-                  id: p.id,
-                  title: p.title,
-                  price: p.price,
-                  image: p.images[0] || "/image/produto01.png", // primeira imagem ou fallback
-                }))}
+                id: p.id,
+                title: p.title,
+                price: p.price,
+                image: p.images[0] || "/image/produto01.png",
+                installment: p.installment,
+                pixPrice: p.pixPrice,
+                 }))}
               />
 
               {/* Botão "Ver todos os produtos" só se não estiver em /products */}

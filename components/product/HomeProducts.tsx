@@ -21,11 +21,13 @@ export default function HomeProducts({ products }: Props) {
       {/* Grid */}
       <ProductGrid
         products={products.map((p) => ({
-          id: p.id,
-          title: p.title,
-          price: p.price,
-          image: p.images[0] || "/image/produto01.png",
-        }))}
+        id: p.id,
+        title: p.title,
+        price: p.price,
+        image: p.images[0] || "/image/produto01.png",
+       installment: p.installment,
+       pixPrice: p.pixPrice,
+}))}
       />
 
       {/* Botão */}
