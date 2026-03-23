@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/app/context/cart/CartContext";
 import {
   Trash2,
@@ -347,9 +348,19 @@ export default function CartPage() {
               <span>{formatPrice(grandTotal)}</span>
             </div>
 
-            <button className="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white py-3.5 rounded-xl font-semibold text-sm shadow hover:shadow-md transition-all">
-              Finalizar Compra
-            </button>
+            <Link href={cartItems.length > 0 ? "/checkout" : "#"}>
+             <button
+             disabled={cartItems.length === 0}
+           className={`w-full py-3.5 rounded-xl font-semibold text-sm shadow transition-all
+           ${
+            cartItems.length === 0
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white hover:shadow-md"
+           }`}
+              >
+           Finalizar Compra
+          </button>
+          </Link>
           </div>
         </div>
       </div>
