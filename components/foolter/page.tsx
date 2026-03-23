@@ -5,14 +5,14 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-primary mt-12 relative">
+    <footer className="bg-[#FAF7F2] text-primary mt-12 relative">
       {/* Linha premium no topo */}
       <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-gray-200 via-gray-300 to-gray-200" />
 
       <div className="max-w-7xl mx-auto px-4 py-10 text-center md:text-left">
         {/* Logo */}
         <div className="mb-8 flex justify-center md:justify-start">
-          <Image src="/image/logo.jpeg" alt="Logo" width={160} height={40} />
+          <Image src="/image/sd_atelie_logo_v9.svg" alt="Logo"  width={300} height={60} />
         </div>
 
         {/* Colunas */}
@@ -50,7 +50,6 @@ export default function Footer() {
         {/* Formas de pagamento */}
         <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 mb-8">
           <span className="text-gray-700 font-semibold text-sm tracking-wide">Pagamentos:</span>
-
           <Image src="/image/visa.svg" alt="Visa" width={40} height={25} />
           <Image src="/image/mastercard.svg" alt="MasterCard" width={40} height={25} />
           <Image src="/image/icons8-pix.svg" alt="Pix" width={40} height={25} />
@@ -60,8 +59,11 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="text-gray-500 text-sm border-t border-gray-300 pt-4 tracking-wide">
-          © 2026 DIASCODE. Todos os direitos reservados.
-        </div>
+  © 2026 SD Ateliê. Desenvolvido por{" "}
+  <a href="https://www.linkedin.com/in/felipediasdev/" target="_blank" rel="noopener noreferrer" className="hover:underline transition">
+    Felipe Dias
+  </a>
+</div>
       </div>
     </footer>
   );

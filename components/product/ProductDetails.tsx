@@ -113,13 +113,15 @@ export default function ProductDetails({ product }: Props) {
                   className="object-contain transition-transform duration-500 group-hover:scale-105"
                 />
                 <FavoriteButton
-                  product={{
-                    id: product.id,
-                    title: product.title,
-                    price: product.price,
-                    image: product.images?.[0] || "",
-                  }}
-                />
+  product={{
+    id: product.id,
+    title: product.title,
+    price: product.price,
+    image: product.images?.[0] || "",
+    installment: product.installment,
+    pixPrice: product.pixPrice,
+  }}
+/>
               </div>
             ))}
           </div>

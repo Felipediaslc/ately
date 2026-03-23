@@ -29,15 +29,17 @@ export function ProductCard({ product }: Props) {
     if (btnState !== "idle") return;
     const safeQuantity = quantity < 1 ? 1 : quantity;
     setBtnState("loading");
-    addToCart(
-      {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-      },
-      safeQuantity
-    );
+   addToCart(
+  {
+    id: product.id,
+    title: product.title,
+    price: product.price,
+    image: product.image,
+    installment: product.installment,
+    pixPrice: product.pixPrice,
+  },
+  safeQuantity
+);
     setTimeout(() => {
       setBtnState("done");
       setTimeout(() => setBtnState("idle"), 1500);

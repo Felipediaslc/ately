@@ -1,11 +1,8 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-
-
 
 const imagens = [
   {
@@ -17,7 +14,7 @@ const imagens = [
     mobile: "/image/banner02Mobile.jpeg",
   },
   {
-   desktop: "/image/bannerDesktop.png",
+    desktop: "/image/bannerDesktop.png",
     mobile: "/image/bannerMobile.png",
   },
 ];
@@ -46,12 +43,9 @@ export default function PromoCarousels() {
   const scrollTo = (index: number) => emblaImgApi?.scrollTo(index);
 
   return (
-    <section className="
-         w-full flex flex-col">
+    <section className="w-full flex flex-col">
 
-     
-
-      {/* 🎯 CARROSSEL */}
+      {/* CARROSSEL */}
       <div className="relative w-full h-[70vh] overflow-hidden">
         <div className="overflow-hidden h-full" ref={emblaImgRef}>
           <div className="flex h-full">
@@ -61,7 +55,9 @@ export default function PromoCarousels() {
                 className="min-w-full flex-shrink-0 flex items-center justify-center h-[70vh]"
               >
                 <picture className="w-full h-full">
-                  <source media="(min-width: 768px)" srcSet={src.desktop} />
+                  {/* Desktop apenas acima de 1024px */}
+                  <source media="(min-width: 1024px)" srcSet={src.desktop} />
+                  {/* Mobile e tablet abaixo de 1024px */}
                   <img
                     src={src.mobile}
                     alt={`oferta-${idx + 1}`}
@@ -78,6 +74,7 @@ export default function PromoCarousels() {
         <button
           className="absolute top-1/2 left-4 -translate-y-1/2"
           onClick={scrollPrev}
+          aria-label="Anterior"
         >
           <svg className="w-6 h-6 text-white" viewBox="0 0 20 20" fill="currentColor">
             <path d="M12.7 15.3a1 1 0 01-1.4 0l-5-5a1 1 0 010-1.4l5-5a1 1 0 111.4 1.4L9.42 9H17a1 1 0 110 2H9.42l3.29 3.29a1 1 0 010 1.42z" />
@@ -87,6 +84,7 @@ export default function PromoCarousels() {
         <button
           className="absolute top-1/2 right-4 -translate-y-1/2"
           onClick={scrollNext}
+          aria-label="Próximo"
         >
           <svg className="w-6 h-6 text-white" viewBox="0 0 20 20" fill="currentColor">
             <path d="M7.3 4.7a1 1 0 010 1.4L4 9.42V9a1 1 0 10-2 0v2a1 1 0 001 1h7.58l-3.3 3.3a1 1 0 001.42 1.42l5-5a1 1 0 000-1.42l-5-5a1 1 0 00-1.42 1.42z" />
@@ -98,10 +96,11 @@ export default function PromoCarousels() {
           {imagens.map((_, idx) => (
             <button
               key={idx}
-              className={`w-3 h-3 rounded-full ${
+              className={`w-3 h-3 rounded-full transition ${
                 selectedIndex === idx ? "bg-white" : "bg-white/50"
-              } transition`}
+              }`}
               onClick={() => scrollTo(idx)}
+              aria-label={`Ir para slide ${idx + 1}`}
             />
           ))}
         </div>

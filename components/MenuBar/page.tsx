@@ -22,7 +22,7 @@ export default function Header() {
   const [search, setSearch] = useState("");
 
   const { cartItems } = useCart();
-  const { favoriteItems } = useFavorites(); // ✅ Pegando favoritos
+  const { favoriteItems } = useFavorites();
 
   const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalFavorites = favoriteItems.length;
@@ -32,23 +32,23 @@ export default function Header() {
   );
 
   return (
-    <header className="w-full bg-[#ffffff] shadow-md">
+    <header className="w-full bg-[#FAF7F2] shadow-md">
       {/* MAIN HEADER */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
 
         {/* MOBILE MENU BTN */}
         <button className="md:hidden text-primary" onClick={() => setOpenMenu(true)}>
           <Menu size={26} />
         </button>
 
-        {/* LOGO */}
-        <Link href="/">
-          <div className="relative h-6 lg:h-10 w-24 lg:w-32">
+        {/* LOGO — centralizada no mobile, normal no desktop */}
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
+          <div className="relative h-10 lg:h-16 w-40 lg:w-64">
             <Image
-              src="/image/logo.jpeg"
+              src="/image/sd_atelie_logo_v9.svg"
               alt="Dias Atelier Logo"
-              fill
-              sizes="(max-width: 768px) 100px, 150px"
+              width={600}
+              height={80}
               className="object-contain"
             />
           </div>
@@ -67,13 +67,10 @@ export default function Header() {
           </div>
 
           {search && (
-            <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-lg border bg-[#ffffff] text-gray-700 shadow-lg">
+            <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-lg border bg-[#FAF7F2] text-gray-700 shadow-lg">
               {filtered.length > 0 ? (
                 filtered.map((item, i) => (
-                  <div
-                    key={i}
-                    className="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100"
-                  >
+                  <div key={i} className="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100">
                     {item}
                   </div>
                 ))
@@ -87,7 +84,7 @@ export default function Header() {
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 ml-auto md:ml-0">
 
           {/* LOGIN */}
           <div className="relative text-primary flex md:block">
@@ -96,7 +93,7 @@ export default function Header() {
             </button>
 
             {openLogin && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl bg-[#ffffff] p-3 shadow-xl">
+              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl bg-[#FAF7F2] p-3 shadow-xl">
                 <div className="flex flex-col text-sm">
                   <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">Entrar</span>
                   <span className="cursor-pointer rounded-lg px-3 py-2 hover:bg-gray-100">Criar conta</span>
@@ -137,7 +134,7 @@ export default function Header() {
       </div>
 
       {/* MENU DESKTOP */}
-      <nav className="hidden w-full border-t border-gray-300 bg-[#ffffff] md:block">
+      <nav className="hidden w-full border-t border-gray-300 bg-[#FAF7F2] md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 py-3 text-sm font-light text-primary">
           <MenuItem title="Terço" />
           <MenuItem title="Chaveiro" />
@@ -149,7 +146,7 @@ export default function Header() {
       {/* MOBILE MENU */}
       {openMenu && (
         <div className="fixed inset-0 z-50 bg-transparent">
-          <div className="h-full w-72 bg-[#ffffff] p-5 shadow-xl">
+          <div className="h-full w-72 bg-[#FAF7F2] p-5 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
               <span className="tracking-widest text-primary">Menu</span>
               <button className="text-primary" onClick={() => setOpenMenu(false)}>

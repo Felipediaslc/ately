@@ -20,10 +20,8 @@ const formatPrice = (value: number) =>
     currency: "BRL",
   }).format(value);
 
-// Valor mínimo para frete grátis — ajuste conforme sua regra de negócio
 const FREE_SHIPPING_THRESHOLD = 200;
 
-//  Substitua pela sua API real de frete (ex: Melhor Envio, Correios)
 async function fetchShippingOptions(
   cep: string
 ): Promise<{ label: string; price: number; days: string }[]> {
@@ -46,12 +44,9 @@ export default function CartPage() {
     isLoaded,
   } = useCart();
 
-  // Estados de frete
   const [cep, setCep] = React.useState("");
   const [cepState, setCepState] = React.useState<"idle" | "loading" | "done" | "error">("idle");
-  const [shippingOptions, setShippingOptions] = React.useState<
-    { label: string; price: number; days: string }[]
-  >([]);
+  const [shippingOptions, setShippingOptions] = React.useState<Array<{ label: string; price: number; days: string }>>([]);
   const [selectedShipping, setSelectedShipping] = React.useState<number | null>(null);
 
   const hasFreeShipping = total >= FREE_SHIPPING_THRESHOLD;
@@ -115,12 +110,12 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+      <h1 className="text-gray-600 text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
         Meu Carrinho
       </h1>
 
       {/* INDICADOR DE FRETE GRÁTIS */}
-      <div className="mb-6 bg-white rounded-2xl px-5 py-4 shadow-sm border border-gray-100">
+      <div className="mb-6 bg-gray-100 rounded-2xl px-5 py-4 shadow-sm border border-gray-100">
         {hasFreeShipping ? (
           <div className="flex items-center gap-2 text-green-600">
             <CheckCircle2 size={18} className="shrink-0" />
@@ -152,12 +147,13 @@ export default function CartPage() {
 
         {/* LISTA DE ITENS */}
         <div className="w-full flex-1 flex flex-col gap-4">
-
           {cartItems.map((item) => (
+            
             <div
               key={item.id}
               className="flex items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
             >
+              
               {/* IMAGEM */}
               <div className="shrink-0">
                 <Image
@@ -179,6 +175,16 @@ export default function CartPage() {
                   {formatPrice(item.price)}
                 </p>
 
+                {/* PARCELAMENTO E PIX */}
+                {item.installment && (
+                  <p className="text-xs text-gray-500">{item.installment}</p>
+                )}
+                {item.pixPrice && (
+                  <p className="text-xs text-green-600 font-medium">
+                    {formatPrice(item.pixPrice)} com Pix
+                  </p>
+                )}
+
                 {/* LINHA: quantidade + subtotal + lixeira */}
                 <div className="flex items-center justify-between gap-3 mt-1 flex-wrap">
                   {/* QUANTIDADE */}
@@ -190,11 +196,9 @@ export default function CartPage() {
                     >
                       <Minus size={14} />
                     </button>
-
                     <span className="min-w-[28px] text-center text-sm font-medium">
                       {item.quantity}
                     </span>
-
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="bg-gray-100 hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
@@ -207,14 +211,11 @@ export default function CartPage() {
                   {/* SUBTOTAL + LIXEIRA */}
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-xs text-gray-400 leading-none mb-0.5">
-                        Subtotal
-                      </p>
+                      <p className="text-xs text-gray-400 leading-none mb-0.5">Subtotal</p>
                       <p className="text-sm font-semibold text-gray-800">
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
-
                     <button
                       onClick={() => removeFromCart(item.id)}
                       className="text-gray-800 hover:text-gray-600 transition p-1"
@@ -231,7 +232,7 @@ export default function CartPage() {
           {/* LIMPAR CARRINHO */}
           <button
             onClick={clearCart}
-            className="mt-2 w-full sm:w-auto self-start bg-gray-100 text-gray-600 text-sm px-6 py-3 rounded-xl hover:bg-gray-200 transition font-medium"
+            className="mt-2 w-full sm:w-auto self-start bg-gray-600 text-gray-100 text-sm px-6 py-3 rounded-xl hover:bg-gray-400 transition font-medium"
           >
             Limpar Carrinho
           </button>
@@ -276,7 +277,6 @@ export default function CartPage() {
               </p>
             )}
 
-            {/* OPÇÕES DE ENTREGA */}
             {cepState === "done" && (
               <div className="mt-3 flex flex-col gap-2">
                 {hasFreeShipping ? (
@@ -326,7 +326,6 @@ export default function CartPage() {
                 <span>Subtotal</span>
                 <span>{formatPrice(total)}</span>
               </div>
-
               <div className="flex justify-between">
                 <span>Frete</span>
                 <span>
@@ -352,7 +351,6 @@ export default function CartPage() {
               Finalizar Compra
             </button>
           </div>
-
         </div>
       </div>
     </div>

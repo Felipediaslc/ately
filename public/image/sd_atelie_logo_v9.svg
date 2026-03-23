@@ -1,0 +1,14 @@
+<svg width="100%" viewBox="0 0 680 168.56" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    
+  </defs>
+
+  <!-- S maior -->
+  <text x="20" y="130" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:130px;font-weight:400;text-anchor:start;dominant-baseline:auto">S</text>
+
+  <!-- D menor -->
+  <text x="78" y="125" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:100px;font-weight:400;text-anchor:start;dominant-baseline:auto">D</text>
+
+  <!-- ATELIÊ maior e negrito -->
+  <text x="170" y="112" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:42px;font-weight:700;text-anchor:start;dominant-baseline:auto">ATELIÊ</text>
+</svg>

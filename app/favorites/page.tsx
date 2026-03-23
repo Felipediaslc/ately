@@ -24,13 +24,8 @@ export default function FavoritesPage() {
     <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-screen-xl mx-auto">
       {/* Header */}
       <div className="!flex !flex-col sm:!flex-row sm:justify-between sm:items-center gap-3 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold">Meus Favoritos</h1>
-        <button
-          onClick={clearFavorites}
-          className="self-start sm:self-auto bg-gray-900 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition text-sm"
-        >
-          Limpar todos
-        </button>
+        <h1 className="text-2xl text-gray-600 sm:text-3xl font-bold">Meus Favoritos</h1>
+        
       </div>
 
       {/* Lista de itens */}
@@ -52,7 +47,7 @@ export default function FavoritesPage() {
       <div className="mt-6">
         <button
           onClick={clearFavorites}
-          className="bg-gray-100 text-gray-600 text-sm px-6 py-3 rounded-xl hover:bg-gray-200 transition font-medium"
+          className="bg-gray-600 text-gray-100 text-sm px-6 py-3 rounded-xl hover:bg-gray-400 transition font-medium"
         >
           Limpar Favoritos
         </button>

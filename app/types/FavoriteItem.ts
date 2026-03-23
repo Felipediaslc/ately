@@ -3,4 +3,6 @@ export interface FavoriteItem {
   title: string;
   price: number;
   image: string;
+  installment?: string;
+  pixPrice?: number;
 }

@@ -6,7 +6,7 @@ import HomeProducts from "@/components/product/HomeProducts";
 export default async function Home() {
   const products = await getFeaturedProducts();
   return (
-    <main className="container mx-auto px-4 py-10 lg:px-20">
+    <main className="container  mx-auto px-0.2 py-0  ">
       <PromoCarousels />
       <Destaque />
       <HomeProducts products={products} />
