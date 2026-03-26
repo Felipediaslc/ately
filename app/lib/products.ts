@@ -20,7 +20,7 @@ const allProducts: RawProduct[] = [
     id: "1",
     title: "Terço de Madeira",
     price: 35,
-    images: ["/image/produto01.png", "/image/produto01tras.png"],
+    images: ["/image/(1).png", "/image/(17).png"],
     category: "terco",
     description: "Terço artesanal de madeira de alta qualidade.",
     installment: "ou 2x de R$ 17,50",

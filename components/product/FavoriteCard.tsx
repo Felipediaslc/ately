@@ -13,7 +13,7 @@ interface FavoritesCardProps {
 
 export function FavoritesCard({ product, onRemove, onAddToCart }: FavoritesCardProps) {
   return (
-    <div className="relative flex items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+    <div className="relative flex items-center gap-4 bg-[#FFFFFFFF] p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
 
       {/* Lixeira — canto superior direito */}
       <button
@@ -31,7 +31,7 @@ export function FavoritesCard({ product, onRemove, onAddToCart }: FavoritesCardP
           alt={product.title}
           width={80}
           height={80}
-          className="rounded-xl object-contain w-[72px] h-[72px] sm:w-[96px] sm:h-[96px]"
+          className="rounded-xl object-contain w-[72px] h-[72px] sm:w-[96px] sm:h-[96px] bg-[#FFFFFFFF]"
         />
       </div>
 

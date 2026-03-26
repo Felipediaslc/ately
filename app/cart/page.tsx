@@ -116,7 +116,7 @@ export default function CartPage() {
       </h1>
 
       {/* INDICADOR DE FRETE GRÁTIS */}
-      <div className="mb-6 bg-gray-100 rounded-2xl px-5 py-4 shadow-sm border border-gray-100">
+      <div className="mb-6 bg-[#FFFFFFFF] rounded-2xl px-5 py-4 shadow-sm border border-gray-100">
         {hasFreeShipping ? (
           <div className="flex items-center gap-2 text-green-600">
             <CheckCircle2 size={18} className="shrink-0" />
@@ -134,7 +134,7 @@ export default function CartPage() {
                 para você ganhar <strong>frete grátis</strong>!
               </span>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-[#FFFFFFFF] rounded-full h-2 overflow-hidden">
               <div
                 className="bg-green-500 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${freeShippingProgress}%` }}
@@ -152,7 +152,7 @@ export default function CartPage() {
             
             <div
               key={item.id}
-              className="flex items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
+              className="flex items-start sm:items-center gap-4 bg-[#FFFFFFFF] p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
             >
               
               {/* IMAGEM */}
@@ -162,7 +162,7 @@ export default function CartPage() {
                   alt={item.title}
                   width={80}
                   height={80}
-                  className="rounded-xl object-cover w-[72px] h-[72px] sm:w-[96px] sm:h-[96px]"
+                  className="rounded-xl  w-[72px] h-[72px] sm:w-[96px] sm:h-[96px]"
                 />
               </div>
 
@@ -192,7 +192,7 @@ export default function CartPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="bg-gray-100 hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
+                      className="bg-[#FFFFFFFF] hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
                       aria-label="Diminuir quantidade"
                     >
                       <Minus size={14} />
@@ -202,7 +202,7 @@ export default function CartPage() {
                     </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="bg-gray-100 hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
+                      className="bg-[#FFFFFFFF] hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
                       aria-label="Aumentar quantidade"
                     >
                       <Plus size={14} />
@@ -243,7 +243,7 @@ export default function CartPage() {
         <div className="w-full lg:w-[360px] lg:sticky lg:top-6 flex flex-col gap-4">
 
           {/* CALCULAR FRETE */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-[#FFFFFFFF] p-5 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex items-center gap-2 mb-3">
               <MapPin size={16} className="text-green-600 shrink-0" />
               <h3 className="text-sm font-semibold text-gray-700">Calcular frete</h3>
@@ -281,7 +281,7 @@ export default function CartPage() {
             {cepState === "done" && (
               <div className="mt-3 flex flex-col gap-2">
                 {hasFreeShipping ? (
-                  <div className="flex items-center gap-2 text-green-600 bg-green-50 rounded-xl px-3 py-2.5">
+                  <div className="flex items-center gap-2 text-green-600 bg-[#FFFFFFFF] rounded-xl px-3 py-2.5">
                     <CheckCircle2 size={15} />
                     <span className="text-xs font-semibold">Frete grátis aplicado!</span>
                   </div>
@@ -319,7 +319,7 @@ export default function CartPage() {
           </div>
 
           {/* RESUMO DO PEDIDO */}
-          <div className="bg-white p-6 rounded-2xl shadow-md">
+          <div className="bg-[#FFFFFFFF] p-6 rounded-2xl shadow-md">
             <h2 className="text-lg font-semibold mb-5">Resumo do Pedido</h2>
 
             <div className="space-y-3 text-sm text-gray-600">

@@ -48,17 +48,17 @@ export function ProductCard({ product }: Props) {
 
   return (
     <div
-      className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
+      className="group bg-[#FFFFFFFF] rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
       style={{ height: "100%" }}
     >
       {/* Imagem + Favorito */}
-      <div className="relative w-full aspect-[3/4] bg-gray-100">
+      <div className="relative w-full aspect-[3/4] bg-[#FFFFFFFF]">
         <Link href={`/products/${product.id}`} className="block w-full h-full">
           <Image
             src={product.image}
             alt={product.title}
             fill
-            className="object-cover group-hover:scale-105 transition duration-500"
+            className="object-cover bg-[#FFFFFFFF] group-hover:scale-105 transition duration-500"
           />
         </Link>
 

@@ -97,7 +97,7 @@ export default function ProductDetails({ product }: Props) {
       {/* Galeria */}
       <div className="lg:w-1/2 flex flex-col gap-4">
         <div
-          className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100"
+          className="overflow-hidden rounded-2xl bg-[#FFFFFFFF] shadow-sm border border-gray-100"
           ref={emblaRef}
         >
           <div className="flex">
@@ -110,7 +110,7 @@ export default function ProductDetails({ product }: Props) {
                   src={src}
                   alt={`${product.title} - ${idx + 1}`}
                   fill
-                  className="object-contain transition-transform duration-500 group-hover:scale-105"
+                  className="object-contain bg-[#FFFFFFFF] transition-transform duration-500 group-hover:scale-105"
                 />
                 <FavoriteButton
   product={{
@@ -149,7 +149,7 @@ export default function ProductDetails({ product }: Props) {
                   alt={`thumb-${idx}`}
                   width={80}
                   height={80}
-                  className="object-contain bg-white"
+                  className="object-contain bg-[#FFFFFFFF]"
                 />
               </button>
             ))}
@@ -162,7 +162,7 @@ export default function ProductDetails({ product }: Props) {
 
         {/* Badge */}
         {product.badge && (
-          <span className="self-start mb-3 text-[11px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full bg-gray-100 text-gray-500">
+          <span className="self-start mb-3 text-[11px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full bg-[#FFFFFFFF] text-gray-500">
             {product.badge}
           </span>
         )}
@@ -232,7 +232,7 @@ export default function ProductDetails({ product }: Props) {
               <strong className="text-gray-700">{product.deliveryDays ?? 7} dias úteis</strong>
             </span>
           </div>
-          <div className="w-px h-6 bg-gray-200" />
+          <div className="w-px h-6 bg-[#FFFFFFFF]" />
           <div className="flex items-center gap-2 text-gray-500">
             <RotateCcw size={16} className="shrink-0" />
             <span className="text-xs">
@@ -249,9 +249,9 @@ export default function ProductDetails({ product }: Props) {
               {formattedRelatedProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                  className="bg-[#FFFFFFFF] border border-gray-200 rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200 cursor-pointer"
                 >
-                  <div className="w-full flex justify-center items-center p-4 bg-white">
+                  <div className="w-full flex justify-center items-center p-4 bg-[#FFFFFFFF]">
                     <div className="relative w-full aspect-square max-h-[120px]">
                       <Image src={p.image} alt={p.title} fill className="object-contain" />
                     </div>
