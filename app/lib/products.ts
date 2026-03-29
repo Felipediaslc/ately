@@ -7,13 +7,23 @@ interface RawProduct {
   images: string[];
   category: string;
   description?: string;
-  installment?: string;
   pixPrice?: number;
-  badge?: "Peça única" | "Edição limitada" | "Feito à mão";
-  stock?: "in_stock" | "low_stock" | "out_of_stock";
+
+  stock: number;
+  sold: number;
+
+  isUnique: boolean;
+  isHandmade: boolean;
+  isLimited: boolean;
+
   sku?: string;
   deliveryDays?: number;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const now = new Date();
 
 const allProducts: RawProduct[] = [
   {
@@ -23,12 +33,20 @@ const allProducts: RawProduct[] = [
     images: ["/image/(1).png", "/image/(17).png"],
     category: "terco",
     description: "Terço artesanal de madeira de alta qualidade.",
-    installment: "ou 2x de R$ 17,50",
     pixPrice: 32,
-    badge: "Feito à mão",
-    stock: "in_stock",
+
+    stock: 10,
+    sold: 2,
+
+    isUnique: false,
+    isHandmade: true,
+    isLimited: false,
+
     sku: "TRC-001",
     deliveryDays: 5,
+
+    createdAt: now,
+    updatedAt: now,
   },
   {
     id: "2",
@@ -37,12 +55,20 @@ const allProducts: RawProduct[] = [
     images: ["/image/produto02.png", "/image/produto02tras.png"],
     category: "imagem",
     description: "Imagem religiosa para decoração ou presente.",
-    installment: "ou 3x de R$ 25,00",
     pixPrice: 70,
-    badge: "Peça única",
-    stock: "low_stock",
+
+    stock: 1,
+    sold: 5,
+
+    isUnique: true,
+    isHandmade: false,
+    isLimited: false,
+
     sku: "IMG-002",
     deliveryDays: 5,
+
+    createdAt: now,
+    updatedAt: now,
   },
   {
     id: "3",
@@ -51,12 +77,20 @@ const allProducts: RawProduct[] = [
     images: ["/image/produto03.png", "/image/produto03.png"],
     category: "biblia",
     description: "Bíblia em capa dura com comentários detalhados.",
-    installment: "ou 5x de R$ 30,00",
     pixPrice: 140,
-    badge: "Edição limitada",
-    stock: "low_stock",
+
+    stock: 3,
+    sold: 8,
+
+    isUnique: false,
+    isHandmade: false,
+    isLimited: true,
+
     sku: "BIB-003",
     deliveryDays: 7,
+
+    createdAt: now,
+    updatedAt: now,
   },
   {
     id: "4",
@@ -65,12 +99,20 @@ const allProducts: RawProduct[] = [
     images: ["/image/produto04.png", "/image/produto04.png"],
     category: "cruz",
     description: "Cruz decorativa em madeira nobre.",
-    installment: "ou 2x de R$ 25,00",
     pixPrice: 45,
-    badge: "Feito à mão",
-    stock: "in_stock",
+
+    stock: 6,
+    sold: 3,
+
+    isUnique: false,
+    isHandmade: true,
+    isLimited: false,
+
     sku: "CRZ-004",
     deliveryDays: 5,
+
+    createdAt: now,
+    updatedAt: now,
   },
   {
     id: "5",
@@ -79,12 +121,20 @@ const allProducts: RawProduct[] = [
     images: ["/image/produto05.png", "/image/produto05.png"],
     category: "vela",
     description: "Vela artesanal, longa duração.",
-    installment: "ou 1x de R$ 15,00",
     pixPrice: 13,
-    badge: "Feito à mão",
-    stock: "in_stock",
+
+    stock: 20,
+    sold: 10,
+
+    isUnique: false,
+    isHandmade: true,
+    isLimited: false,
+
     sku: "VEL-005",
     deliveryDays: 3,
+
+    createdAt: now,
+    updatedAt: now,
   },
   {
     id: "6",
@@ -93,12 +143,20 @@ const allProducts: RawProduct[] = [
     images: ["/image/produto06.png", "/image/produto06.png"],
     category: "decoracao",
     description: "Candelabro elegante em prata.",
-    installment: "ou 8x de R$ 25,00",
     pixPrice: 185,
-    badge: "Edição limitada",
-    stock: "out_of_stock",
+
+    stock: 0,
+    sold: 12,
+
+    isUnique: false,
+    isHandmade: false,
+    isLimited: true,
+
     sku: "CAN-006",
     deliveryDays: 10,
+
+    createdAt: now,
+    updatedAt: now,
   },
 ];
 
@@ -120,11 +178,13 @@ export async function getProducts(price?: string, category?: string): Promise<Pr
             ? product.price >= Number(min)
             : product.price >= Number(min) && product.price <= Number(max);
       }
+
       let matchCategory = true;
       if (category) {
         const queryCat = category.trim().toLowerCase().replace(/,+$/, "");
         matchCategory = product.category.toLowerCase() === queryCat;
       }
+
       return matchPrice && matchCategory;
     })
     .map(formatProduct);
@@ -137,9 +197,11 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 export async function getProductById(id: string): Promise<Product | null> {
   const product = allProducts.find((p) => p.id === id);
   if (!product) return null;
+
   const relatedProducts = allProducts
     .filter((p) => p.id !== id)
     .slice(0, 3)
     .map(formatProduct);
+
   return { ...formatProduct(product), relatedProducts };
 }

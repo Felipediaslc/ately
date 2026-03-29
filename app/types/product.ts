@@ -5,13 +5,22 @@ export interface Product {
   images: string[];
   category: string;
   categorySlug: string;
+
   description?: string;
-  installment?: string;
   pixPrice?: number;
-  badge?: "Peça única" | "Edição limitada" | "Feito à mão";
-  stock?: "in_stock" | "low_stock" | "out_of_stock";
+
+  stock: number;
+  sold: number;
+
+  isUnique: boolean;
+  isHandmade: boolean;
+  isLimited: boolean;
+
   sku?: string;
   deliveryDays?: number;
+
+  createdAt: Date;
+  updatedAt: Date;
+
   relatedProducts?: Product[];
 }
-

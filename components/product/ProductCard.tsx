@@ -13,8 +13,13 @@ interface Props {
     image: string;
     title: string;
     price: number;
-    installment?: string;
     pixPrice?: number;
+
+    stock: number;
+
+    isUnique: boolean;
+    isHandmade: boolean;
+    isLimited: boolean;
   };
 }
 
@@ -25,21 +30,39 @@ export function ProductCard({ product }: Props) {
   type BtnState = "idle" | "loading" | "done";
   const [btnState, setBtnState] = useState<BtnState>("idle");
 
+  // 🔥 ESTOQUE REAL
+  let stockLabel = "";
+  let stockColor = "";
+
+  if (product.stock === 0) {
+    stockLabel = "Esgotado";
+    stockColor = "bg-red-500";
+  } else if (product.stock <= 3) {
+    stockLabel = "Últimas unidades";
+    stockColor = "bg-yellow-400";
+  } else {
+    stockLabel = "Em estoque";
+    stockColor = "bg-green-500";
+  }
+
   const handleAddToCart = () => {
-    if (btnState !== "idle") return;
+    if (btnState !== "idle" || product.stock === 0) return;
+
     const safeQuantity = quantity < 1 ? 1 : quantity;
+
     setBtnState("loading");
-   addToCart(
-  {
-    id: product.id,
-    title: product.title,
-    price: product.price,
-    image: product.image,
-    installment: product.installment,
-    pixPrice: product.pixPrice,
-  },
-  safeQuantity
-);
+
+    addToCart(
+      {
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        pixPrice: product.pixPrice,
+      },
+      safeQuantity
+    );
+
     setTimeout(() => {
       setBtnState("done");
       setTimeout(() => setBtnState("idle"), 1500);
@@ -47,94 +70,79 @@ export function ProductCard({ product }: Props) {
   };
 
   return (
-    <div
-      className="group bg-[#FFFFFFFF] rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
-      style={{ height: "100%" }}
-    >
-      {/* Imagem + Favorito */}
-      <div className="relative w-full aspect-[3/4] bg-[#FFFFFFFF]">
+    <div className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+      
+      {/* Imagem */}
+      <div className="relative w-full aspect-[3/4] bg-white">
         <Link href={`/products/${product.id}`} className="block w-full h-full">
           <Image
             src={product.image}
             alt={product.title}
             fill
-            className="object-cover bg-[#FFFFFFFF] group-hover:scale-105 transition duration-500"
+            className="object-cover group-hover:scale-105 transition duration-500"
           />
         </Link>
 
-        {/* Favorito fora do Link */}
         <div className="absolute top-4 right-4 z-10">
-  <FavoriteButton product={product} />
-</div>
+          <FavoriteButton product={product} />
+        </div>
+
+        {/* 🔥 BADGES */}
+        <div className="absolute top-4 left-4 flex flex-col gap-1">
+          {product.isUnique && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Peça única</span>}
+          {product.isHandmade && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Feito à mão</span>}
+          {product.isLimited && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Edição limitada</span>}
+        </div>
       </div>
 
-      {/* Informações */}
+      {/* Info */}
       <div className="p-4 flex flex-col gap-2">
+
         <Link
           href={`/products/${product.id}`}
-          className="line-clamp-2 h-[40px] text-sm font-medium text-gray-800 hover:text-fuchsia-700 transition-colors"
+          className="line-clamp-2 text-sm font-medium text-gray-800 hover:text-fuchsia-700"
         >
           {product.title}
         </Link>
 
-        <div className="mt-auto">
-          <p className="text-xl font-semibold text-gray-900">
-            R$ {product.price.toFixed(2)}
+        {/* 🔥 ESTOQUE */}
+        <div className="flex items-center gap-2 text-xs">
+          <span className={`w-2 h-2 rounded-full ${stockColor}`} />
+          <span>{stockLabel}</span>
+        </div>
+
+        <p className="text-lg font-semibold text-gray-900">
+          R$ {product.price.toFixed(2)}
+        </p>
+
+        {product.pixPrice && (
+          <p className="text-xs text-green-600 font-medium">
+            R$ {product.pixPrice.toFixed(2)} no Pix
           </p>
+        )}
 
-          {/* Parcelamento */}
-          {product.installment && (
-            <p className="text-xs text-gray-500">{product.installment}</p>
-          )}
+        <div className="flex items-center gap-2 mt-3">
+          <QuantitySelector value={quantity} onChange={setQuantity} />
 
-          {/* Preço Pix */}
-          {product.pixPrice && (
-            <p className="text-xs text-green-600 font-medium">
-              R$ {product.pixPrice.toFixed(2)} no Pix
-            </p>
-          )}
-
-          {/* Área de ações */}
-          <div className="flex items-center gap-2 mt-4">
-            <QuantitySelector value={quantity} onChange={setQuantity} />
-
-            <button
-              onClick={handleAddToCart}
-              disabled={btnState !== "idle"}
-              className={
-                "flex-1 text-white text-sm py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 " +
-                (btnState === "done"
-                  ? "bg-emerald-500"
-                  : "bg-green-600 hover:bg-green-700") +
-                " disabled:opacity-90 disabled:cursor-not-allowed hover:scale-105"
-              }
-            >
-              {btnState === "idle" && "Comprar"}
-              {btnState === "loading" && (
-                <svg
-                  className="animate-spin h-4 w-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8H4z"
-                  />
-                </svg>
-              )}
-              {btnState === "done" && "Adicionado!"}
-            </button>
-          </div>
+          <button
+            onClick={handleAddToCart}
+            disabled={btnState !== "idle" || product.stock === 0}
+            className={
+              "flex-1 text-white text-sm py-2 rounded-lg transition " +
+              (btnState === "done"
+                ? "bg-emerald-500"
+                : "bg-green-600 hover:bg-green-700") +
+              " disabled:opacity-90"
+            }
+          >
+            {product.stock === 0
+              ? "Esgotado"
+              : btnState === "idle"
+              ? "Comprar"
+              : btnState === "loading"
+              ? "..."
+              : "Adicionado"}
+          </button>
         </div>
       </div>
     </div>

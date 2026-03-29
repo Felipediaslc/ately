@@ -13,8 +13,8 @@ type Product = {
   image: string;
   title: string;
   price: string;
-  installment: string;
   pixPrice: string;
+  stock: number;
 };
 
 export default function FeaturedProducts() {
@@ -28,25 +28,40 @@ export default function FeaturedProducts() {
   const [addedId, setAddedId] = React.useState<number | null>(null);
 
   const products: Product[] = [
-    { id: 1, image: "/image/produto01.png", title: "Brinco Oval com Pérolas Dourado", price: "R$59,90", installment: "2x de R$29,95 sem juros", pixPrice: "R$56,91 com Pix" },
-    { id: 2, image: "/image/produto02.png", title: "Brinco Pérola Alongada Dourado", price: "R$89,90", installment: "3x de R$29,97 sem juros", pixPrice: "R$85,41 com Pix" },
-    { id: 3, image: "/image/produto03.png", title: "Brinco Pérola Alongada Prateado", price: "R$89,90", installment: "3x de R$29,97 sem juros", pixPrice: "R$85,41 com Pix" },
-    { id: 4, image: "/image/produto04.png", title: "Brinco Mini Gotas Dourado Aço Inox", price: "R$59,90", installment: "2x de R$29,95 sem juros", pixPrice: "R$56,91 com Pix" },
-    { id: 5, image: "/image/produto05.png", title: "Brinco Mini Gotas Prateado Aço Inox", price: "R$59,90", installment: "2x de R$29,95 sem juros", pixPrice: "R$56,91 com Pix" },
-    { id: 6, image: "/image/produto06.png", title: "Brinco Mini Gotas Dourado Aço Inox", price: "R$59,90", installment: "2x de R$29,95 sem juros", pixPrice: "R$56,91 com Pix" },
-    { id: 7, image: "/image/produto07.png", title: "Brinco Mini Gotas Prateado Aço Inox", price: "R$59,90", installment: "2x de R$29,95 sem juros", pixPrice: "R$56,91 com Pix" },
+    { id: 1, image: "/image/produto01.png", title: "Brinco Oval com Pérolas Dourado", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 10 },
+    { id: 2, image: "/image/produto02.png", title: "Brinco Pérola Alongada Dourado", price: "R$89,90", pixPrice: "R$85,41 com Pix", stock: 2 },
+    { id: 3, image: "/image/produto03.png", title: "Brinco Pérola Alongada Prateado", price: "R$89,90", pixPrice: "R$85,41 com Pix", stock: 0 },
+    { id: 4, image: "/image/produto04.png", title: "Brinco Mini Gotas Dourado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 6 },
+    { id: 5, image: "/image/produto05.png", title: "Brinco Mini Gotas Prateado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 1 },
+    { id: 6, image: "/image/produto06.png", title: "Brinco Mini Gotas Dourado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 4 },
+    { id: 7, image: "/image/produto07.png", title: "Brinco Mini Gotas Prateado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 8 },
   ];
 
+  const getStockInfo = (stock: number) => {
+    if (stock === 0) {
+      return { label: "Esgotado", color: "bg-red-500", text: "text-red-700" };
+    }
+    if (stock <= 3) {
+      return { label: "Últimas unidades", color: "bg-yellow-400", text: "text-yellow-700" };
+    }
+    return { label: "Em estoque", color: "bg-green-500", text: "text-green-700" };
+  };
+
   const handleAddToCart = (product: Product) => {
+    if (product.stock === 0) return;
+
     const priceNumber = Number(product.price.replace("R$", "").replace(",", "."));
-   addToCart({
-  id: String(product.id),
-  title: product.title,
-  price: priceNumber,
-  image: product.image,
-  installment: product.installment,
-  pixPrice: Number(product.pixPrice.replace("R$", "").replace(" com Pix", "").replace(",", ".")) || undefined,
-});
+
+    addToCart({
+      id: String(product.id),
+      title: product.title,
+      price: priceNumber,
+      image: product.image,
+      pixPrice:
+        Number(product.pixPrice.replace("R$", "").replace(" com Pix", "").replace(",", ".")) ||
+        undefined,
+    });
+
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 1200);
   };
@@ -55,14 +70,15 @@ export default function FeaturedProducts() {
     if (isFavorite(String(product.id))) {
       removeFavorite(String(product.id));
     } else {
-     addFavorite({
-  id: String(product.id),
-  title: product.title,
-  price: Number(product.price.replace("R$", "").replace(",", ".")),
-  image: product.image,
-  installment: product.installment,
-  pixPrice: Number(product.pixPrice?.replace("R$", "").replace(" com Pix", "").replace(",", ".")) || undefined,
-});
+      addFavorite({
+        id: String(product.id),
+        title: product.title,
+        price: Number(product.price.replace("R$", "").replace(",", ".")),
+        image: product.image,
+        pixPrice:
+          Number(product.pixPrice.replace("R$", "").replace(" com Pix", "").replace(",", ".")) ||
+          undefined,
+      });
     }
   };
 
@@ -91,10 +107,12 @@ export default function FeaturedProducts() {
         <div className="flex">
           {products.map((product) => {
             const isAdded = addedId === product.id;
+            const stockInfo = getStockInfo(product.stock);
+
             return (
               <div key={product.id} className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-3">
                 <div className="bg-white rounded-xl flex flex-col transition hover:shadow-lg overflow-hidden">
-                  
+
                   {/* Imagem */}
                   <div className="relative w-full h-72 overflow-hidden group">
                     <Image
@@ -119,24 +137,44 @@ export default function FeaturedProducts() {
                     </button>
                   </div>
 
-                  {/* Info + botão — tudo dentro do card com padding uniforme */}
+                  {/* Info */}
                   <div className="flex flex-col gap-1 px-4 pt-3 pb-4">
-                    <h3 className="text-sm font-medium text-primary line-clamp-2">{product.title}</h3>
+                    <h3 className="text-sm font-medium text-primary line-clamp-2">
+                      {product.title}
+                    </h3>
+
+                    {/* 🔥 Estoque */}
+                    <div className="flex items-center gap-2 mt-1">
+                      <span
+                        className={`w-2 h-2 rounded-full ${stockInfo.color} ${
+                          product.stock > 0 ? "animate-pulse" : ""
+                        }`}
+                      />
+                      <span className={`text-[11px] font-medium ${stockInfo.text}`}>
+                        {stockInfo.label}
+                      </span>
+                    </div>
+
                     <p className="text-lg font-bold text-black mt-1">{product.price}</p>
-                    <p className="text-xs text-primary">{product.installment}</p>
                     <p className="text-xs text-green-600 font-medium">{product.pixPrice}</p>
 
                     <button
                       onClick={() => handleAddToCart(product)}
+                      disabled={product.stock === 0}
                       className={`mt-3 w-full py-2 text-sm rounded-lg font-medium transition-all duration-200 ${
                         isAdded
                           ? "bg-emerald-500 scale-95"
                           : "bg-green-600 hover:bg-green-700 hover:scale-105"
-                      } text-white`}
+                      } text-white disabled:opacity-60`}
                     >
-                      {isAdded ? "Adicionado ✓" : "Comprar"}
+                      {product.stock === 0
+                        ? "Esgotado"
+                        : isAdded
+                        ? "Adicionado ✓"
+                        : "Comprar"}
                     </button>
                   </div>
+
                 </div>
               </div>
             );

@@ -6,8 +6,12 @@ interface Product {
   image: string;
   title: string;
   price: number;
-  installment?: string;
   pixPrice?: number;
+
+  stock: number;
+  isUnique: boolean;
+  isHandmade: boolean;
+  isLimited: boolean;
 }
 
 interface ProductGridProps {

@@ -39,15 +39,21 @@ export default function ProdutosSection({ products, showSeeAllButton }: Props) {
           {products && products.length > 0 ? (
             <>
               <ProductGrid
-                products={products.map((p) => ({
-                id: p.id,
-                title: p.title,
-                price: p.price,
-                image: p.images[0] || "/image/produto01.png",
-                installment: p.installment,
-                pixPrice: p.pixPrice,
-                 }))}
-              />
+  products={products.map((p) => ({
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    image: p.images[0] || "/image/produto01.png",
+
+    pixPrice: p.pixPrice,
+
+    stock: p.stock,
+
+    isUnique: p.isUnique,
+    isHandmade: p.isHandmade,
+    isLimited: p.isLimited,
+  }))}
+/>
 
               {/* Botão "Ver todos os produtos" só se não estiver em /products */}
               {showSeeAllButton && (
