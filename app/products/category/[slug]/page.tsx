@@ -20,14 +20,14 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// 🔹 Mapa de nomes reais das categorias (com acentos)
+
 const categoryNamesMap: Record<string, string> = {
   terco: "Terço",
   imagem: "Imagem",
-  biblia: "Bíblia",
-  cruz: "Cruz",
-  vela: "Vela",
-  decoracao: "Decoração",
+  mandala: "Mandala",
+  chaveiro: "Chaveiro",
+  pingente: "Pingente",
+  
 };
 
 export default async function CategoryPage({ params }: Props) {

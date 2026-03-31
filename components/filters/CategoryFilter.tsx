@@ -4,10 +4,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 const categories = [
   { label: "Terço", value: "terco" },
   { label: "Imagem", value: "imagem" },
-  { label: "Bíblia", value: "biblia" },
-  { label: "Cruz", value: "cruz" },
-  { label: "Vela", value: "vela" },
-  { label: "Decoração", value: "decoracao" },
+  { label: "Mandala", value: "mandala" },
+  { label: "Chaveiro", value: "chaveiro" },
+  { label: "Pingente", value: "pingente" },
+  
 ];
 
 
