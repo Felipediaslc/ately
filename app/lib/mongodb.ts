@@ -1,38 +1,39 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error("Defina MONGODB_URI no .env");
+  throw new Error("MONGODB_URI não configurada no ambiente");
 }
 
-// ✅ tipo do cache
+// ✅ aqui está o ponto-chave
+const uri: string = MONGODB_URI;
+
 interface MongooseCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
 }
 
-// 👇 tipando o global corretamente
 declare global {
-
   var mongoose: MongooseCache | undefined;
 }
 
-let cached = global.mongoose;
+const cached: MongooseCache = global.mongoose ?? {
+  conn: null,
+  promise: null,
+};
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+global.mongoose = cached;
 
 export async function connectDB() {
-  if (cached!.conn) return cached!.conn;
+  if (cached.conn) return cached.conn;
 
-  if (!cached!.promise) {
-    cached!.promise = mongoose.connect(MONGODB_URI, {
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(uri, {
       bufferCommands: false,
     });
   }
 
-  cached!.conn = await cached!.promise;
-  return cached!.conn;
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
