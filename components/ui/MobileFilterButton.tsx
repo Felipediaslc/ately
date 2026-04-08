@@ -9,7 +9,7 @@ export function MobileFilterButton({ onOpen }: Props) {
     <div className="lg:hidden mb-6">
       <button
         onClick={onOpen}
-        className="w-full bg-black text-white py-3 rounded-lg"
+        className="w-full bg-gray-900  text-[#ffffff] py-3 rounded-lg"
       >
         Filtrar produtos
       </button>

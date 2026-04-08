@@ -38,7 +38,7 @@ export function MobileFilterDrawer({ open, onClose }: Props) {
       {/* Drawer */}
       <div
         className={`
-          fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-xl
+          fixed top-0 left-0 h-full w-72 bg-[#ffffffff] z-50 shadow-xl
           transform transition-transform duration-300 ease-in-out
           ${open ? "translate-x-0" : "-translate-x-full"}
         `}
@@ -61,7 +61,7 @@ export function MobileFilterDrawer({ open, onClose }: Props) {
           {/* Botão */}
           <button
             onClick={onClose}
-            className="mt-8 bg-black text-white py-3 rounded-lg"
+            className="mt-8 bg-gray-900 border border-gray-950 text-[#ffffff] py-3 rounded-lg"
           >
             Aplicar filtros
           </button>

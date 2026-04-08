@@ -3,6 +3,8 @@ import Destaque from "@/components/Destaque/page";
 import { getFeaturedProducts } from "@/app/lib/products";
 import HomeProducts from "@/components/product/HomeProducts";
 
+
+
 export default async function Home() {
   const products = await getFeaturedProducts();
   return (
@@ -13,3 +15,4 @@ export default async function Home() {
     </main>
   );
 }
+

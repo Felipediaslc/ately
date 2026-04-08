@@ -19,8 +19,8 @@ export interface Product {
   sku?: string;
   deliveryDays?: number;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 
   relatedProducts?: Product[];
 }

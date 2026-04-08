@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Menu, Search, X, User, Heart } from "lucide-react";
-import { MenuItem } from "@/components/MenuBar/MenuItem";
 import { useCart } from "@/app/context/cart/CartContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 
@@ -33,7 +32,8 @@ export default function Header() {
 
   return (
     <header className="w-full bg-[#FAF7F2] shadow-md">
-      {/* MAIN HEADER */}
+
+      {/* HEADER */}
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
 
         {/* MOBILE MENU BTN */}
@@ -41,7 +41,7 @@ export default function Header() {
           <Menu size={26} />
         </button>
 
-        {/* LOGO — centralizada no mobile, normal no desktop */}
+        {/* LOGO */}
         <Link href="/" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
           <div className="relative h-10 lg:h-16 w-40 lg:w-64">
             <Image
@@ -56,7 +56,7 @@ export default function Header() {
 
         {/* SEARCH */}
         <div className="items-center relative hidden w-full max-w-xl md:block">
-          <div className="flex items-center rounded-lg border border-gray-300 bg-[#ffffff] text-gray-700 px-3">
+          <div className="flex items-center rounded-lg border border-gray-300 bg-white text-gray-700 px-3">
             <Search size={18} />
             <input
               value={search}
@@ -86,8 +86,32 @@ export default function Header() {
         {/* ACTIONS */}
         <div className="flex items-center gap-4 ml-auto md:ml-0">
 
+          {/* FAVORITOS */}
+          <Link href="/favorites" className="relative text-primary">
+            <div className="relative cursor-pointer">
+              <Heart size={24} />
+              {totalFavorites > 0 && (
+                <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
+                  {totalFavorites}
+                </span>
+              )}
+            </div>
+          </Link>
+
+          {/* CARRINHO */}
+          <Link href="/cart" className="relative text-primary">
+            <div className="relative cursor-pointer">
+              <ShoppingCart size={24} />
+              {totalCartItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
+                  {totalCartItems}
+                </span>
+              )}
+            </div>
+          </Link>
+
           {/* LOGIN */}
-          <div className="relative text-primary flex md:block">
+          <div className="relative text-primary">
             <button onClick={() => setOpenLogin(!openLogin)}>
               <User size={24} />
             </button>
@@ -103,43 +127,22 @@ export default function Header() {
             )}
           </div>
 
-          {/* FAVORITOS */}
-          <div className="relative text-primary">
-            <Link href="/favorites">
-              <div className="relative cursor-pointer">
-                <Heart size={24} />
-                {totalFavorites > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
-                    {totalFavorites}
-                  </span>
-                )}
-              </div>
-            </Link>
-          </div>
-
-          {/* CARRINHO */}
-          <div className="relative text-primary">
-            <Link href="/cart">
-              <div className="relative cursor-pointer">
-                <ShoppingCart size={24} />
-                {totalCartItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
-                    {totalCartItems}
-                  </span>
-                )}
-              </div>
-            </Link>
-          </div>
         </div>
       </div>
 
       {/* MENU DESKTOP */}
       <nav className="hidden w-full border-t border-gray-300 bg-[#FAF7F2] md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 py-3 text-sm font-light text-primary">
-          <MenuItem title="Terço" />
-          <MenuItem title="Chaveiro" />
-          <MenuItem title="Imagem" />
-          <MenuItem title="Acessórios" />
+
+          <Link href="/">Home</Link>
+          <Link href="/about">Sobre</Link>
+
+          <Link href="/products/category/terco">Terço</Link>
+          <Link href="/products/category/imagem">Imagem</Link>
+          <Link href="/products/category/mandala">Mandala</Link>
+          <Link href="/products/category/pingente">Pingente</Link>
+          <Link href="/products/category/chaveiro">Chaveiro</Link>
+
         </div>
       </nav>
 
@@ -147,21 +150,30 @@ export default function Header() {
       {openMenu && (
         <div className="fixed inset-0 z-50 bg-transparent">
           <div className="h-full w-72 bg-[#FAF7F2] p-5 shadow-xl">
+
             <div className="mb-6 flex items-center justify-between">
               <span className="tracking-widest text-primary">Menu</span>
               <button className="text-primary" onClick={() => setOpenMenu(false)}>
                 <X />
               </button>
             </div>
+
             <nav className="flex flex-col gap-4 text-sm text-primary">
-              <MenuItem title="Terço" />
-              <MenuItem title="Chaveiro" />
-              <MenuItem title="Imagem" />
-              <MenuItem title="Acessórios" />
+
+              <Link href="/">Home</Link>
+              <Link href="/sobre">Sobre</Link>
+
+              <Link href="/categoria/terco">Terço</Link>
+              <Link href="/categoria/imagem">Imagem</Link>
+              <Link href="/categoria/mandala">Mandala</Link>
+              <Link href="/categoria/pingente">Pingente</Link>
+              <Link href="/categoria/chaveiro">Chaveiro</Link>
+
             </nav>
           </div>
         </div>
       )}
+
     </header>
   );
 }

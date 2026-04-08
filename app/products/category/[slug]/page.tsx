@@ -17,9 +17,8 @@ interface GridProduct {
 }
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: { slug: string }; // ✅ corrigido
 }
-
 
 const categoryNamesMap: Record<string, string> = {
   terco: "Terço",
@@ -27,29 +26,33 @@ const categoryNamesMap: Record<string, string> = {
   mandala: "Mandala",
   chaveiro: "Chaveiro",
   pingente: "Pingente",
-  
 };
 
 export default async function CategoryPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug } = params; // ✅ sem await
 
   // 🔹 busca produtos
-  const products = await getProducts(undefined, slug);
+  const products = await getProducts();
 
-  if (!products.length) return notFound();
+  // 🔹 filtra
+  const filteredProducts = products.filter(
+    (p) => p.categorySlug === slug
+  );
 
-  // 🔹 nome correto da categoria
+  // ✅ valida corretamente
+  if (!filteredProducts.length) return notFound();
+
+  // 🔹 nome da categoria
   const categoryName = categoryNamesMap[slug] || slug;
 
-  // 🔥 FORMATAÇÃO CORRIGIDA (ESSENCIAL)
-  const formattedProducts: GridProduct[] = products.map((p) => ({
+  // 🔥 formatação correta
+  const formattedProducts: GridProduct[] = filteredProducts.map((p) => ({
     id: p.id,
     title: p.title,
     price: p.price,
     image: p.images?.[0] || "/image/produto01.png",
     pixPrice: p.pixPrice,
 
-    // ✅ novos campos
     stock: p.stock ?? 0,
     isUnique: p.isUnique ?? false,
     isHandmade: p.isHandmade ?? false,
@@ -58,15 +61,12 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <main className="container mx-auto px-4 py-10 lg:px-20">
-      {/* Breadcrumb */}
       <Breadcrumb categoryName={categoryName} categorySlug={slug} />
 
-      {/* Título */}
       <h1 className="text-2xl font-semibold mb-6">
         {categoryName}
       </h1>
 
-      {/* Grid */}
       <ProductGrid products={formattedProducts} />
     </main>
   );

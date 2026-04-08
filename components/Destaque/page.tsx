@@ -28,13 +28,13 @@ export default function FeaturedProducts() {
   const [addedId, setAddedId] = React.useState<number | null>(null);
 
   const products: Product[] = [
-    { id: 1, image: "/image/produto01.png", title: "Brinco Oval com Pérolas Dourado", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 10 },
-    { id: 2, image: "/image/produto02.png", title: "Brinco Pérola Alongada Dourado", price: "R$89,90", pixPrice: "R$85,41 com Pix", stock: 2 },
-    { id: 3, image: "/image/produto03.png", title: "Brinco Pérola Alongada Prateado", price: "R$89,90", pixPrice: "R$85,41 com Pix", stock: 0 },
-    { id: 4, image: "/image/produto04.png", title: "Brinco Mini Gotas Dourado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 6 },
-    { id: 5, image: "/image/produto05.png", title: "Brinco Mini Gotas Prateado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 1 },
-    { id: 6, image: "/image/produto06.png", title: "Brinco Mini Gotas Dourado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 4 },
-    { id: 7, image: "/image/produto07.png", title: "Brinco Mini Gotas Prateado Aço Inox", price: "R$59,90", pixPrice: "R$56,91 com Pix", stock: 8 },
+    { id: 1, image: "/image/imagens/ns-aparecida-dourado-12cm-frente.png", title: "N. Senhora Aparecida", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
+    { id: 2, image: "/image/chaveiros/sagrado-coracao-jesus.png", title: "Chaveiro Sagrado Coração de Jesus", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
+    { id: 3, image: "/image/chaveiros/sagrado-coracao-maria.png", title: "Chaveiro Sagrado Coração de Maria", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
+    { id: 4, image: "/image/imagens/crucifixo-jesus-frente.png", title: "Crucifixo", price: "R$150,00", pixPrice: "R$145,00 com Pix", stock: 10 },
+    { id: 5, image: "/image/imagens/sagrada-familia-dourado-10cm-frente.png", title: "Chaveiro São Miguel", price: "R$55,00", pixPrice: "R$50,00 com Pix", stock: 10 },
+    { id: 6, image: "/image/imagens/espirito-santo-16cm-frente.png", title: "N. Senhora Aparecida", price: "R$100,00", pixPrice: "R$90,00 com Pix", stock: 10 },
+    { id: 7, image: "/image/mandalas/mandala-imaculada-conceicao.png", title: "Mandala N. Senora Imaculada Conceição", price: "R$80,00", pixPrice: "R$75,00 com Pix", stock: 10 },
   ];
 
   const getStockInfo = (stock: number) => {
