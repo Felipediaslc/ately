@@ -27,10 +27,20 @@ export default function ProductsClient() {
             ? p.categorySlug === category
             : true;
 
-          const matchPrice =
-            price && !isNaN(priceNumber)
-              ? p.price <= priceNumber
-              : true;
+          const matchPrice = price
+  ? (() => {
+      const [min, max] = price.split("-");
+
+      if (max === "*") {
+        return p.price >= Number(min);
+      }
+
+      return (
+        p.price >= Number(min) &&
+        p.price <= Number(max)
+      );
+    })()
+  : true;
 
           return matchCategory && matchPrice;
         });

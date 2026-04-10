@@ -30,7 +30,7 @@ export async function GET(req: Request) {
 
     const products = await ProductModel.find(filter)
       .sort({ createdAt: -1 })
-      .lean(); // 🔥 performance
+      .lean(); // performance
 
     return NextResponse.json(products);
   } catch (error) {

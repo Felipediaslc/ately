@@ -17,7 +17,7 @@ interface GridProduct {
 }
 
 interface Props {
-  params: { slug: string }; // ✅ corrigido
+  params: Promise<{ slug: string }>; // ✅ Next 16
 }
 
 const categoryNamesMap: Record<string, string> = {
@@ -28,13 +28,28 @@ const categoryNamesMap: Record<string, string> = {
   pingente: "Pingente",
 };
 
+//
+// 🔥 SEO POR CATEGORIA (NOVO)
+//
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+
+  const categoryName = categoryNamesMap[slug] || slug;
+
+  return {
+    title: `${categoryName} | SD Ateliê`,
+    description: `Confira nossos ${categoryName.toLowerCase()} artesanais exclusivos.`,
+  };
+}
+
 export default async function CategoryPage({ params }: Props) {
-  const { slug } = params; // ✅ sem await
+  // ✅ Next 16 (await obrigatório)
+  const { slug } = await params;
 
   // 🔹 busca produtos
   const products = await getProducts();
 
-  // 🔹 filtra
+  // 🔹 filtra por categoria
   const filteredProducts = products.filter(
     (p) => p.categorySlug === slug
   );
@@ -45,7 +60,7 @@ export default async function CategoryPage({ params }: Props) {
   // 🔹 nome da categoria
   const categoryName = categoryNamesMap[slug] || slug;
 
-  // 🔥 formatação correta
+  // 🔹 formatação pro grid
   const formattedProducts: GridProduct[] = filteredProducts.map((p) => ({
     id: p.id,
     title: p.title,
@@ -61,12 +76,15 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <main className="container mx-auto px-4 py-10 lg:px-20">
+      {/* Breadcrumb */}
       <Breadcrumb categoryName={categoryName} categorySlug={slug} />
 
+      {/* Título */}
       <h1 className="text-2xl font-semibold mb-6">
         {categoryName}
       </h1>
 
+      {/* Grid */}
       <ProductGrid products={formattedProducts} />
     </main>
   );

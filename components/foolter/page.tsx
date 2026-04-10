@@ -3,8 +3,19 @@
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  const categories = [
+    { name: "Terço", slug: "terco" },
+    { name: "Imagem", slug: "imagem" },
+    { name: "Mandala", slug: "mandala" },
+    { name: "Pingente", slug: "pingente" },
+    { name: "Chaveiro", slug: "chaveiro" },
+  ];
+
   return (
     <footer className="bg-[#FAF7F2] text-primary mt-12 relative">
 
@@ -31,14 +42,35 @@ export default function Footer() {
             <h4 className="tracking-wide font-semibold mb-3">Links</h4>
             <ul className="space-y-2 text-gray-700 tracking-wide">
 
-              <li><Link href="/" className="hover:text-primary">Home</Link></li>
-              <li><Link href="/sobre" className="hover:text-primary">Sobre</Link></li>
+              <li>
+                <Link href="/" className="hover:text-primary">
+                  Home
+                </Link>
+              </li>
 
-              <li><Link href="/categoria/terco" className="hover:text-primary">Terço</Link></li>
-              <li><Link href="/categoria/imagem" className="hover:text-primary">Imagem</Link></li>
-              <li><Link href="/categoria/mandala" className="hover:text-primary">Mandala</Link></li>
-              <li><Link href="/categoria/pingente" className="hover:text-primary">Pingente</Link></li>
-              <li><Link href="/categoria/chaveiro" className="hover:text-primary">Chaveiro</Link></li>
+              <li>
+                <Link href="/about" className="hover:text-primary">
+                  Sobre
+                </Link>
+              </li>
+
+              {categories.map((cat) => {
+                const isActive =
+                  pathname === `/products/category/${cat.slug}`;
+
+                return (
+                  <li key={cat.slug}>
+                    <Link
+                      href={`/products/category/${cat.slug}`}
+                      className={`hover:text-primary ${
+                        isActive ? "font-semibold underline text-primary" : ""
+                      }`}
+                    >
+                      {cat.name}
+                    </Link>
+                  </li>
+                );
+              })}
 
             </ul>
           </div>

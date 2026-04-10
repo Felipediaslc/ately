@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation"; // ✅ NOVO
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Menu, Search, X, User, Heart } from "lucide-react";
@@ -15,10 +16,21 @@ const mockProducts = [
   "Chaveiro de São Bento",
 ];
 
+// 🔥 fonte única das categorias
+const categories = [
+  { name: "Terço", slug: "terco" },
+  { name: "Imagem", slug: "imagem" },
+  { name: "Mandala", slug: "mandala" },
+  { name: "Pingente", slug: "pingente" },
+  { name: "Chaveiro", slug: "chaveiro" },
+];
+
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [search, setSearch] = useState("");
+
+  const pathname = usePathname(); // ✅ NOVO
 
   const { cartItems } = useCart();
   const { favoriteItems } = useFavorites();
@@ -137,11 +149,19 @@ export default function Header() {
           <Link href="/">Home</Link>
           <Link href="/about">Sobre</Link>
 
-          <Link href="/products/category/terco">Terço</Link>
-          <Link href="/products/category/imagem">Imagem</Link>
-          <Link href="/products/category/mandala">Mandala</Link>
-          <Link href="/products/category/pingente">Pingente</Link>
-          <Link href="/products/category/chaveiro">Chaveiro</Link>
+          {categories.map((cat) => {
+            const isActive = pathname === `/products/category/${cat.slug}`;
+
+            return (
+              <Link
+                key={cat.slug}
+                href={`/products/category/${cat.slug}`}
+                className={isActive ? "font-semibold underline" : ""}
+              >
+                {cat.name}
+              </Link>
+            );
+          })}
 
         </div>
       </nav>
@@ -161,13 +181,21 @@ export default function Header() {
             <nav className="flex flex-col gap-4 text-sm text-primary">
 
               <Link href="/">Home</Link>
-              <Link href="/sobre">Sobre</Link>
+              <Link href="/about">Sobre</Link>
 
-              <Link href="/categoria/terco">Terço</Link>
-              <Link href="/categoria/imagem">Imagem</Link>
-              <Link href="/categoria/mandala">Mandala</Link>
-              <Link href="/categoria/pingente">Pingente</Link>
-              <Link href="/categoria/chaveiro">Chaveiro</Link>
+              {categories.map((cat) => {
+                const isActive = pathname === `/products/category/${cat.slug}`;
+
+                return (
+                  <Link
+                    key={cat.slug}
+                    href={`/products/category/${cat.slug}`}
+                    className={isActive ? "font-semibold underline" : ""}
+                  >
+                    {cat.name}
+                  </Link>
+                );
+              })}
 
             </nav>
           </div>
