@@ -41,6 +41,7 @@ export default function ProdutosSection({ products, showSeeAllButton }: Props) {
               <ProductGrid
   products={products.map((p) => ({
     id: p.id,
+    sku: p.sku, 
     title: p.title,
     price: p.price,
     image: p.images[0] || "/image/produto01.png",

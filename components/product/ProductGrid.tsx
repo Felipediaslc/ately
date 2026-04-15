@@ -3,6 +3,7 @@ import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 
 interface Product {
   id: string;
+   sku?: string;
   image: string;
   title: string;
   price: number;

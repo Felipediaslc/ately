@@ -111,7 +111,7 @@ export default function FeaturedProducts() {
 
             return (
               <div key={product.id} className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-3">
-                <div className="bg-white rounded-xl flex flex-col transition hover:shadow-lg overflow-hidden">
+                <div className="bg-[#FFFFFF] rounded-xl flex flex-col transition hover:shadow-lg overflow-hidden">
 
                   {/* Imagem */}
                   <div className="relative w-full h-72 overflow-hidden group">

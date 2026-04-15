@@ -10,6 +10,7 @@ import { FavoriteButton } from "@/components/product/FavoriteButton";
 interface Props {
   product: {
     id: string;
+    sku?: string;  
     image: string;
     title: string;
     price: number;
@@ -55,6 +56,7 @@ export function ProductCard({ product }: Props) {
     addToCart(
       {
         id: product.id,
+        sku: product.sku, 
         title: product.title,
         price: product.price,
         image: product.image,
@@ -70,10 +72,10 @@ export function ProductCard({ product }: Props) {
   };
 
   return (
-    <div className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+    <div className="group bg-[#FFFFFF] rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
       
       {/* Imagem */}
-      <div className="relative w-full aspect-[3/4] bg-white">
+      <div className="relative w-full aspect-[3/4] bg-[#FFFFFF]">
         <Link href={`/products/${product.id}`} className="block w-full h-full">
           <Image
             src={product.image}
