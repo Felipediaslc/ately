@@ -40,7 +40,7 @@ export default function ProdutosSection({ products, showSeeAllButton }: Props) {
             <>
               <ProductGrid
   products={products.map((p) => ({
-    id: p.id,
+    id: p._id,
     sku: p.sku, 
     title: p.title,
     price: p.price,

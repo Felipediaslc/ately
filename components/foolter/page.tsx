@@ -24,13 +24,14 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 py-10 text-center md:text-left">
 
-        {/* LOGO */}
+        {/* LOGO — ✅ tamanho responsivo */}
         <div className="mb-8 flex justify-center md:justify-start">
           <Image
             src="/image/sd_atelie_logo_v9.svg"
-            alt="Logo"
+            alt="Logo SD Ateliê"
             width={300}
             height={60}
+            className="w-40 sm:w-56 md:w-64"
           />
         </div>
 
@@ -55,9 +56,7 @@ export default function Footer() {
               </li>
 
               {categories.map((cat) => {
-                const isActive =
-                  pathname === `/products/category/${cat.slug}`;
-
+                const isActive = pathname === `/products/category/${cat.slug}`;
                 return (
                   <li key={cat.slug}>
                     <Link
@@ -80,37 +79,41 @@ export default function Footer() {
             <h4 className="tracking-wide font-semibold mb-3">Contato</h4>
             <p className="text-gray-700 tracking-wide">email@exemplo.com</p>
             <p className="text-gray-700 tracking-wide">+55 (83) 99999-9999</p>
-            <p className="text-gray-700 tracking-wide">
-              João Pessoa - PB
-            </p>
+            <p className="text-gray-700 tracking-wide">João Pessoa - PB</p>
           </div>
 
-          {/* REDES */}
+          {/* REDES — ✅ área de toque adequada com p-2 */}
           <div>
             <h4 className="tracking-wide font-semibold mb-3">Redes Sociais</h4>
-            <div className="flex justify-center md:justify-start gap-4 text-gray-700">
-              <a href="#" className="hover:text-primary"><FaFacebookF /></a>
-              <a href="#" className="hover:text-primary"><FaInstagram /></a>
-              <a href="#" className="hover:text-primary"><FaTwitter /></a>
+            <div className="flex justify-center md:justify-start gap-2 text-gray-700">
+              <a href="#" className="hover:text-primary p-2" aria-label="Facebook">
+                <FaFacebookF size={18} />
+              </a>
+              <a href="#" className="hover:text-primary p-2" aria-label="Instagram">
+                <FaInstagram size={18} />
+              </a>
+              <a href="#" className="hover:text-primary p-2" aria-label="Twitter">
+                <FaTwitter size={18} />
+              </a>
             </div>
           </div>
 
         </div>
 
-        {/* PAGAMENTOS */}
+        {/* PAGAMENTOS — ✅ h-6 w-auto para tamanho consistente */}
         <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 mb-8">
           <span className="text-gray-700 font-semibold text-sm tracking-wide">
             Pagamentos:
           </span>
-          <Image src="/image/visa.svg" alt="Visa" width={40} height={25} />
-          <Image src="/image/mastercard.svg" alt="MasterCard" width={40} height={25} />
-          <Image src="/image/icons8-pix.svg" alt="Pix" width={40} height={25} />
-          <Image src="/image/elo-svgrepo-com.svg" alt="Elo" width={40} height={25} />
-          <Image src="/image/hipercard-svgrepo-com.svg" alt="Hipercard" width={40} height={25} />
+          <Image src="/image/visa.svg" alt="Visa" width={40} height={25} className="h-6 w-auto" />
+          <Image src="/image/mastercard.svg" alt="MasterCard" width={40} height={25} className="h-6 w-auto" />
+          <Image src="/image/icons8-pix.svg" alt="Pix" width={40} height={25} className="h-6 w-auto" />
+          <Image src="/image/elo-svgrepo-com.svg" alt="Elo" width={40} height={25} className="h-6 w-auto" />
+          <Image src="/image/hipercard-svgrepo-com.svg" alt="Hipercard" width={40} height={25} className="h-6 w-auto" />
         </div>
 
-        {/* COPYRIGHT */}
-        <div className="text-gray-500 text-sm border-t border-gray-300 pt-4 tracking-wide">
+        {/* COPYRIGHT — ✅ centralizado no mobile */}
+        <div className="text-gray-500 text-sm border-t border-gray-300 pt-4 tracking-wide text-center md:text-left">
           © 2026 SD Ateliê. Desenvolvido por{" "}
           <a
             href="https://www.linkedin.com/in/felipediasdev/"

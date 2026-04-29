@@ -62,7 +62,7 @@ export default async function CategoryPage({ params }: Props) {
 
   // 🔹 formatação pro grid
   const formattedProducts: GridProduct[] = filteredProducts.map((p) => ({
-    id: p.id,
+    id: p._id,
     title: p.title,
     price: p.price,
     image: p.images?.[0] || "/image/produto01.png",

@@ -11,10 +11,11 @@ interface Props {
 const categoryNamesMap: Record<string, string> = {
   terco: "Terço",
   imagem: "Imagem",
-  biblia: "Bíblia",
-  cruz: "Cruz",
-  vela: "Vela",
-  decoracao: "Decoração",
+  mandala: "Mandala",
+  pingente: "Pingente",
+  chaveiro: "Chaveiro",
+
+  
 };
 
 export default async function ProductPage({ params }: Props) {
@@ -25,7 +26,7 @@ export default async function ProductPage({ params }: Props) {
   if (!product) return notFound();
 
   // 🔹 Categoria com nome correto
-  const categoryName = categoryNamesMap[product.categorySlug] || product.category;
+  const categoryName = categoryNamesMap[product.categorySlug || ""] || product.category;
 
   return (
     <main className="container mx-auto px-4 py-10 lg:px-20">

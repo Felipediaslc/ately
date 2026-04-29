@@ -8,9 +8,9 @@ interface FreightBarProps {
 
 export default function FreightBar({
   frases = [
-    "FRETE GRÁTIS ACIMA DE R$200",
-    "ENTREGA RÁPIDA EM TODO BRASIL",
-    "PARCELAMENTO EM ATÉ 10X SEM JUROS",
+    "FRETE GRÁTIS ACIMA DE R$200,00",
+    "ENTREGA POR TODA JOÃO PESSOA E CABEDELO PB",
+    "PARCELAMENTO EM ATÉ 12x • CONDIÇÕES VARIAM CONFORME O CARTÃO",
   ],
 }: FreightBarProps) {
   const emblaTextRef = useRef<HTMLDivElement>(null);

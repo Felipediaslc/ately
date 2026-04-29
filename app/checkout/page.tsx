@@ -327,7 +327,7 @@ function CheckoutContent() {
             </div>
           ) : (
             <p className="text-xs text-zinc-400 bg-zinc-50 px-4 py-3 rounded-[14px] border-[1.5px] border-zinc-100">
-              Parcelamento disponível para compras acima de R$&nbsp;80
+              Parcelamento disponível em ate 12x • condições variam conforme o cartão
             </p>
           ))}
         </section>

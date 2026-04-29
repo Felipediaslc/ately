@@ -8,7 +8,6 @@ const client = new MercadoPagoConfig({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    // Adicionado 'installments' na captura dos dados
     const { items, shipping, customer, orderId, paymentMethod, installments } = body;
 
     const preference = new Preference(client);
@@ -18,6 +17,31 @@ export async function POST(req: Request) {
       price: number;
       quantity: number;
     };
+
+    // Lógica corrigida para evitar conflito de exclusão
+    let paymentMethodsConfig = {};
+
+    if (paymentMethod === "pix") {
+      paymentMethodsConfig = {
+        default_payment_method_id: "pix",
+        excluded_payment_types: [
+          { id: "ticket" },
+          { id: "credit_card" },
+          { id: "debit_card" }
+        ],
+        installments: 1,
+      };
+    } else {
+      // Caso seja cartão (card)
+      paymentMethodsConfig = {
+        // 'account_money' é o saldo MP, 'bank_transfer' é o Pix
+        excluded_payment_types: [
+          { id: "ticket" }, 
+          { id: "bank_transfer" }
+        ],
+        installments: installments || 1,
+      };
+    }
 
     const result = await preference.create({
       body: {
@@ -42,18 +66,9 @@ export async function POST(req: Request) {
           failure: `${process.env.NEXT_PUBLIC_SITE_URL}/pedido/falha`,
           pending: `${process.env.NEXT_PUBLIC_SITE_URL}/pedido/pendente`,
         },
-
         auto_return: "approved",
         notification_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/webhook/mercadopago`,
-        payment_methods: {
-          excluded_payment_types: [
-            { id: "ticket" } // Remove boleto
-          ],
-          // Define o máximo de parcelas permitido para esta transação
-          installments: installments || 1,
-          // Se for Pix, já abre a tela do Pix direto
-          default_payment_method_id: paymentMethod === "pix" ? "pix" : undefined,
-        },
+        payment_methods: paymentMethodsConfig,
       },
     });
 

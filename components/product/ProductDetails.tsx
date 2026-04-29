@@ -57,7 +57,7 @@ export default function ProductDetails({ product }: Props) {
     setCartState("loading");
 
     addToCart(
-      { id: product.id, title: product.title, price: product.price, image: mainImage },
+      { id: product._id, title: product.title, price: product.price, image: mainImage },
       quantity
     );
 
@@ -69,7 +69,7 @@ export default function ProductDetails({ product }: Props) {
 
   const formattedRelatedProducts: RelatedProduct[] =
     product.relatedProducts?.map((p) => ({
-      id: p.id,
+      id: p._id,
       title: p.title,
       price: p.price,
       image: p.images?.[0] || "/image/produto01.png",
@@ -132,7 +132,7 @@ export default function ProductDetails({ product }: Props) {
 
                 <FavoriteButton
                   product={{
-                    id: product.id,
+                    id: product._id,
                     title: product.title,
                     price: product.price,
                     image: product.images?.[0] || "",

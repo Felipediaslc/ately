@@ -28,6 +28,12 @@ const OrderSchema = new Schema(
         image: { type: String },
       },
     ],
+    userId: {
+      type: String,
+      required: false,
+    },
+    emailClientSent: { type: Boolean, default: false },
+    emailAdminSent: { type: Boolean, default: false },
 
     // 💰 Subtotal dos produtos (sem frete)
     subtotal: { type: Number, required: true },
@@ -57,7 +63,14 @@ const OrderSchema = new Schema(
     // 📦 Status do pedido
     status: {
       type: String,
-      enum: ["pendente", "pago", "enviado", "entregue", "cancelado", "estornado"],
+      enum: [
+        "pendente",
+        "pago",
+        "enviado",
+        "entregue",
+        "cancelado",
+        "estornado",
+      ],
       default: "pendente",
     },
 
@@ -66,7 +79,7 @@ const OrderSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const OrderModel = models.Order || model("Order", OrderSchema);

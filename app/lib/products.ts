@@ -5,9 +5,14 @@ function getBaseUrl() {
   if (typeof window !== "undefined") return "";
   return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 }
+
 const isBuild = process.env.NEXT_PHASE === "phase-production-build";
+
+// 🔹 RAW TYPES (API / Mongo)
 interface RawProduct {
-  id: string;
+  id?: string; // mock
+  _id?: string; // mongo
+
   title: string;
   price: number;
   images: string[];
@@ -57,12 +62,14 @@ const allProducts: RawProduct[] = [
   },
 ];
 
-// 🔹 NORMALIZAÇÃO
+// 🔹 NORMALIZAÇÃO (REGRA ÚNICA DE ID)
 function formatProduct(product: RawProduct | DBProduct): Product {
-  const id = "_id" in product ? String(product._id) : product.id;
+  const _id =
+    "_id" in product ? String(product._id) : String(product.id);
 
   return {
-    id,
+    _id, // ✅ PADRÃO ÚNICO DO PROJETO
+
     title: product.title,
     price: product.price,
     images: product.images,
@@ -83,56 +90,52 @@ function formatProduct(product: RawProduct | DBProduct): Product {
     createdAt: new Date(product.createdAt).toISOString(),
     updatedAt: new Date(product.updatedAt).toISOString(),
 
-    categorySlug: product.category.toLowerCase().replace(/\s+/g, "-"),
+    categorySlug: product.category
+      .toLowerCase()
+      .replace(/\s+/g, "-"),
   };
 }
 
-//
-// 🔹 GET PRODUCTS (API)
-//
+// 🔹 GET PRODUCTS
 export async function getProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${getBaseUrl()}/api/products`, {
       cache: "no-store",
     });
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error("Failed to fetch products");
 
     const data: DBProduct[] = await res.json();
+
     return data.map(formatProduct);
   } catch (error) {
     console.error("Erro getProducts:", error);
-
     return allProducts.map(formatProduct);
   }
 }
 
-//
 // 🔹 FEATURED PRODUCTS
-//
 export async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${getBaseUrl()}/api/products`, {
       next: { revalidate: 60 },
     });
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error("Failed to fetch featured products");
 
     const data: DBProduct[] = await res.json();
 
     return data.slice(0, 4).map(formatProduct);
   } catch (error) {
-  if (!isBuild) {
-    console.error("Erro getFeaturedProducts:", error);
+    if (!isBuild) {
+      console.error("Erro getFeaturedProducts:", error);
+    }
+
+    return allProducts.slice(0, 4).map(formatProduct);
   }
-
-  return allProducts.slice(0, 4).map(formatProduct);
-}
 }
 
-//
 // 🔹 GET PRODUCT BY ID
-//
 export async function getProductById(
   id: string
 ): Promise<Product | null> {

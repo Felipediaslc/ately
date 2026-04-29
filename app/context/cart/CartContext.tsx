@@ -7,9 +7,10 @@ import React, {
   ReactNode,
   useEffect,
   useRef,
+  useMemo,
 } from "react";
 
-import type { CartItem } from "@/app/types/cart"; // ajuste para seu tipo real
+import type { CartItem } from "@/app/types/cart";
 import {
   saveCartToLocalStorage,
   getCartFromLocalStorage,
@@ -27,7 +28,7 @@ interface CartContextType {
   updateQuantity: (id: string, quantity: number) => void;
   total: number;
   isLoaded: boolean;
-  syncWithBackend?: (userId: string) => Promise<void>; // futura função
+  syncWithBackend: (userId: string) => Promise<void>;
 }
 
 // =============================
@@ -42,23 +43,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // =============================
-  // LOAD (SSR SAFE) COM CORREÇÃO DO ESLINT
+  // LOAD (SSR SAFE)
   // =============================
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+ useEffect(() => {
+  const load = () => {
+    const stored = getCartFromLocalStorage();
+    setCartItems(stored);
+    setIsLoaded(true);
+  };
 
-    const loadCart = () => {
-      const stored = getCartFromLocalStorage();
-      setCartItems(stored);
-      setIsLoaded(true);
-    };
+  const id = setTimeout(load, 0);
 
-    // chama de forma assíncrona para evitar renderização em cascata
-    setTimeout(loadCart, 0);
-  }, []);
+  return () => clearTimeout(id);
+}, []);
 
   // =============================
   // SAVE (DEBOUNCE)
@@ -80,13 +80,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // =============================
   // ACTIONS
   // =============================
-  const addToCart = (item: Omit<CartItem, "quantity">, quantity: number = 1) => {
+  const addToCart = (
+    item: Omit<CartItem, "quantity">,
+    quantity: number = 1
+  ) => {
+    if (quantity <= 0) return;
+
     setCartItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
 
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
+          i.id === item.id
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
         );
       }
 
@@ -104,51 +111,65 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateQuantity = (id: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id);
-      return;
-    }
+    setCartItems((prev) => {
+      if (quantity <= 0) {
+        return prev.filter((item) => item.id !== id);
+      }
 
-    setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+      return prev.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+      );
+    });
   };
 
   // =============================
   // DERIVED STATE
   // =============================
-  const total = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const total = useMemo(() => {
+    return cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+  }, [cartItems]);
 
   // =============================
-  // FUTURE BACKEND SYNC
+  // BACKEND SYNC (SAFE FUTURE)
   // =============================
-  const syncWithBackend = async () => {
+  const syncWithBackend = async (userId: string) => {
     try {
-      // 🔹 MOCK: buscar carrinho do backend
-      const backendCart: CartItem[] = []; // aqui você faria fetch real
+      // 🔹 Exemplo futuro:
+      // const res = await fetch(`/api/cart?userId=${userId}`);
+      // const data = await res.json();
+      // const backendCart: CartItem[] = data.items;
 
-      // 🔹 Merge local + backend
-      const mergedCart: CartItem[] = [...cartItems];
+      const backendCart: CartItem[] = [];
 
-      backendCart.forEach((bItem) => {
-        const exists = mergedCart.find((lItem) => lItem.id === bItem.id);
-        if (exists) {
-          exists.quantity += bItem.quantity;
-        } else {
-          mergedCart.push(bItem);
-        }
+      setCartItems((prev) => {
+        const mergedMap = new Map<string, CartItem>();
+
+        [...prev, ...backendCart].forEach((item) => {
+          const existing = mergedMap.get(item.id);
+
+          if (existing) {
+            mergedMap.set(item.id, {
+              ...existing,
+              quantity: existing.quantity + item.quantity,
+            });
+          } else {
+            mergedMap.set(item.id, { ...item });
+          }
+        });
+
+        const mergedCart = Array.from(mergedMap.values());
+
+        saveCartToLocalStorage(mergedCart);
+
+        console.log(`Carrinho sincronizado (user: ${userId})`, mergedCart);
+
+        return mergedCart;
       });
-
-      setCartItems(mergedCart);
-      saveCartToLocalStorage(mergedCart);
-
-      // 🔹 MOCK: enviar carrinho mesclado pro backend
-      console.log("Carrinho sincronizado com backend:", mergedCart);
     } catch (error) {
-      console.error("Erro ao sincronizar carrinho com backend:", error);
+      console.error("Erro ao sincronizar carrinho:", error);
     }
   };
 
