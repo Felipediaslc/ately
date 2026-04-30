@@ -1,13 +1,13 @@
 # 📁 ately - Project Structure
 
-*Generated on: 22/04/2026, 23:13:47*
+*Generated on: 30/04/2026, 01:59:50*
 
 ## 📋 Quick Overview
 
 | Metric | Value |
 |--------|-------|
-| 📄 Total Files | 168 |
-| 📁 Total Folders | 70 |
+| 📄 Total Files | 193 |
+| 📁 Total Folders | 90 |
 | 🌳 Max Depth | 5 levels |
 | 🛠️ Tech Stack | React, Next.js, TypeScript, CSS, Node.js |
 
@@ -24,37 +24,37 @@
 
 ### By File Type
 
-- 🖼️ **.png** (PNG images): 58 files (34.5%)
-- ⚛️ **.tsx** (React TypeScript files): 53 files (31.5%)
-- 🔷 **.ts** (TypeScript files): 32 files (19.0%)
-- 🎨 **.svg** (SVG images): 12 files (7.1%)
-- 📄 **.mjs** (Other files): 2 files (1.2%)
-- ⚙️ **.json** (JSON files): 2 files (1.2%)
-- 📖 **.md** (Markdown files): 2 files (1.2%)
-- 🖼️ **.jpeg** (JPEG images): 2 files (1.2%)
-- 🚫 **.gitignore** (Git ignore): 1 files (0.6%)
-- 🖼️ **.ico** (Icon files): 1 files (0.6%)
-- 🔤 **.ttf** (TrueType fonts): 1 files (0.6%)
-- 🎨 **.css** (Stylesheets): 1 files (0.6%)
-- 📄 **.lock** (Other files): 1 files (0.6%)
+- ⚛️ **.tsx** (React TypeScript files): 65 files (33.7%)
+- 🖼️ **.png** (PNG images): 58 files (30.1%)
+- 🔷 **.ts** (TypeScript files): 45 files (23.3%)
+- 🎨 **.svg** (SVG images): 12 files (6.2%)
+- 📄 **.mjs** (Other files): 2 files (1.0%)
+- ⚙️ **.json** (JSON files): 2 files (1.0%)
+- 📖 **.md** (Markdown files): 2 files (1.0%)
+- 🖼️ **.jpeg** (JPEG images): 2 files (1.0%)
+- 🚫 **.gitignore** (Git ignore): 1 files (0.5%)
+- 🖼️ **.ico** (Icon files): 1 files (0.5%)
+- 🔤 **.ttf** (TrueType fonts): 1 files (0.5%)
+- 🎨 **.css** (Stylesheets): 1 files (0.5%)
+- 📄 **.lock** (Other files): 1 files (0.5%)
 
 ### By Category
 
-- **Assets**: 74 files (44.0%)
-- **React**: 53 files (31.5%)
-- **TypeScript**: 32 files (19.0%)
-- **Other**: 3 files (1.8%)
-- **Config**: 2 files (1.2%)
-- **Docs**: 2 files (1.2%)
-- **DevOps**: 1 files (0.6%)
-- **Styles**: 1 files (0.6%)
+- **Assets**: 74 files (38.3%)
+- **React**: 65 files (33.7%)
+- **TypeScript**: 45 files (23.3%)
+- **Other**: 3 files (1.6%)
+- **Config**: 2 files (1.0%)
+- **Docs**: 2 files (1.0%)
+- **DevOps**: 1 files (0.5%)
+- **Styles**: 1 files (0.5%)
 
 ### 📁 Largest Directories
 
-- **root**: 168 files
+- **root**: 193 files
+- **app**: 73 files
 - **public**: 73 files
 - **public\image**: 67 files
-- **app**: 52 files
 - **public\image\imagens**: 41 files
 
 ## 🌳 Directory Structure
@@ -64,6 +64,13 @@ ately/
 ├── 🟡 🚫 **.gitignore**
 ├── 🚀 app/
 │   ├── 📂 about/
+│   │   └── ⚛️ page.tsx
+│   ├── 📂 account/
+│   │   ├── 📂 [id]/
+│   │   │   └── ⚛️ page.tsx
+│   │   ├── 📂 address/
+│   │   │   ├── ⚛️ AddressForm.tsx
+│   │   │   └── ⚛️ page.tsx
 │   │   └── ⚛️ page.tsx
 │   ├── 📂 admin/
 │   │   ├── ⚛️ layout.tsx
@@ -81,6 +88,9 @@ ately/
 │   │   │   │   └── ⚛️ page.tsx
 │   │   │   └── ⚛️ page.tsx
 │   ├── 🔌 api/
+│   │   ├── 📂 account/
+│   │   │   └── 📂 address/
+│   │   │   │   └── 🔷 route.ts
 │   │   ├── 📂 admin/
 │   │   │   ├── 📂 login/
 │   │   │   │   └── 🔷 route.ts
@@ -95,6 +105,15 @@ ately/
 │   │   │   │   ├── 📂 [id]/
 │   │   │   │   │   └── 🔷 route.ts
 │   │   │   │   └── 🔷 route.ts
+│   │   ├── 📂 auth/
+│   │   │   ├── 📂 login/
+│   │   │   │   └── 🔷 route.ts
+│   │   │   ├── 📂 logout/
+│   │   │   │   └── 🔷 route.ts
+│   │   │   ├── 📂 me/
+│   │   │   │   └── 🔷 route.ts
+│   │   │   └── 📂 register/
+│   │   │   │   └── 🔷 route.ts
 │   │   ├── 📂 checkout/
 │   │   │   └── 🔷 route.ts
 │   │   ├── 📂 orders/
@@ -105,6 +124,8 @@ ately/
 │   │   ├── 📂 products/
 │   │   │   ├── 📂 [id]/
 │   │   │   │   └── 🔷 route.ts
+│   │   │   └── 🔷 route.ts
+│   │   ├── 📂 search/
 │   │   │   └── 🔷 route.ts
 │   │   ├── 📂 setup-admin/
 │   │   │   └── 🔷 route.ts
@@ -123,14 +144,19 @@ ately/
 │   ├── 🖼️ favicon.ico
 │   ├── 📂 favorites/
 │   │   └── ⚛️ page.tsx
+│   ├── 🎣 hooks/
+│   │   ├── 🔷 useAuth.ts
+│   │   └── 🔷 useSearch.ts
 │   ├── ⚛️ layout.tsx
 │   ├── 📚 lib/
-│   │   ├── 🔷 auth.ts
+│   │   ├── 🔷 debounce.ts
 │   │   ├── 📂 email/
 │   │   │   └── 🔷 template.ts
 │   │   ├── 🔷 mongodb.ts
 │   │   ├── 🔷 products.ts
 │   │   └── 🔷 shipping.ts
+│   ├── 📂 login/
+│   │   └── ⚛️ page.tsx
 │   ├── ⚛️ page.tsx
 │   ├── 📂 pedido/
 │   │   ├── 📂 falha/
@@ -138,7 +164,8 @@ ately/
 │   │   ├── 📂 pendente/
 │   │   │   └── ⚛️ page.tsx
 │   │   └── 📂 sucesso/
-│   │   │   └── ⚛️ page.tsx
+│   │   │   ├── ⚛️ page.tsx
+│   │   │   └── ⚛️ PedidoSucessoClient.tsx
 │   ├── 📂 products/
 │   │   ├── 📂 [id]/
 │   │   │   └── ⚛️ page.tsx
@@ -147,22 +174,37 @@ ately/
 │   │   │   │   └── ⚛️ page.tsx
 │   │   └── ⚛️ page.tsx
 │   ├── ⚛️ providers.tsx
+│   ├── 📂 register/
+│   │   └── ⚛️ page.tsx
 │   ├── 📂 server/
-│   │   └── 📂 db/
+│   │   ├── 📂 auth/
+│   │   │   ├── 🔷 getUser.ts
+│   │   │   └── 🔷 sign.ts
+│   │   ├── 📂 db/
 │   │   │   ├── 🔷 connect.ts
 │   │   │   └── 📂 models/
 │   │   │   │   ├── 🔷 Admin.ts
 │   │   │   │   ├── 🔷 Order.ts
-│   │   │   │   └── 🔷 Product.ts
+│   │   │   │   ├── 🔷 Product.ts
+│   │   │   │   └── 🔷 User.ts
+│   │   └── 📂 services/
+│   │   │   └── 📂 admin/
+│   │   │   │   └── 🔷 getAdminKpis.ts
 │   ├── 📂 types/
 │   │   ├── 🔷 cart.ts
 │   │   ├── 🔷 FavoriteItem.ts
+│   │   ├── 🔷 order.ts
 │   │   └── 🔷 product.ts
 │   └── 🔧 utils/
 │   │   ├── 🔷 formatMoney.ts
 │   │   ├── 🔷 getStatusConfig.ts
-│   │   └── 🔷 localStorageHelpers.ts
+│   │   ├── 🔷 localStorageHelpers.ts
+│   │   └── ⚛️ StatusBadge.tsx
 ├── 🧩 components/
+│   ├── 📂 account/
+│   │   └── ⚛️ ReorderButton.tsx
+│   ├── 📂 admin/
+│   │   └── ⚛️ KpiCard.tsx
 │   ├── 📂 Destaque/
 │   │   └── ⚛️ page.tsx
 │   ├── 📂 filters/
@@ -194,6 +236,9 @@ ately/
 │   │   └── ⚛️ page.tsx
 │   ├── 📂 Promot/
 │   │   └── ⚛️ PromoCarousels.tsx
+│   ├── 📂 search/
+│   │   └── ⚛️ SearchBar.tsx
+│   ├── ⚛️ StatusBadge.tsx
 │   ├── 📂 StickyTopBars/
 │   │   └── ⚛️ page.tsx
 │   ├── 📂 TickerBar/

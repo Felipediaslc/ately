@@ -58,6 +58,8 @@ export async function POST(req: Request) {
 
       const token = await signToken({
         sub: existingUser._id.toString(),
+        email: existingUser.email,
+        role: "user",
       });
 
       return createAuthResponse(
@@ -90,6 +92,8 @@ export async function POST(req: Request) {
 
     const token = await signToken({
       sub: user._id.toString(),
+      email: user.email,
+      role: "user",
     });
 
     return createAuthResponse(

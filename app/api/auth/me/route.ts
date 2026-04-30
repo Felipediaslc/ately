@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/app/server/auth/verify";
+import { verifyToken } from "@/app/server/auth/sign";
 import { connectDB } from "@/app/server/db/connect";
 import { UserModel } from "@/app/server/db/models/User";
 
@@ -8,7 +8,9 @@ export async function GET() {
   try {
     await connectDB();
 
+    
     const cookieStore = await cookies();
+
     const token = cookieStore.get("auth_token")?.value;
 
     if (!token) {

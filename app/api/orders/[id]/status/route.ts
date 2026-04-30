@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { connectDB } from "@/app/server/db/connect";
 import { OrderModel } from "@/app/server/db/models/Order";
 import type { OrderStatus } from "@/app/utils/getStatusConfig";
-import { getUserFromRequest } from "@/app/lib/auth";
+import { verifyToken, TokenPayload } from "@/app/server/auth/sign";
 
+// =========================
+// STATUS VALIDOS
+// =========================
 const validStatus: OrderStatus[] = [
   "pendente",
   "pago",
@@ -13,16 +17,39 @@ const validStatus: OrderStatus[] = [
   "estornado",
 ];
 
+// =========================
+// CONTEXT
+// =========================
 type Context = {
   params: Promise<{ id: string }>;
 };
 
+// =========================
+// AUTH ADMIN (PADRÃO FINAL)
+// =========================
+async function requireAdmin() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("admin_token")?.value;
+
+  if (!token) return null;
+
+  const user = await verifyToken<TokenPayload>(token);
+
+  if (!user || user.role !== "admin") {
+    return null;
+  }
+
+  return user;
+}
+
+// =========================
+// PATCH - UPDATE STATUS
+// =========================
 export async function PATCH(req: Request, context: Context) {
   try {
-    // 🔐 AUTH
-    const user = await getUserFromRequest(req);
+    const user = await requireAdmin();
 
-    if (!user || user.role !== "admin") {
+    if (!user) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -31,14 +58,11 @@ export async function PATCH(req: Request, context: Context) {
 
     await connectDB();
 
-    // 📦 PARAMS (NOVO PADRÃO NEXT 16)
     const { id } = await context.params;
 
-    // 📦 BODY
     const body = await req.json();
     const status: OrderStatus = body?.status;
 
-    // ✅ valida status
     if (!validStatus.includes(status)) {
       return NextResponse.json(
         { success: false, error: "Status inválido" },
@@ -46,7 +70,6 @@ export async function PATCH(req: Request, context: Context) {
       );
     }
 
-    // 🧠 update
     const order = await OrderModel.findByIdAndUpdate(
       id,
       { status },
@@ -60,7 +83,6 @@ export async function PATCH(req: Request, context: Context) {
       );
     }
 
-    // ✅ response padrão
     return NextResponse.json({
       success: true,
       data: {
@@ -68,7 +90,6 @@ export async function PATCH(req: Request, context: Context) {
         status: order.status,
       },
     });
-
   } catch (error) {
     console.error("ORDER STATUS ERROR:", error);
 

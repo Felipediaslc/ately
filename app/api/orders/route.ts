@@ -48,7 +48,8 @@ type Body = {
 export async function POST(req: Request) {
   try {
     await connectDB();
-const user = await getUser();
+    const user = await getUser();
+
     const body: Body = await req.json();
 
     const {
@@ -152,8 +153,23 @@ const user = await getUser();
     // 🚚 frete seguro
     const shippingPrice = Number(shipping.price || 0);
 
-    // 💰 total final (server-side authority)
+    // 💰 total final
     const total = subtotal + shippingPrice;
+
+    // 🔥 NORMALIZAÇÃO DO ENDEREÇO (FIX DO BUG)
+    const safeAddress = {
+      zipCode: address.zipCode,
+      street: address.street?.trim() || "",
+      number: address.number?.trim() || "",
+      complement: address.complement?.trim() || "",
+      neighborhood: address.neighborhood?.trim() || "",
+      city:
+        address.city?.toLowerCase().includes("selecion")
+          ? ""
+          : address.city?.trim() || "",
+      state: address.state?.trim() || "",
+      country: address.country?.trim() || "BR",
+    };
 
     // 💾 salvar pedido
     const order = await OrderModel.create({
@@ -161,7 +177,7 @@ const user = await getUser();
         ...customer,
         email,
       },
-      address,
+      address: safeAddress, // 👈 AQUI FOI CORRIGIDO
       items: itemsWithData,
       subtotal,
       shipping: {
@@ -173,8 +189,7 @@ const user = await getUser();
       installments: installments ?? 1,
       status: "pendente",
       createdAt: new Date(),
-      // 👇 AQUI É A CONEXÃO
-  userId: user ? user._id.toString() : undefined,
+      userId: user ? user._id.toString() : undefined,
     });
 
     return NextResponse.json(

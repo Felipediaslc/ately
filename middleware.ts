@@ -1,23 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify, JWTPayload } from "jose";
 
+/**
+ * =========================
+ *  PAYLOADS
+ * =========================
+ */
 
 type AdminPayload = {
+  sub: string;
   email: string;
   role: "admin";
 };
 
 type UserPayload = {
-  userId: string;
+  sub: string;
+  email: string;
+  role: "user";
 };
 
-
+/**
+ * =========================
+ *  JWT SECRET
+ * =========================
+ */
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 /**
-
- *  HELPER GENÉRICO (SEM any)
-
+ * =========================
+ *  VERIFY TOKEN (GENÉRICO)
+ * =========================
  */
 async function verifyToken<T = JWTPayload>(
   token: string | undefined
@@ -33,9 +45,9 @@ async function verifyToken<T = JWTPayload>(
 }
 
 /**
- * 
+ * =========================
  *  RESPONSE HELPERS
- * 
+ * =========================
  */
 function unauthorizedJson() {
   return NextResponse.json(
@@ -45,16 +57,22 @@ function unauthorizedJson() {
 }
 
 /**
- * 
+ * =========================
  *  MIDDLEWARE
- * 
+ * =========================
  */
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  /**
+   * COOKIES ISOLADOS
+   */
   const adminToken = req.cookies.get("admin_token")?.value;
-  const userToken = req.cookies.get("user_token")?.value;
+  const userToken = req.cookies.get("auth_token")?.value;
 
+  /**
+   * ROTAS
+   */
   const isAdminRoute = pathname.startsWith("/admin");
   const isApiAdminRoute = pathname.startsWith("/api/admin");
 
@@ -65,21 +83,14 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith("/api/user");
 
   /**
-
-   * ADMIN FRONT
-   
+   * =========================
+   *  ADMIN FRONT
+   * =========================
    */
   if (isAdminRoute && pathname !== "/admin/login") {
     const admin = await verifyToken<AdminPayload>(adminToken);
 
-    if (!admin) {
-      return NextResponse.redirect(
-        new URL("/admin/login", req.url)
-      );
-    }
-
-    //  ROLE CHECK (PRODUCTION READY)
-    if (admin.role !== "admin") {
+    if (!admin || admin.role !== "admin") {
       return NextResponse.redirect(
         new URL("/admin/login", req.url)
       );
@@ -89,19 +100,14 @@ export async function middleware(req: NextRequest) {
   }
 
   /**
- 
+   * =========================
    *  ADMIN API
-  
+   * =========================
    */
   if (isApiAdminRoute && pathname !== "/api/admin/login") {
     const admin = await verifyToken<AdminPayload>(adminToken);
 
-    if (!admin) {
-      return unauthorizedJson();
-    }
-
-    //  ROLE CHECK
-    if (admin.role !== "admin") {
+    if (!admin || admin.role !== "admin") {
       return unauthorizedJson();
     }
 
@@ -116,7 +122,7 @@ export async function middleware(req: NextRequest) {
   if (isUserProtectedRoute) {
     const user = await verifyToken<UserPayload>(userToken);
 
-    if (!user) {
+    if (!user || user.role !== "user") {
       if (pathname.startsWith("/api")) {
         return NextResponse.json(
           { error: "Unauthorized" },
@@ -135,7 +141,11 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-
+/**
+ * =========================
+ *  MATCHER
+ * =========================
+ */
 export const config = {
   matcher: [
     "/admin/:path*",

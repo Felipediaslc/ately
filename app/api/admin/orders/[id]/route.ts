@@ -1,45 +1,61 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { connectDB } from "@/app/server/db/connect";
 import { OrderModel } from "@/app/server/db/models/Order";
-import { getUserFromRequest } from "@/app/lib/auth";
+import { verifyToken, TokenPayload } from "@/app/server/auth/sign";
 import mongoose from "mongoose";
 
-// 🔧 helpers padrão
+// =========================
+// HELPERS
+// =========================
 function ok(data: unknown) {
   return NextResponse.json({ success: true, data });
 }
 
 function fail(message: string, status = 500) {
-  return NextResponse.json({ success: false, error: message }, { status });
+  return NextResponse.json(
+    { success: false, error: message },
+    { status }
+  );
 }
 
-// 🔐 valida admin
-async function requireAdmin(req: Request) {
-  const user = await getUserFromRequest(req);
-  if (!user || user.role !== "admin") return null;
-  return user;
-}
-
-// 🧠 valida ObjectId
 function isValidId(id: string) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-type Context = {
-  params: Promise<{ id: string }>;
-};
+// =========================
+// AUTH ADMIN (PADRÃO NOVO)
+// =========================
+async function requireAdmin() {
 
-//
-// 🔵 GET
-//
-export async function GET(req: Request, context: Context) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("admin_token")?.value;
+
+  if (!token) return null;
+
+  const user = await verifyToken<TokenPayload>(token);
+
+  if (!user || user.role !== "admin") {
+    return null;
+  }
+
+  return user;
+}
+
+// =========================
+// GET ORDER
+// =========================
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   const { id } = await context.params;
 
   if (!isValidId(id)) {
     return fail("ID inválido", 400);
   }
 
-  const user = await requireAdmin(req);
+  const user = await requireAdmin();
   if (!user) return fail("Unauthorized", 401);
 
   try {
@@ -61,17 +77,20 @@ export async function GET(req: Request, context: Context) {
   }
 }
 
-//
-// 🔴 DELETE
-//
-export async function DELETE(req: Request, context: Context) {
+// =========================
+// DELETE ORDER
+// =========================
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   const { id } = await context.params;
 
   if (!isValidId(id)) {
     return fail("ID inválido", 400);
   }
 
-  const user = await requireAdmin(req);
+  const user = await requireAdmin();
   if (!user) return fail("Unauthorized", 401);
 
   try {

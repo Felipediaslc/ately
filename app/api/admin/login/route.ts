@@ -1,43 +1,43 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { SignJWT } from "jose";
 import { connectDB } from "@/app/server/db/connect";
 import { AdminModel } from "@/app/server/db/models/Admin";
-
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+import { signToken } from "@/app/server/auth/sign";
 
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
-
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Missing credentials" },
+        { status: 400 },
+      );
+    }
     await connectDB();
 
     const admin = await AdminModel.findOne({ email });
 
     if (!admin) {
       return NextResponse.json(
-        { error: "Credenciais inválidas" },
-        { status: 401 }
+        { error: "Invalid credentials" },
+        { status: 401 },
       );
     }
 
-    const isValid = await bcrypt.compare(password, admin.password);
+    const ok = await bcrypt.compare(password, admin.password);
 
-    if (!isValid) {
+    if (!ok) {
       return NextResponse.json(
-        { error: "Credenciais inválidas" },
-        { status: 401 }
+        { error: "Invalid credentials" },
+        { status: 401 },
       );
     }
 
-    // 🔐 JWT (padrão melhorado)
-    const token = await new SignJWT({
-      userId: admin._id.toString(),
+    const token = await signToken({
+      sub: admin._id.toString(),
+      email: admin.email,
       role: "admin",
-    })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("1d")
-      .sign(secret);
+    });
 
     const response = NextResponse.json({ success: true });
 
@@ -50,13 +50,7 @@ export async function POST(req: Request) {
     });
 
     return response;
-
-  } catch (error) {
-    console.error("Erro login admin:", error);
-
-    return NextResponse.json(
-      { error: "Erro interno" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

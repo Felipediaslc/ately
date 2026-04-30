@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
-import {  redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { StatusBadge } from "@/components/StatusBadge";
+import { connectDB } from "@/app/server/db/connect";
+import { OrderModel } from "@/app/server/db/models/Order";
 
 import type { OrderStatus } from "@/app/utils/getStatusConfig";
 import { formatMoney } from "@/app/utils/formatMoney";
@@ -20,36 +22,23 @@ type Order = {
 async function getOrders(): Promise<Order[]> {
   try {
     const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
+    const token = cookieStore.get("admin_token")?.value;
+    if (!token) redirect("/admin/login");
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/admin/orders`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: cookieHeader,
-        },
-        cache: "no-store",
-      },
-    );
+    await connectDB();
 
-    if (res.status === 401) {
-      redirect("/admin/login");
-    }
+    const orders = await OrderModel.find()
+      .sort({ createdAt: -1 })
+      .lean();
 
-    if (!res.ok) return [];
-
-    const json = await res.json();
-
-    if (!json.success) return [];
-
-    return json.data;
+    return orders.map((order) => ({
+      ...order,
+      _id: order._id.toString(),
+    })) as Order[];
   } catch {
     return [];
   }
 }
-
-
 
 export default async function OrdersPage() {
   const orders = await getOrders();
@@ -57,7 +46,7 @@ export default async function OrdersPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 p-6">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* HEADER SAAS */}
+        {/* HEADER */}
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Pedidos</h1>
           <p className="text-sm text-zinc-500">
@@ -88,52 +77,52 @@ export default async function OrdersPage() {
               )}
 
               {orders.map((order) => (
-  <tr
-    key={order._id}
-    className="border-t border-zinc-800 hover:bg-zinc-800/50 transition"
-  >
-    <td colSpan={5} className="p-0">
-      <Link
-        href={`/admin/orders/${order._id}`}
-        className="block w-full"
-      >
-        <div className="grid grid-cols-5 items-center p-4">
+                <tr
+                  key={order._id}
+                  className="border-t border-zinc-800 hover:bg-zinc-800/50 transition"
+                >
+                  <td colSpan={5} className="p-0">
+                    <Link
+                      href={`/admin/orders/${order._id}`}
+                      className="block w-full"
+                    >
+                      <div className="grid grid-cols-5 items-center p-4">
 
-          {/* ID */}
-          <div className="font-mono text-xs text-zinc-500">
-            #{order._id.slice(-6)}
-          </div>
+                        {/* ID */}
+                        <div className="font-mono text-xs text-zinc-500">
+                          #{order._id.slice(-6)}
+                        </div>
 
-          {/* CLIENTE */}
-          <div>
-            <div className="font-medium text-zinc-100">
-              {order.customer?.name}
-            </div>
-            <div className="text-xs text-zinc-500">
-              {order.customer?.email}
-            </div>
-          </div>
+                        {/* CLIENTE */}
+                        <div>
+                          <div className="font-medium text-zinc-100">
+                            {order.customer?.name}
+                          </div>
+                          <div className="text-xs text-zinc-500">
+                            {order.customer?.email}
+                          </div>
+                        </div>
 
-          {/* TOTAL */}
-          <div className="text-zinc-200 font-medium">
-            {formatMoney(order.total ?? 0)}
-          </div>
+                        {/* TOTAL */}
+                        <div className="text-zinc-200 font-medium">
+                          {formatMoney(order.total ?? 0)}
+                        </div>
 
-          {/* STATUS */}
-          <div>
-            <StatusBadge status={order.status ?? "pendente"} />
-          </div>
+                        {/* STATUS */}
+                        <div>
+                          <StatusBadge status={order.status ?? "pendente"} />
+                        </div>
 
-          {/* DATA */}
-          <div className="text-zinc-500 text-xs">
-            {new Date(order.createdAt).toLocaleDateString("pt-BR")}
-          </div>
+                        {/* DATA */}
+                        <div className="text-zinc-500 text-xs">
+                          {new Date(order.createdAt).toLocaleDateString("pt-BR")}
+                        </div>
 
-        </div>
-      </Link>
-    </td>
-  </tr>
-))}
+                      </div>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

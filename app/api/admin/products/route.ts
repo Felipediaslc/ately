@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { connectDB } from "@/app/server/db/connect";
 import { ProductModel } from "@/app/server/db/models/Product";
-import { getUserFromRequest } from "@/app/lib/auth";
+import { verifyToken, TokenPayload   } from "@/app/server/auth/sign";
 
 // 🔧 helper de resposta padrão
 function ok(data: unknown) {
@@ -15,9 +16,14 @@ function fail(message: string, status = 500) {
   );
 }
 
-// 🔐 validação centralizada
-async function requireAdmin(req: Request) {
-  const user = await getUserFromRequest(req);
+// 🔐 valida admin (SISTEMA NOVO)
+async function requireAdmin() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("admin_token")?.value;
+
+  if (!token) return null;
+
+  const user = await verifyToken<TokenPayload >(token);
 
   if (!user || user.role !== "admin") {
     return null;
@@ -27,8 +33,8 @@ async function requireAdmin(req: Request) {
 }
 
 // 🔵 GET - LISTAR PRODUTOS
-export async function GET(req: Request) {
-  const user = await requireAdmin(req);
+export async function GET() {
+  const user = await requireAdmin();
 
   if (!user) {
     return fail("Unauthorized", 401);
@@ -50,7 +56,7 @@ export async function GET(req: Request) {
 
 // 🟢 POST - CRIAR PRODUTO
 export async function POST(req: Request) {
-  const user = await requireAdmin(req);
+  const user = await requireAdmin();
 
   if (!user) {
     return fail("Unauthorized", 401);
@@ -61,7 +67,6 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    // validação mínima
     if (!body.title || !body.price) {
       return fail("Dados inválidos", 400);
     }

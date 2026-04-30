@@ -4,8 +4,9 @@ import {
   Truck,
   XCircle,
   RotateCcw,
+  PackageCheck,
 } from "lucide-react";
-
+ 
 export type OrderStatus =
   | "pendente"
   | "pago"
@@ -13,56 +14,60 @@ export type OrderStatus =
   | "entregue"
   | "cancelado"
   | "estornado";
-
+ 
+const baseClass =
+  "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border";
+ 
 export function getStatusConfig(status: OrderStatus) {
   switch (status) {
     case "pendente":
       return {
         label: "Pendente",
         icon: Clock,
-        className: "inline-flex items-center   px-2 py-1 text-xs font-medium  rounded border  border-yellow-500/40   text-yellow-300  bg-yellow-500/10   backdrop-blur-sm",
+        className: `${baseClass} bg-yellow-50 border-yellow-300 text-yellow-700`,
       };
-
+ 
     case "pago":
       return {
         label: "Pago",
         icon: CheckCircle,
-        className: "bg-blue-100 text-blue-700",
+        className: `${baseClass} bg-blue-50 border-blue-300 text-blue-700`,
       };
-
+ 
     case "enviado":
       return {
         label: "Enviado",
         icon: Truck,
-        className: "bg-purple-100 text-purple-700 animate-pulse",
+        className: `${baseClass} bg-purple-50 border-purple-300 text-purple-700`,
       };
-
+ 
     case "entregue":
       return {
         label: "Entregue",
-        icon: CheckCircle,
-        className: "bg-green-100 text-green-700",
+        icon: PackageCheck,
+        className: `${baseClass} bg-green-50 border-green-300 text-green-700`,
       };
-
+ 
     case "cancelado":
       return {
         label: "Cancelado",
         icon: XCircle,
-        className: "bg-red-100 text-red-700",
+        className: `${baseClass} bg-red-50 border-red-300 text-red-700`,
       };
-
+ 
     case "estornado":
       return {
         label: "Estornado",
         icon: RotateCcw,
-        className: "bg-gray-100 text-gray-700",
+        className: `${baseClass} bg-zinc-100 border-zinc-300 text-zinc-600`,
       };
-
+ 
     default:
       return {
         label: status,
         icon: Clock,
-        className: "bg-zinc-100 text-zinc-700",
+        className: `${baseClass} bg-zinc-100 border-zinc-300 text-zinc-600`,
       };
   }
 }
+ 

@@ -1,13 +1,15 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/app/server/auth/getUser";
 import { connectDB } from "@/app/server/db/connect";
 import { OrderModel } from "@/app/server/db/models/Order";
-import Link from "next/link";
+import { StatusBadge } from "@/app/utils/StatusBadge";
+import type { OrderStatus } from "@/app/utils/getStatusConfig";
 
 type OrderDB = {
   _id: string;
   total: number;
-  status: string;
+  status: OrderStatus;
   createdAt: Date;
 };
 
@@ -24,18 +26,18 @@ export default async function AccountPage() {
     userId: user._id.toString(),
   })
     .sort({ createdAt: -1 })
-    .lean<OrderDB[]>();
+    .lean();
 
-  const formattedOrders: OrderDB[] = orders.map((order) => ({
-    _id: order._id.toString(),
-    total: order.total,
-    status: order.status,
-    createdAt: order.createdAt,
-  }));
+ const formattedOrders: OrderDB[] = orders.map((order) => ({
+  _id: String(order._id),
+  total: order.total,
+  status: order.status,
+  createdAt: order.createdAt,
+}));
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
-      
+
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-semibold">Minha Conta</h1>
@@ -78,9 +80,13 @@ export default async function AccountPage() {
 
           {user.address?.zipCode ? (
             <div className="text-sm space-y-1 text-gray-700">
-              <p>{user.address.street}, {user.address.number}</p>
+              <p>
+                {user.address.street}, {user.address.number}
+              </p>
               <p>{user.address.neighborhood}</p>
-              <p>{user.address.city} - {user.address.state}</p>
+              <p>
+                {user.address.city} - {user.address.state}
+              </p>
               <p>CEP: {user.address.zipCode}</p>
             </div>
           ) : (
@@ -90,7 +96,7 @@ export default async function AccountPage() {
           )}
         </div>
 
-        {/* 📦 PEDIDOS (FULL WIDTH) */}
+        {/* 📦 PEDIDOS */}
         <div className="md:col-span-2 bg-white rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
           <h2 className="text-lg font-semibold mb-4">Meus Pedidos</h2>
 
@@ -108,40 +114,22 @@ export default async function AccountPage() {
           ) : (
             <div className="space-y-4">
               {formattedOrders.map((order) => (
+                
                 <Link
                   key={order._id}
-                  href={`/account/orders/${order._id}`}
+                  href={`/account/${order._id}`}
+                  
                   className="block rounded-xl p-4 bg-gray-50 hover:bg-gray-100 transition"
                 >
                   <div className="flex justify-between mb-2 text-xs text-gray-500">
-                    <span>
-                      Pedido #{order._id.slice(-6)}
-                    </span>
+                    <span>Pedido #{order._id.slice(-6)}</span>
                     <span>
                       {new Date(order.createdAt).toLocaleDateString("pt-BR")}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center">
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full font-medium
-                        ${
-                          order.status === "pendente"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : order.status === "pago"
-                            ? "bg-blue-100 text-blue-700"
-                            : order.status === "enviado"
-                            ? "bg-purple-100 text-purple-700"
-                            : order.status === "entregue"
-                            ? "bg-green-100 text-green-700"
-                            : order.status === "cancelado"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
-                        }
-                      `}
-                    >
-                      {order.status}
-                    </span>
+                  <div className="  flex justify-between items-center">
+                    <StatusBadge status={order.status} />
 
                     <span className="font-semibold text-base">
                       {order.total.toLocaleString("pt-BR", {

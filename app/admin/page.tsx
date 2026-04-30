@@ -8,12 +8,9 @@ import {
   ShoppingCart,
   DollarSign,
   Clock,
-  LayoutDashboard,
   Package,
   ListOrdered,
-  Users,
   Settings,
-  LogOut,
   ChevronRight,
   Calendar,
 } from "lucide-react";
@@ -25,43 +22,20 @@ export default async function AdminPage() {
   const token = (await cookies()).get("admin_token")?.value;
   if (!token) redirect("/admin/login");
 
-  let email: string;
+  let email = "";
   try {
     const { payload } = await jwtVerify(token, secret);
-    email = payload.email as string;
+    email = (payload.email as string) ?? "";
+    console.log("email:", email); // aqui
   } catch {
     redirect("/admin/login");
   }
 
   const kpis = await getAdminKpis();
-
-  const navItems = [
-    {
-      label: "Dashboard",
-      href: "/admin",
-      icon: <LayoutDashboard size={16} />,
-      active: true,
-    },
-    {
-      label: "Pedidos",
-      href: "/admin/orders",
-      icon: <ListOrdered size={16} />,
-    },
-    { label: "Produtos", href: "/admin/products", icon: <Package size={16} /> },
-    { label: "Clientes", href: "/admin/customers", icon: <Users size={16} /> },
-    {
-      label: "Configurações",
-      href: "/admin/settings",
-      icon: <Settings size={16} />,
-    },
-  ];
-
   const recentOrders = kpis.recentOrders ?? [];
 
   return (
     <div className="flex min-h-screen bg-[#0f0f11] text-zinc-100">
-   
-      
 
       {/* MAIN */}
       <main className="flex-1 p-6 overflow-auto">
@@ -79,7 +53,7 @@ export default async function AdminPage() {
                 <Calendar size={12} />
                 Últimos 30 dias
               </div>
-              <div className="w-8 h-8 rounded-lg bg-indigo-950 border border-indigo-900 flex items-center justify-center text-xs font-semibold text-indigo-400">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 border border-indigo-500 flex items-center justify-center text-xs font-semibold text-white">
                 {email.slice(0, 2).toUpperCase()}
               </div>
             </div>
