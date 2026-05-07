@@ -33,7 +33,7 @@ export default function FreightBar({
         >
           {frases.map((frase, index) => (
             <div key={index} className="min-w-full flex items-center justify-center">
-              <span className="flex items-center gap-2 text-white text-[9.1px] md:text-sm font-semibold tracking-[0.5px] leading-none">
+              <span className="flex items-center gap-2 text-white text-[8.8px] md:text-sm font-semibold tracking-[0.5px] leading-none">
                 {frase}
                 {index === 0 && (
                   <svg
