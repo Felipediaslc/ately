@@ -12,7 +12,7 @@ import { useCart } from "@/app/context/cart/CartContext";
 import type { Product as AppProduct } from "@/app/types/product";
 
 export interface RelatedProduct {
-  id: string;
+  productId: string; // ← era id
   title: string;
   price: number;
   image: string;
@@ -38,9 +38,8 @@ export default function ProductDetails({ product }: Props) {
   const [relatedStates, setRelatedStates] = React.useState<Record<string, BtnState>>({});
   const [quantity, setQuantity] = React.useState(1);
 
-  const mainImage = product.images?.[0] || "/image/produto01.png";
+  const mainImage = product.images?.[0] || "/image/logo.jpeg";
 
-  // 🔥 estoque real (sem mudar visual)
   let stock = null;
 
   if (product.stock === 0) {
@@ -57,7 +56,7 @@ export default function ProductDetails({ product }: Props) {
     setCartState("loading");
 
     addToCart(
-      { id: product._id, title: product.title, price: product.price, image: mainImage },
+      { productId: product.productId, title: product.title, price: product.price, image: mainImage }, // ← era _id
       quantity
     );
 
@@ -69,23 +68,23 @@ export default function ProductDetails({ product }: Props) {
 
   const formattedRelatedProducts: RelatedProduct[] =
     product.relatedProducts?.map((p) => ({
-      id: p._id,
+      productId: p.productId, // ← era _id
       title: p.title,
       price: p.price,
-      image: p.images?.[0] || "/image/produto01.png",
+      image: p.images?.[0] || "/image/logo.jpeg",
     })) || [];
 
   const handleBuyRelated = (p: RelatedProduct) => {
-    if (relatedStates[p.id] && relatedStates[p.id] !== "idle") return;
+    if (relatedStates[p.productId] && relatedStates[p.productId] !== "idle") return; // ← era p.id
 
-    setRelatedStates((prev) => ({ ...prev, [p.id]: "loading" }));
+    setRelatedStates((prev) => ({ ...prev, [p.productId]: "loading" })); // ← era p.id
 
     addToCart({ ...p }, 1);
 
     setTimeout(() => {
-      setRelatedStates((prev) => ({ ...prev, [p.id]: "done" }));
+      setRelatedStates((prev) => ({ ...prev, [p.productId]: "done" })); // ← era p.id
       setTimeout(() => {
-        setRelatedStates((prev) => ({ ...prev, [p.id]: "idle" }));
+        setRelatedStates((prev) => ({ ...prev, [p.productId]: "idle" })); // ← era p.id
       }, 2000);
     }, 1200);
   };
@@ -132,10 +131,10 @@ export default function ProductDetails({ product }: Props) {
 
                 <FavoriteButton
                   product={{
-                    id: product._id,
+                    productId: product.productId, // ← era _id
                     title: product.title,
                     price: product.price,
-                    image: product.images?.[0] || "",
+                    images: product.images || [],
                     pixPrice: product.pixPrice,
                   }}
                 />
@@ -178,7 +177,6 @@ export default function ProductDetails({ product }: Props) {
       {/* Info */}
       <div className="lg:w-1/2 flex flex-col">
 
-        {/* 🔥 FLAGS */}
         <div className="self-start mb-3 flex gap-2">
           {product.isUnique && (
             <span className="text-[11px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full bg-[#FFFFFFFF] text-gray-500">
@@ -264,7 +262,6 @@ export default function ProductDetails({ product }: Props) {
           )}
         </button>
 
-        {/* Confiança */}
         <div className="flex items-center gap-6 mt-5 pt-5 border-t border-gray-100">
           <div className="flex items-center gap-2 text-gray-500">
             <Truck size={16} />
@@ -294,7 +291,7 @@ export default function ProductDetails({ product }: Props) {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
               {formattedRelatedProducts.map((p) => (
                 <div
-                  key={p.id}
+                  key={p.productId} // ← era p.id
                   className="bg-[#FFFFFFFF] border border-gray-200 rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200"
                 >
                   <div className="w-full flex justify-center items-center p-4 bg-[#FFFFFFFF]">
@@ -311,18 +308,18 @@ export default function ProductDetails({ product }: Props) {
 
                     <button
                       onClick={() => handleBuyRelated(p)}
-                      disabled={relatedStates[p.id] && relatedStates[p.id] !== "idle"}
+                      disabled={relatedStates[p.productId] && relatedStates[p.productId] !== "idle"} // ← era p.id
                       className={
                         "w-full mt-1 text-white text-xs font-semibold px-2 py-1.5 rounded-lg transition " +
-                        (relatedStates[p.id] === "done"
+                        (relatedStates[p.productId] === "done" // ← era p.id
                           ? "bg-emerald-500"
                           : "bg-green-600 hover:bg-green-700") +
                         " disabled:opacity-90"
                       }
                     >
-                      {(!relatedStates[p.id] || relatedStates[p.id] === "idle") && "Comprar"}
-                      {relatedStates[p.id] === "loading" && "Incluindo..."}
-                      {relatedStates[p.id] === "done" && "Incluído!"}
+                      {(!relatedStates[p.productId] || relatedStates[p.productId] === "idle") && "Comprar"} 
+                      {relatedStates[p.productId] === "loading" && "Incluindo..."}
+                      {relatedStates[p.productId] === "done" && "Incluído!"}
                     </button>
                   </div>
                 </div>

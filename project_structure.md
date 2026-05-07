@@ -1,6 +1,6 @@
 # 📁 ately - Project Structure
 
-*Generated on: 30/04/2026, 01:59:50*
+*Generated on: 05/05/2026, 10:48:41*
 
 ## 📋 Quick Overview
 

@@ -4,10 +4,13 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { getProducts } from "@/app/lib/products";
 
 interface GridProduct {
-  id: string;
+  productId: string;
+
   title: string;
   price: number;
-  image: string;
+
+  images: string[];
+
   pixPrice?: number;
 
   stock: number;
@@ -17,7 +20,7 @@ interface GridProduct {
 }
 
 interface Props {
-  params: Promise<{ slug: string }>; // ✅ Next 16
+  params: Promise<{ slug: string }>;
 }
 
 const categoryNamesMap: Record<string, string> = {
@@ -28,9 +31,6 @@ const categoryNamesMap: Record<string, string> = {
   pingente: "Pingente",
 };
 
-//
-// 🔥 SEO POR CATEGORIA (NOVO)
-//
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
 
@@ -43,29 +43,28 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  // ✅ Next 16 (await obrigatório)
   const { slug } = await params;
 
-  // 🔹 busca produtos
   const products = await getProducts();
 
-  // 🔹 filtra por categoria
   const filteredProducts = products.filter(
     (p) => p.categorySlug === slug
   );
 
-  // ✅ valida corretamente
   if (!filteredProducts.length) return notFound();
 
-  // 🔹 nome da categoria
   const categoryName = categoryNamesMap[slug] || slug;
 
-  // 🔹 formatação pro grid
   const formattedProducts: GridProduct[] = filteredProducts.map((p) => ({
-    id: p._id,
+    productId: p.productId.toString(),
+
     title: p.title,
     price: p.price,
-    image: p.images?.[0] || "/image/produto01.png",
+
+    images: p.images?.length
+      ? p.images
+      : ["/image/logo.jpeg"],
+
     pixPrice: p.pixPrice,
 
     stock: p.stock ?? 0,

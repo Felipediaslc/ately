@@ -1,97 +1,88 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { z } from "zod";
+
 import { OrderModel } from "@/app/server/db/models/Order";
 import { ProductModel } from "@/app/server/db/models/Product";
 import { getUser } from "@/app/server/auth/getUser";
 
-// 🔌 conexão
+// 🔌 DB CONNECTION
 async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
   await mongoose.connect(process.env.MONGODB_URI as string);
 }
 
-// 🔹 types
-type ItemInput = {
-  productId: string;
-  quantity: number;
-};
+// 🛡️ SCHEMA
+const OrderSchema = z.object({
+  customer: z.object({
+    name: z.string().min(1),
+    email: z.string().email(),
+    phone: z.string().min(1),
+  }),
 
-type Customer = {
-  name: string;
-  email: string;
-  phone: string;
-};
+  address: z.object({
+    zipCode: z.string().min(1),
+    street: z.string().optional(),
+    number: z.string().optional(),
+    complement: z.string().optional(),
+    neighborhood: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    country: z.string().optional(),
+  }),
 
-type Address = {
-  zipCode: string;
-  street?: string;
-  number?: string;
-  complement?: string;
-  neighborhood?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-};
+  items: z.array(
+    z.object({
+      productId: z.string().min(1),
+      quantity: z.number().int().positive(),
+    })
+  ),
 
-type Body = {
-  customer: Customer;
-  address: Address;
-  items: ItemInput[];
-  shipping: {
-    price: number;
-    method?: string;
-  };
-  paymentMethod: "pix" | "card";
-  installments?: number;
-};
+  shipping: z.object({
+    price: z.number().min(0),
+    method: z.string().optional(),
+  }),
+
+  paymentMethod: z.enum(["pix", "card"]),
+
+  installments: z.number().int().positive().optional(),
+});
+
+type OrderInput = z.infer<typeof OrderSchema>;
+
+// 🔥 helper: valida ObjectId
+const isObjectId = (id: string) =>
+  /^[0-9a-fA-F]{24}$/.test(id);
 
 export async function POST(req: Request) {
   try {
     await connectDB();
+
     const user = await getUser();
 
-    const body: Body = await req.json();
+    const raw = await req.json();
 
-    const {
-      customer,
-      address,
-      items,
-      shipping,
-      paymentMethod,
-      installments,
-    } = body;
+    console.log("RAW BODY:", JSON.stringify(raw, null, 2));
 
-    // 🔐 normalização
-    const email = customer.email?.toLowerCase().trim();
+    const parsed = OrderSchema.safeParse(raw);
 
-    // 🔐 validação base
-    if (
-      !customer.name ||
-      !email ||
-      !customer.phone ||
-      !address.zipCode ||
-      !Array.isArray(items) ||
-      items.length === 0 ||
-      shipping?.price == null ||
-      !paymentMethod
-    ) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Dados incompletos" },
+        {
+          error: "Payload inválido",
+          details: parsed.error.flatten(),
+        },
         { status: 400 }
       );
     }
 
-    // 🔐 valida itens
-    for (const item of items) {
-      if (!item.productId || item.quantity <= 0) {
-        return NextResponse.json(
-          { error: "Item inválido" },
-          { status: 400 }
-        );
-      }
-    }
+    const body: OrderInput = parsed.data;
 
-    // 🛑 idempotência simples
+    // ============================
+    // 🔥 ANTI-DUPLICATE ORDER
+    // ============================
+    const email = body.customer.email.toLowerCase().trim();
+
     const recentOrder = await OrderModel.findOne({
       "customer.email": email,
       createdAt: {
@@ -106,87 +97,115 @@ export async function POST(req: Request) {
       );
     }
 
-    // 🔍 buscar produtos
-    const productIds = items.map((i) => i.productId);
+    // ============================
+    // 🔥 PRODUCT IDS (FIX REAL)
+    // ============================
+    const productIds = body.items.map((i) => i.productId);
 
+    const validProductIds = productIds.filter(isObjectId);
+
+    if (validProductIds.length === 0) {
+      return NextResponse.json(
+        { error: "Nenhum productId válido (ObjectId)" },
+        { status: 400 }
+      );
+    }
+
+    // ============================
+    // 🔥 FIND PRODUCTS
+    // ============================
     const products = await ProductModel.find({
-      _id: { $in: productIds },
+      _id: { $in: validProductIds },
     });
 
     const productMap = new Map(
       products.map((p) => [p._id.toString(), p])
     );
 
-    // 💣 build seguro do pedido
     let subtotal = 0;
 
-    const itemsWithData = items.map((item) => {
-      const product = productMap.get(item.productId);
+    // ============================
+    // 🔥 BUILD ITEMS
+    // ============================
+    const itemsWithData = body.items
+      .map((item) => {
+        const product = productMap.get(item.productId);
 
-      if (!product) {
-        throw new Error(`Produto não encontrado: ${item.productId}`);
-      }
+        if (!product) return null;
 
-      const price =
-        paymentMethod === "pix" && product.pixPrice != null
-          ? product.pixPrice
-          : product.price;
+        const price =
+          body.paymentMethod === "pix" && product.pixPrice != null
+            ? product.pixPrice
+            : product.price;
 
-      const numericPrice = Number(price);
-      const quantity = Number(item.quantity);
+        subtotal += Number(price) * item.quantity;
 
-      if (isNaN(numericPrice) || isNaN(quantity)) {
-        throw new Error(`Valor inválido no produto ${item.productId}`);
-      }
+        return {
+          productId: product._id.toString(),
+          title: product.title,
+          price: Number(price),
+          quantity: item.quantity,
+          image: product.images?.[0] ?? null,
+        };
+      })
+      .filter(Boolean);
 
-      subtotal += numericPrice * quantity;
-
-      return {
-        productId: product._id.toString(),
-        title: product.title,
-        price: numericPrice,
-        quantity,
-        image: product.images?.[0] ?? null,
-      };
-    });
-
-    // 🚚 frete seguro
-    const shippingPrice = Number(shipping.price || 0);
-
-    // 💰 total final
+    // ============================
+    // SHIPPING / TOTAL
+    // ============================
+    const shippingPrice = Number(body.shipping.price || 0);
     const total = subtotal + shippingPrice;
 
-    // 🔥 NORMALIZAÇÃO DO ENDEREÇO (FIX DO BUG)
+    // ============================
+    // ADDRESS VALIDATION
+    // ============================
+    const city = body.address.city?.trim();
+    const state = body.address.state?.trim();
+    const country = body.address.country?.trim();
+
+    if (!city || city === "Selecionar") {
+      return NextResponse.json(
+        { error: "Cidade inválida" },
+        { status: 400 }
+      );
+    }
+
+    if (!state || state === "Selecionar") {
+      return NextResponse.json(
+        { error: "Estado inválido" },
+        { status: 400 }
+      );
+    }
+
     const safeAddress = {
-      zipCode: address.zipCode,
-      street: address.street?.trim() || "",
-      number: address.number?.trim() || "",
-      complement: address.complement?.trim() || "",
-      neighborhood: address.neighborhood?.trim() || "",
-      city:
-        address.city?.toLowerCase().includes("selecion")
-          ? ""
-          : address.city?.trim() || "",
-      state: address.state?.trim() || "",
-      country: address.country?.trim() || "BR",
+      zipCode: body.address.zipCode,
+      street: body.address.street?.trim() || "",
+      number: body.address.number?.trim() || "",
+      complement: body.address.complement?.trim() || "",
+      neighborhood: body.address.neighborhood?.trim() || "",
+      city,
+      state,
+      country: country || "BR",
     };
 
-    // 💾 salvar pedido
+    // ============================
+    // CREATE ORDER
+    // ============================
     const order = await OrderModel.create({
       customer: {
-        ...customer,
+        ...body.customer,
         email,
       },
-      address: safeAddress, // 👈 AQUI FOI CORRIGIDO
+      address: safeAddress,
       items: itemsWithData,
       subtotal,
       shipping: {
         price: shippingPrice,
-        method: shipping.method || "Entrega",
+        method: body.shipping.method || "Entrega",
       },
       total,
-      paymentMethod,
-      installments: installments ?? 1,
+      paymentMethod: body.paymentMethod,
+      installments: body.installments ?? 1,
       status: "pendente",
       createdAt: new Date(),
       userId: user ? user._id.toString() : undefined,

@@ -24,28 +24,28 @@ export function getStatusConfig(status: OrderStatus) {
       return {
         label: "Pendente",
         icon: Clock,
-        className: `${baseClass} bg-yellow-50 border-yellow-300 text-yellow-700`,
+        className: `${baseClass} bg-yellow-50 border-yellow-300 text-yellow-500`,
       };
  
     case "pago":
       return {
         label: "Pago",
         icon: CheckCircle,
-        className: `${baseClass} bg-blue-50 border-blue-300 text-blue-700`,
+        className: `${baseClass} bg-lime-50 border-lime-300 text-lime-500`,
       };
  
     case "enviado":
       return {
         label: "Enviado",
         icon: Truck,
-        className: `${baseClass} bg-purple-50 border-purple-300 text-purple-700`,
+        className: `${baseClass} bg-blue-50 border-blue-300 text-blue-500`,
       };
  
     case "entregue":
       return {
         label: "Entregue",
         icon: PackageCheck,
-        className: `${baseClass} bg-green-50 border-green-300 text-green-700`,
+        className: `${baseClass} bg-green-200 border-green-300 text-green-500`,
       };
  
     case "cancelado":

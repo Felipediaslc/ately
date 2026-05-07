@@ -21,7 +21,13 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { type, data } = body;
 
+    // ✅ só processa pagamento
     if (type !== "payment") {
+      return NextResponse.json({ received: true });
+    }
+
+    // ✅ segurança básica
+    if (!data?.id) {
       return NextResponse.json({ received: true });
     }
 
@@ -41,32 +47,37 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true });
     }
 
-    // 🔄 status mapping
+    // ✅ mapping completo de status
     let dbStatus = "";
 
     if (status === "approved") dbStatus = "pago";
+    if (status === "pending") dbStatus = "pendente";
     if (status === "refunded") dbStatus = "estornado";
     if (status === "cancelled") dbStatus = "cancelado";
 
+    // ✅ update seguro (idempotente)
     if (dbStatus && order.status !== dbStatus) {
-      await OrderModel.findByIdAndUpdate(orderId, { status: dbStatus });
+      order.status = dbStatus;
+      await order.save();
     }
 
-    // ✉️ EMAILS SOMENTE SE APROVADO
+    // ✉️ EMAILS (somente aprovado)
     if (status === "approved") {
-      // 👇 CRIA RESEND AQUI (SAFE)
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
 
-      const totalFormatado = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(order.total);
+      const format = (v: number) =>
+        new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(v);
+
+      const totalFormatado = format(order.total);
 
       const formattedItems = order.items
         .map(
           (item: OrderItem) =>
-            `${item.title} x${item.quantity} — R$ ${item.price}<br/>`
+            `${item.title} x${item.quantity} — ${format(item.price)}<br/>`
         )
         .join("");
 
@@ -76,7 +87,7 @@ ${order.address.neighborhood}
 ${order.address.city} - ${order.address.state}
 `;
 
-      // CLIENTE
+      // 📩 CLIENTE
       if (!order.emailClientSent) {
         await resend.emails.send({
           from: "SD Ateliê <onboarding@resend.dev>",
@@ -93,12 +104,11 @@ ${order.address.city} - ${order.address.state}
           }),
         });
 
-        await OrderModel.findByIdAndUpdate(orderId, {
-          emailClientSent: true,
-        });
+        order.emailClientSent = true;
+        await order.save();
       }
 
-      // ADMIN
+      // 📩 ADMIN
       if (!order.emailAdminSent) {
         await resend.emails.send({
           from: "SD Ateliê <onboarding@resend.dev>",
@@ -114,9 +124,8 @@ ${order.address.city} - ${order.address.state}
           }),
         });
 
-        await OrderModel.findByIdAndUpdate(orderId, {
-          emailAdminSent: true,
-        });
+        order.emailAdminSent = true;
+        await order.save();
       }
     }
 

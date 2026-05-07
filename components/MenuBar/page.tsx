@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,14 +22,42 @@ const categories = [
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const { cartItems } = useCart();
   const pathname = usePathname();
   const router = useRouter();
 
   const { user, refresh } = useAuth();
-
-  const { cartItems } = useCart();
   const { favoriteItems } = useFavorites();
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // 🔥 FECHAR AO CLICAR FORA
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setOpenLogin(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const totalCartItems = cartItems.reduce(
     (sum, item) => sum + item.quantity,
@@ -44,8 +72,7 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-
-      await refresh(); // 🔥 atualiza user imediatamente
+      await refresh();
 
       setOpenLogin(false);
 
@@ -57,16 +84,13 @@ export default function Header() {
   };
 
   // =========================
-  // OPEN DROPDOWN (FORÇA SYNC)
+  // USER MENU
   // =========================
   const handleOpenUserMenu = async () => {
-    await refresh(); // 🔥 garante estado atualizado antes de abrir
     setOpenLogin((prev) => !prev);
+    await refresh();
   };
 
-  // =========================
-  // NAV + CLOSE DROPDOWN
-  // =========================
   const goTo = (path: string) => {
     setOpenLogin(false);
     router.push(path);
@@ -78,7 +102,7 @@ export default function Header() {
       {/* HEADER */}
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-2 md:gap-4 px-4 py-3">
 
-        {/* MOBILE MENU BTN */}
+        {/* MOBILE MENU */}
         <button
           className="md:hidden text-primary shrink-0"
           onClick={() => setOpenMenu(true)}
@@ -113,7 +137,7 @@ export default function Header() {
           {/* FAVORITES */}
           <Link href="/favorites" className="relative text-primary">
             <Heart size={24} />
-            {totalFavorites > 0 && (
+            {mounted && totalFavorites > 0 && (
               <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
                 {totalFavorites}
               </span>
@@ -123,7 +147,7 @@ export default function Header() {
           {/* CART */}
           <Link href="/cart" className="relative text-primary">
             <ShoppingCart size={24} />
-            {totalCartItems > 0 && (
+            {mounted && totalCartItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-fuchsia-700 text-white text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full">
                 {totalCartItems}
               </span>
@@ -131,7 +155,7 @@ export default function Header() {
           </Link>
 
           {/* USER */}
-          <div className="relative text-primary">
+          <div ref={userMenuRef} className="relative text-primary">
 
             <button onClick={handleOpenUserMenu}>
               <User size={24} />

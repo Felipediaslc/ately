@@ -8,7 +8,8 @@ import type { FavoriteItem  } from "@/app/types/FavoriteItem"
 // =============================
 export const saveCartToLocalStorage = (cart: CartItem[]) => {
   try {
-    localStorage.setItem("cart", JSON.stringify(cart));
+    const safeCart = cart.filter((item) => item?.productId?.trim());
+    localStorage.setItem("cart", JSON.stringify(safeCart));
   } catch (error) {
     console.error("Erro ao salvar carrinho:", error);
   }
@@ -17,8 +18,30 @@ export const saveCartToLocalStorage = (cart: CartItem[]) => {
 export const getCartFromLocalStorage = (): CartItem[] => {
   try {
     const stored = localStorage.getItem("cart");
-    if (stored) return JSON.parse(stored) as CartItem[];
-    return [];
+    if (!stored) return [];
+
+    const parsed: unknown[] = JSON.parse(stored);
+
+    return parsed
+      .map((item) => {
+        const i = item as Partial<CartItem> & { _id?: string };
+
+        const productId = i.productId ?? i._id ?? "";
+
+        return {
+          productId,
+          title: i.title ?? "",
+          price: i.price ?? 0,
+          image: i.image ?? "",
+          sku: i.sku,
+          pixPrice: i.pixPrice,
+          quantity: i.quantity ?? 1,
+        };
+      })
+      .filter((item) => {
+        // 🔥 BLOQUEIA LIXO ANTIGO
+        return item.productId && item.productId.length > 10;
+      });
   } catch (error) {
     console.error("Erro ao ler carrinho:", error);
     return [];

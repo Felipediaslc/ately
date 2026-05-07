@@ -22,19 +22,21 @@ export default async function AccountPage() {
 
   await connectDB();
 
-  const orders = await OrderModel.find({
-    userId: user._id.toString(),
-  })
-    .sort({ createdAt: -1 })
-    .lean();
+const orders = await OrderModel.find({
+  $or: [
+    { userId: user._id.toString() }, // pedidos logado
+    { "customer.email": user.email }, // pedidos guest
+  ],
+})
+  .sort({ createdAt: -1 })
+  .lean();
 
- const formattedOrders: OrderDB[] = orders.map((order) => ({
+const formattedOrders: OrderDB[] = orders.map((order) => ({
   _id: String(order._id),
   total: order.total,
   status: order.status,
   createdAt: order.createdAt,
 }));
-
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
 

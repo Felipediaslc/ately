@@ -17,7 +17,7 @@ export function ReorderButton({ items }: { items: Item[] }) {
     items.forEach((item) => {
       addToCart(
         {
-          id: item.productId,
+            productId: item.productId,
           title: item.title,
           price: item.price,
           image: item.image || "/placeholder.png",

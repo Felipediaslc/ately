@@ -21,11 +21,17 @@ export default function FeaturedProducts() {
   const { addToCart } = useCart();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
-  const autoplay = React.useMemo(() => Autoplay({ delay: 3000, stopOnInteraction: false }), []);
+  const autoplay = React.useMemo(
+    () => Autoplay({ delay: 3000, stopOnInteraction: false }),
+    []
+  );
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [autoplay]);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
   const [addedId, setAddedId] = React.useState<number | null>(null);
+
+  const FALLBACK_IMAGE = "/image/logo.jpeg";
 
   const products: Product[] = [
     { id: 1, image: "/image/imagens/ns-aparecida-dourado-12cm-frente.png", title: "N. Senhora Aparecida", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
@@ -37,29 +43,33 @@ export default function FeaturedProducts() {
     { id: 7, image: "/image/mandalas/mandala-imaculada-conceicao.png", title: "Mandala N. Senora Imaculada Conceição", price: "R$80,00", pixPrice: "R$75,00 com Pix", stock: 10 },
   ];
 
+  const parsePrice = (value: string) =>
+    Number(value.replace("R$", "").replace(".", "").replace(",", "."));
+
+  const parsePixPrice = (value: string) =>
+    Number(
+      value
+        .replace("R$", "")
+        .replace(" com Pix", "")
+        .replace(".", "")
+        .replace(",", ".")
+    );
+
   const getStockInfo = (stock: number) => {
-    if (stock === 0) {
-      return { label: "Esgotado", color: "bg-red-500", text: "text-red-700" };
-    }
-    if (stock <= 3) {
-      return { label: "Últimas unidades", color: "bg-yellow-400", text: "text-yellow-700" };
-    }
+    if (stock === 0) return { label: "Esgotado", color: "bg-red-500", text: "text-red-700" };
+    if (stock <= 3) return { label: "Últimas unidades", color: "bg-yellow-400", text: "text-yellow-700" };
     return { label: "Em estoque", color: "bg-green-500", text: "text-green-700" };
   };
 
   const handleAddToCart = (product: Product) => {
     if (product.stock === 0) return;
 
-    const priceNumber = Number(product.price.replace("R$", "").replace(",", "."));
-
     addToCart({
-      id: String(product.id),
+      productId: String(product.id),
       title: product.title,
-      price: priceNumber,
-      image: product.image,
-      pixPrice:
-        Number(product.pixPrice.replace("R$", "").replace(" com Pix", "").replace(",", ".")) ||
-        undefined,
+      price: parsePrice(product.price),
+      image: product.image || FALLBACK_IMAGE,
+      pixPrice: parsePixPrice(product.pixPrice) || undefined,
     });
 
     setAddedId(product.id);
@@ -67,40 +77,49 @@ export default function FeaturedProducts() {
   };
 
   const toggleFavorite = (product: Product) => {
-    if (isFavorite(String(product.id))) {
-      removeFavorite(String(product.id));
-    } else {
-      addFavorite({
-        id: String(product.id),
-        title: product.title,
-        price: Number(product.price.replace("R$", "").replace(",", ".")),
-        image: product.image,
-        pixPrice:
-          Number(product.pixPrice.replace("R$", "").replace(" com Pix", "").replace(",", ".")) ||
-          undefined,
-      });
+    const id = String(product.id);
+
+    if (isFavorite(id)) {
+      removeFavorite(id);
+      return;
     }
+
+    addFavorite({
+       productId: String(product.id),
+      title: product.title,
+      price: parsePrice(product.price),
+      images: [product.image || FALLBACK_IMAGE],
+      pixPrice: parsePixPrice(product.pixPrice) || undefined,
+    });
   };
 
   React.useEffect(() => {
     if (!emblaApi) return;
+
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     const onInit = () => setScrollSnaps(emblaApi.scrollSnapList());
+
     onInit();
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onInit);
+
     return () => {
       emblaApi.off("select", onSelect);
       emblaApi.off("reInit", onInit);
     };
   }, [emblaApi]);
 
-  const scrollTo = React.useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+  const scrollTo = React.useCallback(
+    (index: number) => emblaApi?.scrollTo(index),
+    [emblaApi]
+  );
 
   return (
     <section className="w-full bg-[#FAF7F2] py-12 px-6 lg:px-20">
       <div className="mb-10">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-primary">Destaque</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-primary">
+          Destaque
+        </h2>
       </div>
 
       <div className="overflow-hidden py-4" ref={emblaRef}>
@@ -110,18 +129,21 @@ export default function FeaturedProducts() {
             const stockInfo = getStockInfo(product.stock);
 
             return (
-              <div key={product.id} className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-3">
+              <div
+                key={product.id}
+                className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-3"
+              >
                 <div className="bg-[#FFFFFF] rounded-xl flex flex-col transition hover:shadow-lg overflow-hidden">
 
-                  {/* Imagem */}
                   <div className="relative w-full h-72 overflow-hidden group">
                     <Image
-                      src={product.image}
+                      src={product.image || FALLBACK_IMAGE}
                       alt={product.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 25vw"
                       className="object-contain p-6 group-hover:scale-105 transition duration-300"
                     />
+
                     <button
                       onClick={() => toggleFavorite(product)}
                       className="absolute top-4 right-4 z-10"
@@ -137,26 +159,25 @@ export default function FeaturedProducts() {
                     </button>
                   </div>
 
-                  {/* Info */}
                   <div className="flex flex-col gap-1 px-4 pt-3 pb-4">
                     <h3 className="text-sm font-medium text-primary line-clamp-2">
                       {product.title}
                     </h3>
 
-                    {/* 🔥 Estoque */}
                     <div className="flex items-center gap-2 mt-1">
-                      <span
-                        className={`w-2 h-2 rounded-full ${stockInfo.color} ${
-                          product.stock > 0 ? "animate-pulse" : ""
-                        }`}
-                      />
+                      <span className={`w-2 h-2 rounded-full ${stockInfo.color}`} />
                       <span className={`text-[11px] font-medium ${stockInfo.text}`}>
                         {stockInfo.label}
                       </span>
                     </div>
 
-                    <p className="text-lg font-bold text-black mt-1">{product.price}</p>
-                    <p className="text-xs text-green-600 font-medium">{product.pixPrice}</p>
+                    <p className="text-lg font-bold text-black mt-1">
+                      {product.price}
+                    </p>
+
+                    <p className="text-xs text-green-600 font-medium">
+                      {product.pixPrice}
+                    </p>
 
                     <button
                       onClick={() => handleAddToCart(product)}
@@ -188,7 +209,9 @@ export default function FeaturedProducts() {
             key={index}
             onClick={() => scrollTo(index)}
             className={`w-3 h-3 rounded-full transition ${
-              index === selectedIndex ? "bg-gray-800 scale-110" : "bg-gray-400/60"
+              index === selectedIndex
+                ? "bg-gray-800 scale-110"
+                : "bg-gray-400/60"
             }`}
           />
         ))}

@@ -32,12 +32,12 @@ export default function FavoritesPage() {
       <div className="!flex !flex-col gap-4">
         {favoriteItems.map((item) => (
           <FavoritesCard
-            key={item.id}
+            key={item.productId}
             product={item}
-            onRemove={() => removeFavorite(item.id)}
+            onRemove={() => removeFavorite(item.productId)}
             onAddToCart={() => {
               addToCart(item, 1);
-              removeFavorite(item.id);
+              removeFavorite(item.productId);
             }}
           />
         ))}

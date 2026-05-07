@@ -1,9 +1,9 @@
 export interface FavoriteItem {
-  id: string;
+  productId: string; // ← era _id
   sku?: string;  
   title: string;
   price: number;
-  image: string;
+  images?: string[];
   installment?: string;
   pixPrice?: number;
 }

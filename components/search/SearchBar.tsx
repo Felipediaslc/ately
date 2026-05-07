@@ -54,7 +54,7 @@ export function SearchBar() {
 
     if (e.key === "Enter" && activeIndex >= 0) {
       const product = results[activeIndex];
-      router.push(`/products/${product._id}`);
+      router.push(`/products/${product.productId}`);
     }
   }
 
@@ -106,9 +106,9 @@ export function SearchBar() {
           {!loading && results?.length > 0 && (
             results.map((p, index) => (
               <div
-                key={p._id}
+                key={p.productId}
                 onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => router.push(`/products/${p._id}`)}
+                onClick={() => router.push(`/products/${p.productId}`)}
                 className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition
                   ${index === activeIndex ? "bg-gray-100" : "hover:bg-gray-100"}
                 `}

@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     const preference = new Preference(client);
 
     type CheckoutItem = {
+      productId: string;
       title: string;
       price: number;
       quantity: number;
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
     const result = await preference.create({
       body: {
         items: items.map((item: CheckoutItem) => ({
-          id: item.title,
+          id: item.productId,
           title: item.title,
           quantity: item.quantity,
           unit_price: item.price,

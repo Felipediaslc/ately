@@ -79,7 +79,6 @@ export async function middleware(req: NextRequest) {
   const isUserProtectedRoute =
     pathname.startsWith("/account") ||
     pathname.startsWith("/orders") ||
-    pathname.startsWith("/checkout") ||
     pathname.startsWith("/api/user");
 
   /**
@@ -152,7 +151,6 @@ export const config = {
     "/api/admin/:path*",
     "/account/:path*",
     "/orders/:path*",
-    "/checkout/:path*",
     "/api/user/:path*",
   ],
 };

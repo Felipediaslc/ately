@@ -24,6 +24,28 @@ const formatPrice = (value: number) =>
 
 const FREE_SHIPPING_THRESHOLD = 200;
 
+const FALLBACK_IMAGE = "/image/logo.jpeg";
+
+// 🔥 Tipagem segura mínima (sem any)
+type CartItem = {
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  images?: string[];
+  pixPrice?: number;
+  installment?: string;
+};
+
+function getItemImage(item: CartItem) {
+  const img =
+    item.image ||
+    (item.images && item.images.length > 0 ? item.images[0] : null);
+
+  return img || FALLBACK_IMAGE;
+}
+
 export default function CartPage() {
   const {
     cartItems,
@@ -31,7 +53,6 @@ export default function CartPage() {
     removeFromCart,
     total,
     clearCart,
-    isLoaded,
   } = useCart();
 
   const [cep, setCep] = React.useState("");
@@ -71,6 +92,8 @@ export default function CartPage() {
     }
   };
 
+
+
   const handleCalculate = async (cepValue?: string) => {
     if (cepState === "loading") return;
 
@@ -101,13 +124,6 @@ export default function CartPage() {
     setCepState("done");
   };
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <p className="text-gray-400 text-sm animate-pulse">Carregando...</p>
-      </div>
-    );
-  }
 
   if (cartItems.length === 0) {
     return (
@@ -122,7 +138,7 @@ export default function CartPage() {
       </div>
     );
   }
-
+console.log("CART ITEMS:", cartItems)
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       <h1 className="text-gray-600 text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
@@ -162,14 +178,14 @@ export default function CartPage() {
 
         {/* LISTA DE ITENS */}
         <div className="w-full flex-1 flex flex-col gap-4">
-          {cartItems.map((item) => (
+          {cartItems.map((item: CartItem) => (
             <div
-              key={item.id}
+              key={item.productId}
               className="flex items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
             >
               <div className="shrink-0">
                 <Image
-                  src={item.image}
+                   src={getItemImage(item)}
                   alt={item.title}
                   width={80}
                   height={80}
@@ -198,7 +214,7 @@ export default function CartPage() {
                 <div className="flex items-center justify-between gap-3 mt-1 flex-wrap">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                       className="bg-gray-100 hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
                     >
                       <Minus size={14} />
@@ -207,7 +223,7 @@ export default function CartPage() {
                       {item.quantity}
                     </span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                       className="bg-gray-100 hover:bg-gray-200 active:scale-95 transition p-1.5 rounded-md"
                     >
                       <Plus size={14} />
@@ -223,7 +239,7 @@ export default function CartPage() {
                     </div>
                     {/* Lixeira com área de toque maior para mobile */}
                     <button
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => removeFromCart(item.productId)}
                       className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                     >
                       <Trash2 size={17} />

@@ -2,9 +2,9 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 
 interface Product {
-  id: string;
+  productId: string;
    sku?: string;
-  image: string;
+  images: string[];
   title: string;
   price: number;
   pixPrice?: number;
@@ -24,12 +24,24 @@ export function ProductGrid({ products = [], isLoading = false }: ProductGridPro
   if (isLoading || products.length === 0) {
     return <ProductSkeleton count={8} />;
   }
+console.log("🧠 PRODUCTS RAW (CATEGORIA):", products);
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {products.map((product) => {
+  console.log("🖼️ PRODUCT IMAGE DEBUG:", {
+    productId: product.productId,
+    title: product.title,
+    images: product.images,
+    firstImage: product.images?.[0],
+  });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style={{ alignItems: "start" }}>
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <ProductCard
+      key={product.productId}
+      product={product}
+    />
+  );
+})}
     </div>
   );
 }

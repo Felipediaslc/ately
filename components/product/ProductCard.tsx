@@ -9,29 +9,29 @@ import { FavoriteButton } from "@/components/product/FavoriteButton";
 
 interface Props {
   product: {
-    id: string;
-    sku?: string;  
-    image: string;
+    productId: string;
+    sku?: string;
+
+    images: string[];
+
     title: string;
     price: number;
     pixPrice?: number;
 
     stock: number;
-
     isUnique: boolean;
     isHandmade: boolean;
     isLimited: boolean;
   };
 }
-
+const FALLBACK_IMAGE = "/image/logo.jpeg";
 export function ProductCard({ product }: Props) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
 
   type BtnState = "idle" | "loading" | "done";
   const [btnState, setBtnState] = useState<BtnState>("idle");
-
-  // 🔥 ESTOQUE REAL
+const image = product.images?.[0] || FALLBACK_IMAGE;
   let stockLabel = "";
   let stockColor = "";
 
@@ -55,11 +55,12 @@ export function ProductCard({ product }: Props) {
 
     addToCart(
       {
-        id: product.id,
+        productId: product.productId , // ← era _id
         sku: product.sku, 
         title: product.title,
         price: product.price,
-        image: product.image,
+        image: image,
+        images: product.images,
         pixPrice: product.pixPrice,
       },
       safeQuantity
@@ -70,26 +71,26 @@ export function ProductCard({ product }: Props) {
       setTimeout(() => setBtnState("idle"), 1500);
     }, 800);
   };
-
+console.log("📦 CARD PRODUCT:", product.productId, product.images);
   return (
     <div className="group bg-[#FFFFFF] rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
       
       {/* Imagem */}
       <div className="relative w-full aspect-[3/4] bg-[#FFFFFF]">
-        <Link href={`/products/${product.id}`} className="block w-full h-full">
+        <Link href={`/products/${product.productId}`} className="block w-full h-full"> {/* ← era _id */}
           <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            className=" group-hover:scale-105 transition duration-500"
-          />
+  src={image}
+  alt={product.title}
+  fill
+  sizes="(max-width: 768px) 100vw, 50vw"
+/>
         </Link>
 
         <div className="absolute top-4 right-4 z-10">
           <FavoriteButton product={product} />
         </div>
 
-        {/* 🔥 BADGES */}
+        {/* BADGES */}
         <div className="absolute top-4 left-4 flex flex-col gap-1">
           {product.isUnique && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Peça única</span>}
           {product.isHandmade && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Feito à mão</span>}
@@ -101,13 +102,13 @@ export function ProductCard({ product }: Props) {
       <div className="p-4 flex flex-col gap-2">
 
         <Link
-          href={`/products/${product.id}`}
+          href={`/products/${product.productId}`} // ← era _id
           className="line-clamp-2 text-sm font-medium text-gray-800 hover:text-fuchsia-700"
         >
           {product.title}
         </Link>
 
-        {/* 🔥 ESTOQUE */}
+        {/* ESTOQUE */}
         <div className="flex items-center gap-2 text-xs">
           <span className={`w-2 h-2 rounded-full ${stockColor}`} />
           <span>{stockLabel}</span>

@@ -16,8 +16,10 @@ import {
   clearFavoritesFromLocalStorage,
 } from "@/app/utils/localStorageHelpers";
 
+const FALLBACK_IMAGE = "/image/logo.jpeg";
+
 // =============================
-// TYPES
+// CONTEXT TYPE
 // =============================
 interface FavoritesContextType {
   favoriteItems: FavoriteItem[];
@@ -26,12 +28,9 @@ interface FavoritesContextType {
   clearFavorites: () => void;
   isFavorite: (id: string) => boolean;
   totalFavorites: number;
-  syncWithBackend?: () => Promise<void>; // futura integração
+  syncWithBackend?: () => Promise<void>;
 }
 
-// =============================
-// CONTEXT
-// =============================
 const FavoritesContext = createContext<FavoritesContextType | undefined>(
   undefined
 );
@@ -42,23 +41,40 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const [favoriteItems, setFavoriteItems] = useState<FavoriteItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // =============================
-  // LOAD FAVORITES (SSR SAFE, evita warning de setState síncrono)
+  // NORMALIZER (🔥 FIX PRINCIPAL)
+  // =============================
+ const normalizeFavorite = (item: FavoriteItem): FavoriteItem => {
+  return {
+    ...item,
+    images:
+      Array.isArray(item.images) && item.images.length > 0
+        ? item.images
+        : ["/image/logo.jpeg"],
+  };
+};
+
+  // =============================
+  // LOAD
   // =============================
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     setTimeout(() => {
       const stored = getFavoritesFromLocalStorage();
-      if (stored) setFavoriteItems(stored);
+
+      const safe = (stored || []).map(normalizeFavorite);
+
+      setFavoriteItems(safe);
       setIsLoaded(true);
     }, 0);
   }, []);
 
   // =============================
-  // SAVE FAVORITES (DEBOUNCE)
+  // SAVE
   // =============================
   useEffect(() => {
     if (!isLoaded) return;
@@ -66,7 +82,8 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
-      saveFavoritesToLocalStorage(favoriteItems);
+      const safe = favoriteItems.map(normalizeFavorite);
+      saveFavoritesToLocalStorage(safe);
     }, 300);
 
     return () => {
@@ -78,14 +95,16 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   // ACTIONS
   // =============================
   const addFavorite = (item: FavoriteItem) => {
+    const safeItem = normalizeFavorite(item);
+
     setFavoriteItems((prev) => {
-      if (prev.some((i) => i.id === item.id)) return prev; // evita duplicados
-      return [...prev, item];
+      if (prev.some((i) => i.productId === safeItem.productId)) return prev;
+      return [...prev, safeItem];
     });
   };
 
   const removeFavorite = (id: string) => {
-    setFavoriteItems((prev) => prev.filter((i) => i.id !== id));
+    setFavoriteItems((prev) => prev.filter((i) => i.productId !== id));
   };
 
   const clearFavorites = () => {
@@ -93,36 +112,33 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     clearFavoritesFromLocalStorage();
   };
 
-  const isFavorite = (id: string) => favoriteItems.some((item) => item.id === id);
+  const isFavorite = (id: string) =>
+    favoriteItems.some((item) => item.productId === id);
 
   const totalFavorites = favoriteItems.length;
 
   // =============================
-  // SYNC WITH BACKEND (MOCK)
+  // SYNC MOCK
   // =============================
   const syncWithBackend = async () => {
     try {
-      const backendFavorites: FavoriteItem[] = []; // MOCK
-      const mergedFavorites = [...favoriteItems];
+      const backendFavorites: FavoriteItem[] = [];
+
+      const merged = [...favoriteItems];
 
       backendFavorites.forEach((bItem) => {
-        if (!mergedFavorites.some((lItem) => lItem.id === bItem.id)) {
-          mergedFavorites.push(bItem);
+        if (!merged.some((i) => i.productId === bItem.productId)) {
+          merged.push(normalizeFavorite(bItem));
         }
       });
 
-      setFavoriteItems(mergedFavorites);
-      saveFavoritesToLocalStorage(mergedFavorites);
-
-      console.log("Favoritos sincronizados com backend:", mergedFavorites);
+      setFavoriteItems(merged);
+      saveFavoritesToLocalStorage(merged);
     } catch (error) {
-      console.error("Erro ao sincronizar favoritos com backend:", error);
+      console.error("Erro ao sincronizar favoritos:", error);
     }
   };
 
-  // =============================
-  // PROVIDER
-  // =============================
   return (
     <FavoritesContext.Provider
       value={{

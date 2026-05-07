@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 type Product = {
-  _id: string;
+  productId: string;
   title: string;
   price: number;
   images?: string[];

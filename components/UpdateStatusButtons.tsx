@@ -20,29 +20,39 @@ export function UpdateStatusButtons({ id, onStatusChange }: Props) {
     setError(null);
 
     try {
+      console.log("🔥 CLICK STATUS:", status);
+
       const res = await fetch(`/api/orders/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
 
+      console.log("📡 STATUS RESPONSE:", res.status);
+
       const data = await res.json();
+      console.log("📦 DATA RESPONSE:", data);
 
       if (!res.ok) {
         setError(data?.error || "Erro ao atualizar status");
         return;
       }
 
-      setCurrentStatus(data.status);
-      onStatusChange(data.status);
+      console.log("✅ STATUS UPDATED:", data.data.status);
+
+      const newStatus = data.data.status;
+
+setCurrentStatus(newStatus);
+onStatusChange(newStatus);
 
     } catch (err) {
-      console.error(err);
+      console.error("❌ FETCH ERROR:", err);
       setError("Erro inesperado");
     } finally {
       setLoading(false);
     }
   }
+
 
   const baseBtn =
     "px-3 py-1 rounded-md text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed";
@@ -57,7 +67,7 @@ export function UpdateStatusButtons({ id, onStatusChange }: Props) {
         <button
           disabled={isDisabled}
           onClick={() => updateStatus("pago")}
-          className={`${baseBtn} bg-blue-600 text-white hover:bg-blue-700`}
+          className={`${baseBtn} bg-lime-600 text-white hover:bg-lime-700`}
         >
           Pago
         </button>
@@ -65,7 +75,7 @@ export function UpdateStatusButtons({ id, onStatusChange }: Props) {
         <button
           disabled={isDisabled}
           onClick={() => updateStatus("enviado")}
-          className={`${baseBtn} bg-black text-white hover:bg-zinc-800`}
+          className={`${baseBtn} bg-blue-600 text-white hover:bg-blue-700`}
         >
           {loading ? "Atualizando..." : "Enviar"}
         </button>
@@ -73,7 +83,7 @@ export function UpdateStatusButtons({ id, onStatusChange }: Props) {
         <button
           disabled={isDisabled}
           onClick={() => updateStatus("entregue")}
-          className={`${baseBtn} bg-green-600 text-white hover:bg-green-700`}
+          className={`${baseBtn} bg-green-900 text-white hover:bg-green-800`}
         >
           Entregue
         </button>
@@ -90,7 +100,7 @@ export function UpdateStatusButtons({ id, onStatusChange }: Props) {
 
       {/* feedback sucesso */}
       {currentStatus && !error && (
-        <p className="text-sm text-blue-600">
+        <p className="text-sm text-lime-600">
           Status atualizado: <strong>{currentStatus}</strong>
         </p>
       )}

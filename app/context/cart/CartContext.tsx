@@ -5,9 +5,9 @@ import React, {
   useContext,
   useState,
   ReactNode,
-  useEffect,
-  useRef,
   useMemo,
+  useCallback,
+  useEffect,
 } from "react";
 
 import type { CartItem } from "@/app/types/cart";
@@ -18,7 +18,7 @@ import {
 } from "@/app/utils/localStorageHelpers";
 
 // =============================
-// TYPES
+// CONTEXT TYPE
 // =============================
 interface CartContextType {
   cartItems: CartItem[];
@@ -27,82 +27,100 @@ interface CartContextType {
   clearCart: () => void;
   updateQuantity: (id: string, quantity: number) => void;
   total: number;
-  isLoaded: boolean;
   syncWithBackend: (userId: string) => Promise<void>;
 }
 
-// =============================
-// CONTEXT
-// =============================
 const CartContext = createContext<CartContextType | undefined>(undefined);
+
+const FALLBACK_IMAGE = "/image/logo.jpeg";
 
 // =============================
 // PROVIDER
 // =============================
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  // =============================
+  // NORMALIZER
+  // =============================
+  const normalizeItem = useCallback(
+    (item: Partial<CartItem>): CartItem | null => {
+      const id = item.productId;
 
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+      if (!id || !item.title || typeof item.price !== "number") return null;
+
+      const image =
+        typeof item.image === "string" && item.image.trim() !== ""
+          ? item.image
+          : Array.isArray(item.images) && item.images.length > 0
+          ? item.images[0]
+          : FALLBACK_IMAGE;
+
+      return {
+        productId: id,
+        title: item.title,
+        price: item.price,
+        quantity: item.quantity ?? 1,
+        image,
+        images: Array.isArray(item.images) ? item.images : [],
+        sku: item.sku,
+        pixPrice: item.pixPrice,
+        installment: item.installment,
+      };
+    },
+    []
+  );
 
   // =============================
-  // LOAD (SSR SAFE)
+  // STATE (SSR SAFE)
   // =============================
- useEffect(() => {
-  const load = () => {
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+
     const stored = getCartFromLocalStorage();
-    setCartItems(stored);
-    setIsLoaded(true);
-  };
 
-  const id = setTimeout(load, 0);
-
-  return () => clearTimeout(id);
-}, []);
+    return stored
+      .map((item: Partial<CartItem>) => normalizeItem(item))
+      .filter((item): item is CartItem => item !== null);
+  });
 
   // =============================
-  // SAVE (DEBOUNCE)
+  // PERSISTÊNCIA (ÚNICO E LIMPO)
   // =============================
   useEffect(() => {
-    if (!isLoaded) return;
+    if (typeof window === "undefined") return;
 
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(() => {
+    const timeout = setTimeout(() => {
       saveCartToLocalStorage(cartItems);
-    }, 300);
+    }, 200);
 
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [cartItems, isLoaded]);
+    return () => clearTimeout(timeout);
+  }, [cartItems]);
 
   // =============================
   // ACTIONS
   // =============================
-  const addToCart = (
-    item: Omit<CartItem, "quantity">,
-    quantity: number = 1
-  ) => {
-    if (quantity <= 0) return;
+  const addToCart = (item: Omit<CartItem, "quantity">, quantity = 1) => {
+    const normalized = normalizeItem({ ...item, quantity });
+    if (!normalized) return;
 
     setCartItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const exists = prev.find(
+        (i) => i.productId === normalized.productId
+      );
 
-      if (existing) {
+      if (exists) {
         return prev.map((i) =>
-          i.id === item.id
+          i.productId === normalized.productId
             ? { ...i, quantity: i.quantity + quantity }
             : i
         );
       }
 
-      return [...prev, { ...item, quantity }];
+      return [...prev, normalized];
     });
   };
 
   const removeFromCart = (id: string) => {
-    setCartItems((prev) => prev.filter((i) => i.id !== id));
+    setCartItems((prev) => prev.filter((i) => i.productId !== id));
   };
 
   const clearCart = () => {
@@ -113,17 +131,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const updateQuantity = (id: string, quantity: number) => {
     setCartItems((prev) => {
       if (quantity <= 0) {
-        return prev.filter((item) => item.id !== id);
+        return prev.filter((item) => item.productId !== id);
       }
 
       return prev.map((item) =>
-        item.id === id ? { ...item, quantity } : item
+        item.productId === id ? { ...item, quantity } : item
       );
     });
   };
 
   // =============================
-  // DERIVED STATE
+  // TOTAL
   // =============================
   const total = useMemo(() => {
     return cartItems.reduce(
@@ -133,49 +151,38 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   // =============================
-  // BACKEND SYNC (SAFE FUTURE)
+  // BACKEND SYNC
   // =============================
-  const syncWithBackend = async (userId: string) => {
+  const syncWithBackend = async () => {
     try {
-      // 🔹 Exemplo futuro:
-      // const res = await fetch(`/api/cart?userId=${userId}`);
-      // const data = await res.json();
-      // const backendCart: CartItem[] = data.items;
-
       const backendCart: CartItem[] = [];
 
       setCartItems((prev) => {
-        const mergedMap = new Map<string, CartItem>();
+        const map = new Map<string, CartItem>();
 
         [...prev, ...backendCart].forEach((item) => {
-          const existing = mergedMap.get(item.id);
+          const existing = map.get(item.productId);
 
           if (existing) {
-            mergedMap.set(item.id, {
+            map.set(item.productId, {
               ...existing,
               quantity: existing.quantity + item.quantity,
             });
           } else {
-            mergedMap.set(item.id, { ...item });
+            map.set(item.productId, item);
           }
         });
 
-        const mergedCart = Array.from(mergedMap.values());
+        const merged = Array.from(map.values());
+        saveCartToLocalStorage(merged);
 
-        saveCartToLocalStorage(mergedCart);
-
-        console.log(`Carrinho sincronizado (user: ${userId})`, mergedCart);
-
-        return mergedCart;
+        return merged;
       });
-    } catch (error) {
-      console.error("Erro ao sincronizar carrinho:", error);
+    } catch (err) {
+      console.error("Erro sync carrinho:", err);
     }
   };
 
-  // =============================
-  // PROVIDER
-  // =============================
   return (
     <CartContext.Provider
       value={{
@@ -185,7 +192,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         clearCart,
         updateQuantity,
         total,
-        isLoaded,
         syncWithBackend,
       }}
     >
@@ -199,10 +205,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 // =============================
 export const useCart = () => {
   const ctx = useContext(CartContext);
-
-  if (!ctx) {
-    throw new Error("useCart must be used within CartProvider");
-  }
-
+  if (!ctx) throw new Error("useCart must be used within CartProvider");
   return ctx;
 };

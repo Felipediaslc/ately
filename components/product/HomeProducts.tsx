@@ -20,21 +20,19 @@ export default function HomeProducts({ products }: Props) {
 
       {/* Grid */}
       <ProductGrid
-        products={products.map((p) => ({
-          id: p._id,
-          title: p.title,
-          price: p.price,
-          image: p.images[0] || "/image/produto01.png",
-         
-          pixPrice: p.pixPrice,
+  products={products.map((p) => ({
+    productId: p.productId,
+    title: p.title,
+    price: p.price,
+     images: p.images ?? [],
+    pixPrice: p.pixPrice,
 
-          // ✅ NOVO (consistência total)
-          stock: p.stock,
-          isUnique: p.isUnique,
-          isLimited: p.isLimited,
-          isHandmade: p.isHandmade,
-        }))}
-      />
+    stock: p.stock,
+    isUnique: p.isUnique,
+    isLimited: p.isLimited,
+    isHandmade: p.isHandmade,
+  }))}
+/>
 
       {/* Botão */}
       <div className="text-center mt-6 lg:mt-10">

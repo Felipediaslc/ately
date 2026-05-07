@@ -26,6 +26,9 @@ type OrderDB = {
   subtotal: number;
   total: number;
   items: OrderItem[];
+    customer: {
+    email: string;
+  };
   address: {
     street?: string;
     number?: string;
@@ -59,9 +62,13 @@ export default async function OrderDetailPage({
 
   if (!order) notFound();
 
-  if (!order.userId || order.userId.toString() !== user._id.toString()) {
-    notFound();
-  }
+  if (
+  order.userId
+    ? order.userId.toString() !== user._id.toString()
+    : order.customer?.email !== user.email
+) {
+  notFound();
+}
 
   const orderIdShort = String(order._id).slice(-6);
 

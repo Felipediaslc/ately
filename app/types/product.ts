@@ -1,5 +1,5 @@
 export interface Product {
-  _id: string;
+  productId: string; // ← era _id
   title: string;
   price: number;
   images: string[];
@@ -22,5 +22,5 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
 
-  relatedProducts?: Product[];
+ relatedProducts?: Pick<Product, "productId" | "title" | "price" | "images">[];
 }

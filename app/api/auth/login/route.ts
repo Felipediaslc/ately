@@ -2,17 +2,20 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/app/server/db/connect";
 import { UserModel } from "@/app/server/db/models/User";
+import { OrderModel } from "@/app/server/db/models/Order"; 
 import { signToken } from "@/app/server/auth/sign";
 
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
-if (!email || !password) {
-  return NextResponse.json(
-    { error: "Missing credentials" },
-    { status: 400 }
-  );
-}
+
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Missing credentials" },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
     const user = await UserModel.findOne({
@@ -20,14 +23,31 @@ if (!email || !password) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
     const ok = await bcrypt.compare(password, user.password);
 
     if (!ok) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
     }
+
+    // 🔥 AQUI É O PONTO CERTO
+    await OrderModel.updateMany(
+      {
+        "customer.email": user.email,
+        userId: { $exists: false },
+      },
+      {
+        $set: { userId: user._id.toString() },
+      }
+    );
 
     const token = await signToken({
       sub: user._id.toString(),
@@ -54,6 +74,9 @@ if (!email || !password) {
 
     return response;
   } catch {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
   }
 }

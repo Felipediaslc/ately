@@ -50,7 +50,7 @@ export default function ProductsClient() {
           images:
             p.images && p.images.length > 0
               ? p.images
-              : ["/image/produto01.png"],
+              : ["/image/logo.jpeg"],
         }));
 
         if (isMounted) setProducts(formattedProducts);
