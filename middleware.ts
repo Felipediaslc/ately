@@ -24,6 +24,9 @@ type UserPayload = {
  *  JWT SECRET
  * =========================
  */
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET não definido!");
+}
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 /**
