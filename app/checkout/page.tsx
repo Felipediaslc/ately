@@ -2,7 +2,10 @@
 import { Suspense } from "react";
 import React from "react";
 import { useCart } from "@/app/context/cart/CartContext";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams,  useRouter } from "next/navigation";
+
+
+
 
 const formatPrice = (value: number) =>
   new Intl.NumberFormat("pt-BR", {
@@ -63,7 +66,7 @@ function Input({
 function CheckoutContent() {
   const { cartItems, clearCart } = useCart();
   const searchParams = useSearchParams();
-
+const router = useRouter();
   const shippingPrice = Number(searchParams.get("shippingPrice") || 0);
   const shippingMethod = searchParams.get("shippingLabel") || "Entrega padrão";
 
@@ -241,7 +244,8 @@ function CheckoutContent() {
       }
 
       clearCart();
-      window.location.href = mpData.url;
+    window.open(`/pedido/aguardando?orderId=${orderId}`, "_blank");
+    window.location.href = mpData.url;
     } catch (err) {
       console.error("Erro inesperado:", err);
       alert("Erro ao finalizar pedido");

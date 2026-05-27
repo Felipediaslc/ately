@@ -27,7 +27,7 @@ export default function PedidoSucessoClient() {
         const res = await fetch(`/api/orders/${orderId}`);
         const data = await res.json();
 
-        const orderStatus = data?.data?.status;
+        const orderStatus = data?.status;
 
         if (orderStatus === "pago") {
           setStatus("pago");

@@ -17,77 +17,98 @@ export function emailTemplate({
 }) {
   return `
   <!DOCTYPE html>
-  <html>
-    <body style="margin:0;padding:0;background:#f4f4f5;font-family:Arial, sans-serif;">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-          <td align="center" style="padding:20px;">
-            
-            <table width="100%" style="max-width:500px;background:#ffffff;border-radius:16px;padding:24px;">
-              
-              <tr>
-                <td align="center" style="padding-bottom:16px;">
-                  <h2 style="margin:0;color:#16a34a;">SD Ateliê</h2>
-                  <p style="margin:4px 0 0;color:#52525b;font-size:14px;">
-                    Pedido confirmado 💚
-                  </p>
-                </td>
-              </tr>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Pedido confirmado – SD Ateliê</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,Helvetica Neue,Arial,sans-serif;">
 
-              <tr>
-                <td style="padding:16px 0;color:#27272a;font-size:14px;line-height:1.5;">
-                  Olá, <strong>${nome}</strong>,<br/><br/>
-                  Recebemos seu pagamento com sucesso 💚<br/>
-                  Seu pedido já está sendo preparado com todo cuidado.
-                </td>
-              </tr>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td align="center" style="padding:20px;">
 
-              <tr>
-                <td style="background:#f9fafb;border-radius:12px;padding:16px;">
-                  <p style="margin:0 0 8px;font-size:13px;color:#71717a;">
-                    Pedido nº <strong>${pedidoId}</strong>
-                  </p>
+          <table width="500" cellpadding="0" cellspacing="0" border="0" style="max-width:500px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;">
 
-                  <div style="font-size:14px;color:#27272a;margin-bottom:12px;">
-                    ${lista_de_produtos}
-                  </div>
+            <!-- Cabeçalho -->
+            <tr>
+              <td style="padding:28px 24px 22px;text-align:center;border-bottom:1px solid #fce7f3;">
+                <p style="margin:0;font-size:22px;font-weight:700;color:#c026d3;letter-spacing:0.01em;">SD Ateliê</p>
+                <p style="margin:6px 0 0;font-size:13px;color:#16a34a;">Pedido confirmado</p>
+              </td>
+            </tr>
 
-                  <p style="margin:4px 0;font-size:13px;color:#52525b;">
-                    Forma de pagamento: <strong>${pagamento}</strong>
-                  </p>
+            <!-- Saudação -->
+            <tr>
+              <td style="padding:24px 24px 0;font-size:14px;color:#27272a;line-height:1.6;">
+                Olá, <strong style="color:#18181b;">${nome}</strong>,<br/><br/>
+                Recebemos seu pagamento com sucesso.<br/>
+                Seu pedido já está sendo preparado com todo cuidado.
+              </td>
+            </tr>
 
-                  <p style="margin:8px 0 0;font-size:16px;font-weight:bold;color:#16a34a;">
-                    Total: ${total}
-                  </p>
-                </td>
-              </tr>
+            <!-- Card do pedido -->
+            <tr>
+              <td style="padding:20px 24px 0;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fdf4ff;border-radius:12px;border:1px solid #e9d5ff;">
+                  <tr>
+                    <td style="padding:16px;">
 
-              <tr>
-                <td style="padding-top:16px;">
-                  <p style="margin:0 0 6px;font-size:13px;color:#71717a;">
-                    📦 Endereço de entrega
-                  </p>
-                  <p style="margin:0;font-size:14px;color:#27272a;">
-                    ${endereco}
-                  </p>
-                </td>
-              </tr>
+                      <p style="margin:0 0 12px;font-size:12px;color:#71717a;">
+                        Pedido nº <strong style="color:#18181b;font-size:13px;">${pedidoId}</strong>
+                      </p>
 
-              <tr>
-                <td style="padding-top:20px;font-size:12px;color:#71717a;text-align:center;">
-                  Se precisar de ajuda, é só responder este email 😊<br/><br/>
-                  <strong>SD Ateliê</strong><br/>
-                  ${contato}
-                </td>
-              </tr>
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #e9d5ff;padding-bottom:12px;margin-bottom:12px;">
+                        <tr>
+                          <td style="font-size:14px;color:#27272a;">${lista_de_produtos}</td>
+                        </tr>
+                      </table>
 
-            </table>
+                      <p style="margin:0 0 6px;font-size:12px;color:#52525b;">
+                        Forma de pagamento: <strong style="color:#27272a;">${pagamento}</strong>
+                      </p>
+                      <p style="margin:0;font-size:16px;font-weight:700;color:#c026d3;">
+                        Total: ${total}
+                      </p>
 
-          </td>
-        </tr>
-      </table>
-    </body>
-  </html>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Endereço -->
+            <tr>
+              <td style="padding:20px 24px 0;">
+                <p style="margin:0 0 6px;font-size:12px;color:#71717a;">Endereço de entrega</p>
+                <p style="margin:0;font-size:14px;color:#27272a;line-height:1.5;">${endereco}</p>
+              </td>
+            </tr>
+
+            <!-- Rodapé -->
+            <tr>
+              <td style="padding:24px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="border-top:1px solid #f3e8ff;padding-top:20px;text-align:center;font-size:12px;color:#71717a;line-height:1.7;">
+                      Se precisar de ajuda, é só responder este email 😊<br/><br/>
+                      <strong style="color:#52525b;">SD Ateliê</strong><br/>
+                      ${contato}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+
+  </body>
+</html>
   `;
 }
 

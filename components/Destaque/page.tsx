@@ -5,11 +5,12 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { Heart } from "lucide-react";
+
 import { useCart } from "@/app/context/cart/CartContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 
 type Product = {
-  id: number;
+  productId: string;
   image: string;
   title: string;
   price: string;
@@ -26,25 +27,83 @@ export default function FeaturedProducts() {
     []
   );
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [autoplay]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    [autoplay]
+  );
+
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
-  const [addedId, setAddedId] = React.useState<number | null>(null);
+  const [addedId, setAddedId] = React.useState<string | null>(null);
 
   const FALLBACK_IMAGE = "/image/logo.jpeg";
 
   const products: Product[] = [
-    { id: 1, image: "/image/imagens/ns-aparecida-dourado-12cm-frente.png", title: "N. Senhora Aparecida", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
-    { id: 2, image: "/image/chaveiros/sagrado-coracao-jesus.png", title: "Chaveiro Sagrado Coração de Jesus", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
-    { id: 3, image: "/image/chaveiros/sagrado-coracao-maria.png", title: "Chaveiro Sagrado Coração de Maria", price: "R$35,00", pixPrice: "R$30,00 com Pix", stock: 10 },
-    { id: 4, image: "/image/imagens/crucifixo-jesus-frente.png", title: "Crucifixo", price: "R$150,00", pixPrice: "R$145,00 com Pix", stock: 10 },
-    { id: 5, image: "/image/imagens/sagrada-familia-dourado-10cm-frente.png", title: "Chaveiro São Miguel", price: "R$55,00", pixPrice: "R$50,00 com Pix", stock: 10 },
-    { id: 6, image: "/image/imagens/espirito-santo-16cm-frente.png", title: "N. Senhora Aparecida", price: "R$100,00", pixPrice: "R$90,00 com Pix", stock: 10 },
-    { id: 7, image: "/image/mandalas/mandala-imaculada-conceicao.png", title: "Mandala N. Senora Imaculada Conceição", price: "R$80,00", pixPrice: "R$75,00 com Pix", stock: 10 },
+    {
+      productId: "1",
+      image: "/image/imagens/ns-aparecida-dourado-12cm-frente.png",
+      title: "N. Senhora Aparecida",
+      price: "R$35,00",
+      pixPrice: "R$30,00 com Pix",
+      stock: 10,
+    },
+    {
+      productId: "2",
+      image: "/image/chaveiros/sagrado-coracao-jesus.png",
+      title: "Chaveiro Sagrado Coração de Jesus",
+      price: "R$35,00",
+      pixPrice: "R$30,00 com Pix",
+      stock: 10,
+    },
+    {
+      productId: "3",
+      image: "/image/chaveiros/sagrado-coracao-maria.png",
+      title: "Chaveiro Sagrado Coração de Maria",
+      price: "R$35,00",
+      pixPrice: "R$30,00 com Pix",
+      stock: 10,
+    },
+    {
+      productId: "4",
+      image: "/image/imagens/crucifixo-jesus-frente.png",
+      title: "Crucifixo",
+      price: "R$150,00",
+      pixPrice: "R$145,00 com Pix",
+      stock: 10,
+    },
+    {
+      productId: "5",
+      image: "/image/imagens/sagrada-familia-dourado-10cm-frente.png",
+      title: "Chaveiro São Miguel",
+      price: "R$55,00",
+      pixPrice: "R$50,00 com Pix",
+      stock: 10,
+    },
+    {
+      productId: "6",
+      image: "/image/imagens/espirito-santo-16cm-frente.png",
+      title: "N. Senhora Aparecida",
+      price: "R$100,00",
+      pixPrice: "R$90,00 com Pix",
+      stock: 10,
+    },
+    {
+      productId: "7",
+      image: "/image/mandalas/mandala-imaculada-conceicao.png",
+      title: "Mandala N. Senhora Imaculada Conceição",
+      price: "R$80,00",
+      pixPrice: "R$75,00 com Pix",
+      stock: 10,
+    },
   ];
 
   const parsePrice = (value: string) =>
-    Number(value.replace("R$", "").replace(".", "").replace(",", "."));
+    Number(
+      value
+        .replace("R$", "")
+        .replace(".", "")
+        .replace(",", ".")
+    );
 
   const parsePixPrice = (value: string) =>
     Number(
@@ -56,28 +115,49 @@ export default function FeaturedProducts() {
     );
 
   const getStockInfo = (stock: number) => {
-    if (stock === 0) return { label: "Esgotado", color: "bg-red-500", text: "text-red-700" };
-    if (stock <= 3) return { label: "Últimas unidades", color: "bg-yellow-400", text: "text-yellow-700" };
-    return { label: "Em estoque", color: "bg-green-500", text: "text-green-700" };
+    if (stock === 0) {
+      return {
+        label: "Esgotado",
+        color: "bg-red-500",
+        text: "text-red-700",
+      };
+    }
+
+    if (stock <= 3) {
+      return {
+        label: "Últimas unidades",
+        color: "bg-yellow-400",
+        text: "text-yellow-700",
+      };
+    }
+
+    return {
+      label: "Em estoque",
+      color: "bg-green-500",
+      text: "text-green-700",
+    };
   };
 
   const handleAddToCart = (product: Product) => {
     if (product.stock === 0) return;
 
     addToCart({
-      productId: String(product.id),
+      productId: String(product.productId),
       title: product.title,
       price: parsePrice(product.price),
       image: product.image || FALLBACK_IMAGE,
       pixPrice: parsePixPrice(product.pixPrice) || undefined,
     });
 
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1200);
+    setAddedId(product.productId);
+
+    setTimeout(() => {
+      setAddedId(null);
+    }, 1200);
   };
 
   const toggleFavorite = (product: Product) => {
-    const id = String(product.id);
+    const id = String(product.productId);
 
     if (isFavorite(id)) {
       removeFavorite(id);
@@ -85,7 +165,7 @@ export default function FeaturedProducts() {
     }
 
     addFavorite({
-       productId: String(product.id),
+      productId: String(product.productId),
       title: product.title,
       price: parsePrice(product.price),
       images: [product.image || FALLBACK_IMAGE],
@@ -96,10 +176,14 @@ export default function FeaturedProducts() {
   React.useEffect(() => {
     if (!emblaApi) return;
 
-    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
-    const onInit = () => setScrollSnaps(emblaApi.scrollSnapList());
+    const onSelect = () =>
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+
+    const onInit = () =>
+      setScrollSnaps(emblaApi.scrollSnapList());
 
     onInit();
+
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onInit);
 
@@ -125,12 +209,12 @@ export default function FeaturedProducts() {
       <div className="overflow-hidden py-4" ref={emblaRef}>
         <div className="flex">
           {products.map((product) => {
-            const isAdded = addedId === product.id;
+            const isAdded = addedId === product.productId;
             const stockInfo = getStockInfo(product.stock);
 
             return (
               <div
-                key={product.id}
+                key={product.productId}
                 className="flex-[0_0_95%] sm:flex-[0_0_90%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] px-3"
               >
                 <div className="bg-[#FFFFFF] rounded-xl flex flex-col transition hover:shadow-lg overflow-hidden">
@@ -151,7 +235,7 @@ export default function FeaturedProducts() {
                       <Heart
                         size={20}
                         className={`transition ${
-                          isFavorite(String(product.id))
+                          isFavorite(String(product.productId))
                             ? "fill-fuchsia-900 text-fuchsia-900"
                             : "text-primary"
                         }`}
@@ -165,8 +249,13 @@ export default function FeaturedProducts() {
                     </h3>
 
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`w-2 h-2 rounded-full ${stockInfo.color}`} />
-                      <span className={`text-[11px] font-medium ${stockInfo.text}`}>
+                      <span
+                        className={`w-2 h-2 rounded-full ${stockInfo.color}`}
+                      />
+
+                      <span
+                        className={`text-[11px] font-medium ${stockInfo.text}`}
+                      >
                         {stockInfo.label}
                       </span>
                     </div>

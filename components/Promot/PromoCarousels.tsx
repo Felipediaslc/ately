@@ -6,16 +6,16 @@ import Autoplay from "embla-carousel-autoplay";
 
 const imagens = [
   {
-    desktop: "/image/bannerDesktop.png",
-    mobile: "/image/bannerMobile.png",
+    desktop: "https://res.cloudinary.com/dwncbpih4/image/upload/q_auto/f_auto/v1779378616/bannerDesktop_qx7wnb.png",
+    mobile: "https://res.cloudinary.com/dwncbpih4/image/upload/q_auto/f_auto/v1779378831/bannerMobile_wapnaq.png",
   },
   {
-    desktop: "/image/banner2Desktop.png",
-    mobile: "/image/banner02Mobile.jpeg",
+    desktop: "https://res.cloudinary.com/dwncbpih4/image/upload/q_auto/f_auto/v1779379033/banner2Desktop_aeh8be.png",
+    mobile: "https://res.cloudinary.com/dwncbpih4/image/upload/q_auto/f_auto/v1779379126/banner02Mobile_blpbja.png",
   },
   {
-    desktop: "/image/bannerDesktop.png",
-    mobile: "/image/bannerMobile.png",
+    desktop: "https://res.cloudinary.com/dwncbpih4/image/upload/q_auto/f_auto/v1779378616/bannerDesktop_qx7wnb.png",
+    mobile: "https://res.cloudinary.com/dwncbpih4/image/upload/q_auto/f_auto/v1779378831/bannerMobile_wapnaq.png",
   },
 ];
 
@@ -27,16 +27,23 @@ export default function PromoCarousels() {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const onSelect = useCallback(() => {
-    if (!emblaImgApi) return;
-    setSelectedIndex(emblaImgApi.selectedScrollSnap());
-  }, [emblaImgApi]);
 
-  useEffect(() => {
-    if (!emblaImgApi) return;
-    emblaImgApi.on("select", onSelect);
-    onSelect();
-  }, [emblaImgApi, onSelect]);
+
+ useEffect(() => {
+  if (!emblaImgApi) return;
+
+  const updateIndex = () => {
+    setSelectedIndex(emblaImgApi.selectedScrollSnap());
+  };
+
+  emblaImgApi.on("select", updateIndex);
+
+  updateIndex();
+
+  return () => {
+    emblaImgApi.off("select", updateIndex);
+  };
+}, [emblaImgApi]);
 
   const scrollPrev = () => emblaImgApi?.scrollPrev();
   const scrollNext = () => emblaImgApi?.scrollNext();
