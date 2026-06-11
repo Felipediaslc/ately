@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { SyntheticEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -65,55 +66,44 @@ export default function NewProductPage() {
     setForm({ ...form, images: Array.from(e.target.files) });
   };
 
-  async function compressImage(file: File): Promise<File> {
-    try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = document.createElement("img");
+ 
 
-      return await new Promise((resolve) => {
-        img.onload = () => {
-          const MAX_WIDTH = 1200;
-          const scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scale;
-          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-          canvas.toBlob((blob) => {
-            if (!blob) return resolve(file);
-            resolve(new File([blob], file.name, { type: "image/jpeg" }));
-          }, "image/jpeg", 0.7);
-        };
-        img.src = URL.createObjectURL(file);
-      });
-    } catch {
-      return file;
-    }
-  }
+ async function uploadImages(files: File[]) {
+  const uploadedUrls: string[] = [];
 
-  async function uploadImages(files: File[]) {
-    const uploadedUrls: string[] = [];
-    for (let i = 0; i < files.length; i++) {
-      setUploadingIndex(i);
-      try {
-        const compressed = await compressImage(files[i]);
-        const data = new FormData();
-        data.append("file", compressed);
-        data.append("upload_preset", "SEU_UPLOAD_PRESET");
-        const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dwncbpih4/image/upload",
-          { method: "POST", body: data }
-        );
-        const result = await res.json();
-        if (!res.ok || !result.secure_url) throw new Error("Falha no upload");
-        uploadedUrls.push(result.secure_url);
-      } catch (err) {
-        console.error(err);
-        throw new Error("Erro ao enviar imagens para Cloudinary");
+  for (let i = 0; i < files.length; i++) {
+    setUploadingIndex(i);
+
+    const data = new FormData();
+
+    data.append("file", files[i]);
+    data.append("upload_preset", "products_unsigned");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dwncbpih4/image/upload",
+      {
+        method: "POST",
+        body: data,
       }
+    );
+
+    const result = await res.json();
+
+    console.log("Cloudinary:", result);
+
+    if (!res.ok) {
+      throw new Error(
+        result.error?.message || "Erro Cloudinary"
+      );
     }
-    setUploadingIndex(null);
-    return uploadedUrls;
+
+    uploadedUrls.push(result.secure_url);
   }
+
+  setUploadingIndex(null);
+
+  return uploadedUrls;
+}
 
   function validateForm() {
     if (!form.title.trim()) return "Título obrigatório";
@@ -122,45 +112,103 @@ export default function NewProductPage() {
     if (form.images.length === 0) return "Adicione pelo menos 1 imagem";
     return null;
   }
+async function handleSubmit(
+   e: SyntheticEvent<HTMLFormElement>
+) {
+  e.preventDefault();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (isSubmitting) return;
-    const validationError = validateForm();
-    if (validationError) { setError(validationError); return; }
-    setError(null);
-    setIsSubmitting(true);
-    try {
-      const imagesUrls = await uploadImages(form.images);
-      const body = {
-        title: form.title,
-        price: Number(form.price),
-        images: imagesUrls,
-        category: form.category,
-        description: form.description,
-        pixPrice: Number(form.pixPrice),
-        stock: Number(form.stock),
-        sold: 0,
-        isUnique: form.isUnique,
-        isHandmade: form.isHandmade,
-        isLimited: form.isLimited,
-        sku: form.sku,
-        deliveryDays: Number(form.deliveryDays),
-      };
-      const res = await fetch("/api/admin/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error("Erro ao criar produto");
-      router.push("/admin/products");
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erro inesperado");
-    } finally {
-      setIsSubmitting(false);
-      setUploadingIndex(null);
-    }
+  if (isSubmitting) return;
+
+  const validationError = validateForm();
+
+  if (validationError) {
+    setError(validationError);
+    return;
   }
+
+  setError(null);
+  setIsSubmitting(true);
+
+  try {
+    const imagesUrls = await uploadImages(form.images);
+
+    const body = {
+      title: form.title.trim(),
+
+      price: parseFloat(
+        form.price.replace(",", ".")
+      ),
+
+      images: imagesUrls,
+
+      category: form.category.trim(),
+
+      description: form.description.trim(),
+
+      pixPrice: form.pixPrice
+        ? parseFloat(
+            form.pixPrice.replace(",", ".")
+          )
+        : 0,
+
+      stock: parseInt(form.stock || "0"),
+
+      sold: 0,
+
+      isUnique: form.isUnique,
+      isHandmade: form.isHandmade,
+      isLimited: form.isLimited,
+
+      sku: form.sku.trim(),
+
+      deliveryDays: parseInt(
+        form.deliveryDays || "0"
+      ),
+    };
+
+    console.log("BODY FRONT:", body);
+
+    const res = await fetch(
+      "/api/admin/products",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    const result = await res.json();
+
+    console.log(
+      "RESPOSTA API:",
+      result
+    );
+
+    if (!res.ok) {
+      throw new Error(
+        result.error ||
+          "Erro ao criar produto"
+      );
+    }
+
+    router.push("/admin/products");
+  } catch (err: unknown) {
+    console.error(err);
+
+    setError(
+      err instanceof Error
+        ? err.message
+        : "Erro inesperado"
+    );
+  } finally {
+    setIsSubmitting(false);
+    setUploadingIndex(null);
+  }
+}
+ 
 
   const inputClass = "w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-600 transition";
 

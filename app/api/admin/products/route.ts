@@ -66,12 +66,15 @@ export async function POST(req: Request) {
     await connectDB();
 
     const body = await req.json();
-
+       
     if (!body.title || !body.price) {
       return fail("Dados inválidos", 400);
     }
-
+  
     const product = await ProductModel.create(body);
+
+   
+console.log(product);
 
     return ok(product);
   } catch (error) {

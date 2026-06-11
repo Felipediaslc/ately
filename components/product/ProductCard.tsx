@@ -31,7 +31,7 @@ export function ProductCard({ product }: Props) {
 
   type BtnState = "idle" | "loading" | "done";
   const [btnState, setBtnState] = useState<BtnState>("idle");
-const image = product.images?.[0] || FALLBACK_IMAGE;
+  const image = product.images?.[0] || FALLBACK_IMAGE;
   let stockLabel = "";
   let stockColor = "";
 
@@ -55,15 +55,15 @@ const image = product.images?.[0] || FALLBACK_IMAGE;
 
     addToCart(
       {
-        productId: product.productId , // ← era _id
-        sku: product.sku, 
+        productId: product.productId, // ← era _id
+        sku: product.sku,
         title: product.title,
         price: product.price,
         image: image,
         images: product.images,
         pixPrice: product.pixPrice,
       },
-      safeQuantity
+      safeQuantity,
     );
 
     setTimeout(() => {
@@ -71,19 +71,24 @@ const image = product.images?.[0] || FALLBACK_IMAGE;
       setTimeout(() => setBtnState("idle"), 1500);
     }, 800);
   };
-console.log("📦 CARD PRODUCT:", product.productId, product.images);
+  console.log("📦 CARD PRODUCT:", product.productId, product.images);
   return (
     <div className="group bg-[#FFFFFF] rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
-      
       {/* Imagem */}
       <div className="relative w-full aspect-[3/4] bg-[#FFFFFF]">
-        <Link href={`/products/${product.productId}`} className="block w-full h-full"> {/* ← era _id */}
+        <Link
+          href={`/products/${product.productId}`}
+          className="block w-full h-full"
+        >
+          {" "}
+          {/* ← era _id */}
           <Image
-  src={image}
-  alt={product.title}
-  fill
-  sizes="(max-width: 768px) 100vw, 50vw"
-/>
+            src={image}
+            alt={product.title}
+            fill
+            unoptimized
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
         </Link>
 
         <div className="absolute top-4 right-4 z-10">
@@ -92,15 +97,26 @@ console.log("📦 CARD PRODUCT:", product.productId, product.images);
 
         {/* BADGES */}
         <div className="absolute top-4 left-4 flex flex-col gap-1">
-          {product.isUnique && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Peça única</span>}
-          {product.isHandmade && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Feito à mão</span>}
-          {product.isLimited && <span className="text-xs bg-gray-100 px-2 py-1 rounded">Edição limitada</span>}
+          {product.isUnique && (
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              Peça única
+            </span>
+          )}
+          {product.isHandmade && (
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              Feito à mão
+            </span>
+          )}
+          {product.isLimited && (
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              Edição limitada
+            </span>
+          )}
         </div>
       </div>
 
       {/* Info */}
       <div className="p-4 flex flex-col gap-2">
-
         <Link
           href={`/products/${product.productId}`} // ← era _id
           className="line-clamp-2 text-sm font-medium text-gray-800 hover:text-fuchsia-700"
@@ -141,10 +157,10 @@ console.log("📦 CARD PRODUCT:", product.productId, product.images);
             {product.stock === 0
               ? "Esgotado"
               : btnState === "idle"
-              ? "Comprar"
-              : btnState === "loading"
-              ? "..."
-              : "Adicionado"}
+                ? "Comprar"
+                : btnState === "loading"
+                  ? "..."
+                  : "Adicionado"}
           </button>
         </div>
       </div>

@@ -77,8 +77,8 @@ export default function Footer() {
           {/* CONTATO */}
           <div>
             <h4 className="tracking-wide font-semibold mb-3">Contato</h4>
-            <p className="text-gray-700 tracking-wide">email@exemplo.com</p>
-            <p className="text-gray-700 tracking-wide">+55 (83) 99999-9999</p>
+            <p className="text-gray-700 tracking-wide">sdatelie.religioso@gmail.com</p>
+            <p className="text-gray-700 tracking-wide">+55 (83) 98751-0636</p>
             <p className="text-gray-700 tracking-wide">João Pessoa - PB</p>
           </div>
 

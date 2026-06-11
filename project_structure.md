@@ -1,13 +1,13 @@
 # 📁 ately - Project Structure
 
-*Generated on: 05/05/2026, 10:48:41*
+*Generated on: 01/06/2026, 17:00:10*
 
 ## 📋 Quick Overview
 
 | Metric | Value |
 |--------|-------|
-| 📄 Total Files | 193 |
-| 📁 Total Folders | 90 |
+| 📄 Total Files | 195 |
+| 📁 Total Folders | 91 |
 | 🌳 Max Depth | 5 levels |
 | 🛠️ Tech Stack | React, Next.js, TypeScript, CSS, Node.js |
 
@@ -24,26 +24,26 @@
 
 ### By File Type
 
-- ⚛️ **.tsx** (React TypeScript files): 65 files (33.7%)
-- 🖼️ **.png** (PNG images): 58 files (30.1%)
-- 🔷 **.ts** (TypeScript files): 45 files (23.3%)
+- ⚛️ **.tsx** (React TypeScript files): 67 files (34.4%)
+- 🖼️ **.png** (PNG images): 58 files (29.7%)
+- 🔷 **.ts** (TypeScript files): 46 files (23.6%)
 - 🎨 **.svg** (SVG images): 12 files (6.2%)
 - 📄 **.mjs** (Other files): 2 files (1.0%)
 - ⚙️ **.json** (JSON files): 2 files (1.0%)
 - 📖 **.md** (Markdown files): 2 files (1.0%)
-- 🖼️ **.jpeg** (JPEG images): 2 files (1.0%)
 - 🚫 **.gitignore** (Git ignore): 1 files (0.5%)
 - 🖼️ **.ico** (Icon files): 1 files (0.5%)
 - 🔤 **.ttf** (TrueType fonts): 1 files (0.5%)
+- 🖼️ **.jpeg** (JPEG images): 1 files (0.5%)
 - 🎨 **.css** (Stylesheets): 1 files (0.5%)
 - 📄 **.lock** (Other files): 1 files (0.5%)
 
 ### By Category
 
-- **Assets**: 74 files (38.3%)
-- **React**: 65 files (33.7%)
-- **TypeScript**: 45 files (23.3%)
-- **Other**: 3 files (1.6%)
+- **Assets**: 73 files (37.4%)
+- **React**: 67 files (34.4%)
+- **TypeScript**: 46 files (23.6%)
+- **Other**: 3 files (1.5%)
 - **Config**: 2 files (1.0%)
 - **Docs**: 2 files (1.0%)
 - **DevOps**: 1 files (0.5%)
@@ -51,10 +51,10 @@
 
 ### 📁 Largest Directories
 
-- **root**: 193 files
-- **app**: 73 files
-- **public**: 73 files
-- **public\image**: 67 files
+- **root**: 195 files
+- **app**: 76 files
+- **public**: 72 files
+- **public\image**: 66 files
 - **public\image\imagens**: 41 files
 
 ## 🌳 Directory Structure
@@ -118,6 +118,7 @@ ately/
 │   │   │   └── 🔷 route.ts
 │   │   ├── 📂 orders/
 │   │   │   ├── 📂 [id]/
+│   │   │   │   ├── 🔷 route.ts
 │   │   │   │   └── 📂 status/
 │   │   │   │   │   └── 🔷 route.ts
 │   │   │   └── 🔷 route.ts
@@ -159,6 +160,9 @@ ately/
 │   │   └── ⚛️ page.tsx
 │   ├── ⚛️ page.tsx
 │   ├── 📂 pedido/
+│   │   ├── 📂 aguardando/
+│   │   │   ├── ⚛️ AguardandoPagamnt.tsx
+│   │   │   └── ⚛️ page.tsx
 │   │   ├── 📂 falha/
 │   │   │   └── ⚛️ page.tsx
 │   │   ├── 📂 pendente/
@@ -265,7 +269,6 @@ ately/
 │   ├── 🎨 globe.svg
 │   ├── 📂 image/
 │   │   ├── 🖼️ (17).png
-│   │   ├── 🖼️ banner02Mobile.jpeg
 │   │   ├── 🖼️ banner02Mobile.png
 │   │   ├── 🖼️ banner2Desktop.png
 │   │   ├── 🖼️ bannerDesktop.png

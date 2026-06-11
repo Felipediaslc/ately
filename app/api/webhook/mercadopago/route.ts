@@ -92,7 +92,7 @@ ${order.address.city} - ${order.address.state}
         await resend.emails.send({
           from: "SD Ateliê <onboarding@resend.dev>",
           to: order.customer.email,
-          subject: "Seu pedido foi confirmado 💚",
+          subject: "Seu pedido foi confirmado ",
           html: emailTemplate({
             nome: order.customer.name,
             pedidoId: order._id.toString(),

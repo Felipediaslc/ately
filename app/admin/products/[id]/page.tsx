@@ -49,7 +49,7 @@ export default function EditProductPage() {
         const res = await fetch(`/api/admin/products/${id}`);
         const json = await res.json();
         const data = json.data ?? json;
-
+console.log("DATA IMAGES:", data.images);
         setForm({
           title: data.title ?? "",
           price: String(data.price ?? ""),
@@ -77,10 +77,23 @@ export default function EditProductPage() {
   if (loading) {
     return <p className="p-6 text-zinc-400">Carregando produto...</p>;
   }
+  console.log("IMAGES:", form.images);
+console.log("TIPOS:", form.images.map((i) => ({
+  value: i,
+  type: typeof i,
+  isFile: i instanceof File,
+})));
 
-  const previews = (form.images ?? []).map((img) =>
-    typeof img === "string" ? img : URL.createObjectURL(img)
-  );
+ const previews = (form.images ?? [])
+  .filter((img) => img !== null)
+  .map((img) =>
+    typeof img === "string"
+      ? img
+      : img instanceof File
+      ? URL.createObjectURL(img)
+      : ""
+  )
+  .filter(Boolean);
 
   const removeImage = (index: number) => {
     const newImages = [...form.images];
@@ -93,49 +106,42 @@ export default function EditProductPage() {
     setForm({ ...form, images: [...form.images, ...Array.from(e.target.files)] });
   };
 
-  async function compressImage(file: File): Promise<File> {
-    try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = document.createElement("img");
+  
 
-      return await new Promise((resolve) => {
-        img.onload = () => {
-          const MAX_WIDTH = 1200;
-          const scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scale;
-          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-          canvas.toBlob((blob) => {
-            if (!blob) return resolve(file);
-            resolve(new File([blob], file.name, { type: "image/jpeg" }));
-          }, "image/jpeg", 0.7);
-        };
-        img.src = URL.createObjectURL(file);
-      });
-    } catch {
-      return file;
-    }
-  }
+async function uploadImages(files: File[]) {
+  const urls: string[] = [];
 
-  async function uploadImages(files: File[]) {
-    const urls: string[] = [];
-    for (let i = 0; i < files.length; i++) {
-      setUploadingIndex(i);
-      const compressed = await compressImage(files[i]);
-      const data = new FormData();
-      data.append("file", compressed);
-      data.append("upload_preset", "SEU_UPLOAD_PRESET");
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dwncbpih4/image/upload",
-        { method: "POST", body: data }
+  for (let i = 0; i < files.length; i++) {
+    setUploadingIndex(i);
+
+    const data = new FormData();
+
+    data.append("file", files[i]);
+    data.append("upload_preset", "products_unsigned");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dwncbpih4/image/upload",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        result.error?.message || "Erro Cloudinary"
       );
-      const result = await res.json();
-      urls.push(result.secure_url);
     }
-    setUploadingIndex(null);
-    return urls;
+
+    urls.push(result.secure_url);
   }
+
+  setUploadingIndex(null);
+
+  return urls;
+}
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

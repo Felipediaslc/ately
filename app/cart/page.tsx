@@ -115,7 +115,7 @@ export default function CartPage() {
       {
         label: result.label,
         price: result.price,
-        days: "1 a 2 dias úteis",
+        days: "15 a 30 dias úteis (sob encomenda)",
       },
     ]);
 
@@ -177,19 +177,19 @@ console.log("CART ITEMS:", cartItems)
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-start">
 
         {/* LISTA DE ITENS */}
-        <div className="w-full flex-1 flex flex-col gap-4">
+        <div className="w-full flex-1 flex flex-col gap-4  ">
           {cartItems.map((item: CartItem) => (
             <div
               key={item.productId}
-              className="flex items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
+              className="flex  items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div className="shrink-0">
+              <div className="shrink-0  ">
                 <Image
                    src={getItemImage(item)}
                   alt={item.title}
-                  width={80}
-                  height={80}
-                  className="rounded-xl w-[72px] h-[72px] sm:w-[96px] sm:h-[96px]"
+                  width={85}
+                  height={85}
+                  className="rounded-xl w-[76px] h-[76px] sm:w-[110px] sm:mb-5 sm:h-[120px]"
                 />
               </div>
 
