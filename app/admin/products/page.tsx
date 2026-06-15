@@ -14,15 +14,14 @@ async function getProducts(): Promise<Product[]> {
     const cookieStore = await cookies();
     const cookieHeader = cookieStore.toString();
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
-  ? `https://${process.env.NEXT_PUBLIC_SITE_URL}`
-  : "http://localhost:3000";
-
-const res = await fetch(`${baseUrl}/api/admin/products`, {
-  method: "GET",
-  headers: { Cookie: cookieHeader },
-  cache: "no-store",
-});
+       const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/admin/products`,
+      {
+        method: "GET",
+        headers: { Cookie: cookieHeader },
+        cache: "no-store",
+      },
+    );
 
     if (!res.ok) return [];
     const json = await res.json();
