@@ -62,12 +62,13 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="relative w-full h-[200px] sm:h-[260px] rounded-2xl overflow-hidden border border-fuchsia-100">
+          <div className="relative w-full max-w-[280px] mx-auto sm:max-w-none aspect-[3/4] rounded-2xl overflow-hidden border border-fuchsia-100">
             <Image
-              src="/image/banner02Mobile.png"
-              alt="Artesanato feito por Socorro Dias"
+              src="/image/perfil01.jpg"
+              alt="Socorro Dias pintando uma peça artesanal com detalhes dourados"
               fill
-              className="object-cover"
+              sizes="(max-width: 640px) 280px, 300px"
+              className="object-cover object-[50%_35%]"
             />
           </div>
         </div>

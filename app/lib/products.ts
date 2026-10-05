@@ -43,7 +43,7 @@ const allProducts: RawProduct[] = [
     productId: "1",
     title: "Terço N. Senhora Aparecida",
     price: 35,
-    images: ["/image/(1).png", "/image/(17).png"],
+    images: [ "/image/NSAparecida.png", "/image/imagens/ns-aparecida-dourado-perolada-40cm-tras.png"],
     category: "terco",
     description: "Terço artesanal de madeira.",
     pixPrice: 32,
@@ -112,16 +112,22 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-// 🔹 FEATURED PRODUCTS
+
 export async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${getBaseUrl()}/api/products`, {
       next: { revalidate: 60 },
     });
 
-    if (!res.ok) throw new Error("Failed to fetch featured products");
+    if (!res.ok) {
+      throw new Error(`Failed to fetch featured products: ${res.status}`);
+    }
 
     const data: RawProduct[] = await res.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid products response");
+    }
 
     return data.slice(0, 4).map(formatProduct);
   } catch (error) {
