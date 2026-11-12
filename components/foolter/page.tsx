@@ -24,7 +24,7 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 py-10 text-center md:text-left">
 
-        {/* LOGO — ✅ tamanho responsivo */}
+     
         <div className="mb-8 flex justify-center md:justify-start">
           <Image
             src="/image/sd_atelie_logo_v9.svg"
@@ -35,10 +35,9 @@ export default function Footer() {
           />
         </div>
 
-        {/* COLUNAS */}
+       
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 
-          {/* LINKS */}
           <div>
             <h4 className="tracking-wide font-semibold mb-3">Links</h4>
             <ul className="space-y-2 text-gray-700 tracking-wide">
@@ -74,7 +73,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* CONTATO */}
+         
           <div>
             <h4 className="tracking-wide font-semibold mb-3">Contato</h4>
             <p className="text-gray-700 tracking-wide">sdatelie.religioso@gmail.com</p>
@@ -82,7 +81,7 @@ export default function Footer() {
             <p className="text-gray-700 tracking-wide">João Pessoa - PB</p>
           </div>
 
-          {/* REDES — ✅ área de toque adequada com p-2 */}
+         
           <div>
             <h4 className="tracking-wide font-semibold mb-3">Redes Sociais</h4>
             <div className="flex justify-center md:justify-start gap-2 text-gray-700">
@@ -100,7 +99,7 @@ export default function Footer() {
 
         </div>
 
-        {/* PAGAMENTOS — ✅ h-6 w-auto para tamanho consistente */}
+       
         <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 mb-8">
           <span className="text-gray-700 font-semibold text-sm tracking-wide">
             Pagamentos:
@@ -116,12 +115,12 @@ export default function Footer() {
         <div className="text-gray-500 text-sm border-t border-gray-300 pt-4 tracking-wide text-center md:text-left">
           © 2026 SD Ateliê. Desenvolvido por{" "}
           <a
-            href="https://www.linkedin.com/in/felipediasdev/"
+            href="https://diascode-pi.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline transition"
           >
-            Felipe Dias
+            DIASCODE
           </a>
         </div>
 
